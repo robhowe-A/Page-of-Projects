@@ -1,0 +1,130 @@
+﻿@using ProjectsPage.Components.Pages
+@rendermode InteractiveServer
+@inject NavigationManager Nav
+
+
+    @if (_selectedWebsite is null)
+    {
+        //_selectedWebsite = _websiteSelections[0];
+    }
+    else
+    {
+        <div id="menu-selection">
+            <img src="@_selectedWebsite.ImageUrl" alt="@_selectedWebsite.ImageAltText"/>
+            <h1>@_selectedWebsite.Title</h1>
+            <button @onclick="OnDetailsToggleOpen" id="Details-Panel-Toggle">Details</button>
+            <a class="page-view-detail external" href="@_selectedWebsite.ExternalHref" id="Details-Panel-External"
+               referrerpolicy="strict-origin-when-cross-origin"
+               title="@_selectedWebsite.ExternalTitle"
+               target="_blank">Go there</a>
+            <button class="copy-link @(_copied ? "copied": "")" @onclick="CopyExternalHrefAsync">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
+                    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
+                </svg>
+            </button>
+            <SelectedWebsiteDetails SelectedWebsite="_selectedWebsite" ShowDetails="_toggleDetails"/>
+        </div>
+    }
+<div id="growing-placeholder"></div>
+<nav id="menu" class="@(_selectedWebsite is null ? "menu-collapsed" : "")">
+    <h1><a href="/"
+            rel="opener"
+            title="roberthowell.dev"
+            target="_self">roberthowell.dev</a></h1>
+        
+    <WebsitesFrameSelections
+        WebsitesSelections="@_websiteSelections.ToList()"
+        SelectedFrame="@_selectedWebsite"
+        OnSelected="HandleWebsiteSelected"/>
+    <DemosFrameSelections
+        DemosSelections="@_demoSelections"
+        SelectedFrame="@_selectedWebsite"
+        OnSelected="HandleWebsiteSelected"/>
+    
+    <a href="/status"
+       data-enhance-nav="false"
+       rel="opener"
+       title="roberthowell.dev"
+       target="_self">Status</a>
+</nav>
+
+@code {
+    private FrameSelectionOption? _selectedWebsite;
+    private List<FrameSelectionOption> _websiteSelections = [];
+    private List<FrameSelectionOption> _demoSelections = [];
+    private bool _toggleDetails;
+    private bool _copied;
+    
+    [Inject] private ProjectsPage.Services.ClipboardService Clipboard { get; set; } = default!;
+
+    private void OnDetailsToggleOpen()
+    {
+        _toggleDetails = !_toggleDetails;
+    }
+    
+    private async Task CopyExternalHrefAsync()
+    {
+        await Clipboard.CopyTextAsync(_selectedWebsite?.ExternalHref);
+        _copied = true;
+    }
+    
+    private void HandleWebsiteSelected(FrameSelectionOption clicked)
+    {
+        // Reset copied due to new selection clicked
+        _copied = false;
+        
+        _websiteSelections = WebsitesOptionsData();
+        _demoSelections = DemosOptionsData();
+
+        var index = _websiteSelections.FindIndex(x => x.InnerText == clicked.InnerText);
+        var demosIndex = _demoSelections.FindIndex(x => x.InnerText == clicked.InnerText);
+
+        if (index < 0 && demosIndex < 0) return;
+
+        if (index >= 0)
+        {
+            //new tile has been selected. replace frame selection with the clicked choice
+            _selectedWebsite = _websiteSelections[index];
+            }
+
+        if (demosIndex >= 0)
+        {
+            _selectedWebsite = _demoSelections[demosIndex];
+        }
+
+        // Navigate after selection is applied
+        Nav.NavigateTo(_selectedWebsite!.Href);
+    }
+    
+    protected override void OnInitialized()
+    {
+        //All pages options
+        var all = WebsitesOptionsData();
+        all.AddRange(DemosOptionsData());
+        _websiteSelections = WebsitesOptionsData();
+        _demoSelections = DemosOptionsData();
+
+        //On refresh, Frame Selection should match the current url data
+        var relativePath = Nav.ToAbsoluteUri(Nav.Uri).AbsolutePath;
+
+        var index = _websiteSelections.FindIndex(option => option.Href == relativePath);
+        var demosIndex = _demoSelections.FindIndex(option => option.Href == relativePath);
+
+        switch (index)
+        {
+            case < 0 when demosIndex < 0:
+                //_selectedWebsite = null;
+                return;
+            case >= 0:
+                //new tile has been selected. replace frame selection with the clicked choice
+                _selectedWebsite = _websiteSelections[index];
+                break;
+        }
+
+        if (demosIndex >= 0)
+        {
+            _selectedWebsite = _demoSelections[demosIndex];
+        }
+    }
+}

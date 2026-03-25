@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <base href="/"/>
+    <ResourcePreloader/>
+    <link rel="stylesheet" href="@Assets["app.css"]"/>
+    <link rel="stylesheet" href="@Assets["ProjectsPage.styles.css"]"/>
+    <ImportMap/>
+    <HeadOutlet/>
+    <link rel="icon" href="images/layer-multiple-alt-filled.png"/>
+    <link rel="dns-prefetch" href="https://www.randomwebbits.com/"/>
+    <link rel="dns-prefetch" href="https://quizzes-demo.rhdeveloping.com/"/>
+    <link rel="dns-prefetch" href="https://rh-snapi-site.rhdeveloping.com/"/>
+    <link rel="dns-prefetch" href="https://roberthagilestockweb.com/"/>
+    <link rel="dns-prefetch" href="https://www.httprequest.app/"/>
+    <link rel="preconnect" href="https://docs.rhdeveloping.com/"/>
+</head>
+
+<body id="page-view">
+<Routes/>
+<ReconnectModal/>
+<script src="@Assets["_framework/blazor.web.js"]" autostart="false"></script>
+<script>
+    Blazor.start({
+      circuit: {
+        configureSignalR: function (builder) {
+          builder.configureLogging("Error");
+        }
+      }
+    });
+</script>
+</body>
+</html>

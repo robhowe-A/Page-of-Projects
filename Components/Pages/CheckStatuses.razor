@@ -1,0 +1,49 @@
+﻿@page "/status"
+@rendermode InteractiveServer
+
+<h2>Status</h2>
+<div>
+    @foreach (var domain in @_domainOptions)
+    {
+        <section>
+        <hgroup class="domain">
+            <h2>@domain.Tld</h2>
+        </hgroup>
+        <table class="subdomain">
+            <tbody>
+                @foreach (var subdomain in domain.Sites)
+                {
+                <tr>
+                    <td class="status">@(_statuses.TryGetValue(subdomain.Url, out var status) ? status : "…")</td>
+                    <td><a href="@subdomain.Url" rel="noopener" title="@subdomain.Name" target="_blank">@subdomain.Name</a></td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        </section>
+    }
+</div>
+
+@code {
+    private readonly Dictionary<string, string> _statuses = new();
+    
+    protected override void OnInitialized()
+    {
+        UrlsToCheck = _domainOptions
+            .SelectMany(d => d.Sites)
+            .Select(s => s.Url)
+            .Where(u => !string.IsNullOrWhiteSpace(u))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+    
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender || _backgroundWork is not null)
+            return Task.CompletedTask;
+
+        // Start checks after first render so the page can show placeholders immediately.
+        _backgroundWork = RunChecksAsync();
+        return Task.CompletedTask;
+    }
+}
