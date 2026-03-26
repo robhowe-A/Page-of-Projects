@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
@@ -8,7 +8,8 @@
         <NoWin32Manifest>true</NoWin32Manifest>
         <ErrorReport>none</ErrorReport>
         <PackageProjectUrl>https://www.roberthowell.dev/</PackageProjectUrl>
-    </PropertyGroup>
+      <UserSecretsId>c0e044bf-2a30-4f99-9dee-1d13649e783e</UserSecretsId>
+  </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
       <DebugType>none</DebugType>
@@ -17,5 +18,15 @@
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
       <DebugType>none</DebugType>
     </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.5" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.5" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.5">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="MySql.EntityFrameworkCore" Version="10.0.1" />
+    </ItemGroup>
 
 </Project>
