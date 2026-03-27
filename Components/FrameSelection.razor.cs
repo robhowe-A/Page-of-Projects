@@ -1,4 +1,7 @@
-﻿using System.Text.Json;
+﻿using Microsoft.EntityFrameworkCore;
+using ProjectsPage.Models;
+using System.Reflection;
+using System.Text.Json;
 
 namespace ProjectsPage.Components;
 
@@ -34,8 +37,7 @@ public class FrameSelectionOption
 
 public partial class FrameSelection
 {
-    
-    
+
     private const string WebsitesOptions = """
                                            [
                                                {
@@ -325,9 +327,37 @@ public partial class FrameSelection
                                            ]
                                         """;
 
+
+    
+    private static ProjectsDbContext CreateContext()
+    {
+        //Create a context for this backend request to use
+        var iConfig = new ConfigurationBuilder().AddUserSecrets(Assembly.GetExecutingAssembly()).Build();
+        string str = iConfig.GetConnectionString("ProjectsDb");
+        return new ProjectsDbContext(str);
+    }
+    
     public static List<FrameSelectionOption> WebsitesOptionsData()
     {
-        return JsonSerializer.Deserialize<List<FrameSelectionOption>>(WebsitesOptions,
+        
+        var context = CreateContext();
+        var docs = (from j in context.projects where j.site == "ProjectsPage" select j.document);
+        var docsArray = docs.ToArray();
+        var valuelist = "[";
+
+        for (int i=0; i < docsArray.Length; i++)
+        {
+            if (i == docsArray.Length-1)
+            {
+                valuelist += docsArray[i].ToString();
+                break;
+            }
+            valuelist += docsArray[i].ToString() + ",";
+        }
+
+        valuelist += "]";
+
+        return JsonSerializer.Deserialize<List<FrameSelectionOption>>(valuelist,
                    options: new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ??
                throw new ApplicationException("WebsitesOptions is null");
     }
