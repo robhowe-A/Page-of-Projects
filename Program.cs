@@ -40,7 +40,6 @@ builder.Services.AddMvc(options =>
     options.EnableEndpointRouting = false;
 });
 
-
 var conString = builder.Configuration.GetConnectionString("ProjectsDb") ??
      throw new InvalidOperationException("Connection string 'ProjectsDb'" +
     " not found.");
