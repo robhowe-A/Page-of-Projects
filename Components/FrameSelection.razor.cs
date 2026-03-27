@@ -49,7 +49,7 @@ public partial class FrameSelection
 #else
         //Create a context for this backend request to use
         var iConfig = new ConfigurationBuilder().AddEnvironmentVariables().Build();
-        string str = System.Environment.GetEnvironmentVariable("ProjectsDb") ?? string.Empty;
+        string str = System.Environment.GetEnvironmentVariable("ProjectsDb", EnvironmentVariableTarget.Machine) ?? string.Empty;
 #endif
 
         return new ProjectsDbContext(str);
