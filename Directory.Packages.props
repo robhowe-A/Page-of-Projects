@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <Net10>10.0.5</Net10>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="$(Net10)" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(Net10)" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="$(Net10)" />
+    <PackageVersion Include="MySql.EntityFrameworkCore" Version="10.0.1" />
+  </ItemGroup>
+</Project>
