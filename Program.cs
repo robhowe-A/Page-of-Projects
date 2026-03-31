@@ -41,10 +41,9 @@ builder.Services.AddMvc(options =>
 });
 
 var conString = builder.Configuration.GetConnectionString("ProjectsDb") ??
-     throw new InvalidOperationException("Connection string 'ProjectsDb'" +
-    " not found.");
-builder.Services.AddDbContext<ProjectsDbContext>(options =>
-    options.UseSqlServer(conString));
+     throw new InvalidOperationException("Connection string 'ProjectsDb' not found.");
+
+builder.Services.AddProjectsContext(conString);
 
 var app = builder.Build();
 

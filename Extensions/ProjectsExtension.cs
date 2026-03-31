@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 
 namespace ProjectsPage.Extensions;
 
@@ -23,4 +26,34 @@ public static class WebApplicationExtensions
 
         return app;
     }
-}
+
+    public static IServiceCollection AddProjectsContext( this IServiceCollection services, string? connectionString = null)
+    {
+        
+        if (connectionString == null)
+        {
+            SqlConnectionStringBuilder builder = new();
+            builder.DataSource = string.Format("tcp:{0},{1}",
+                System.Environment.GetEnvironmentVariable("ProjectsDb:Host"),
+                3306);
+            builder.InitialCatalog = "jdoc_store";
+            builder.TrustServerCertificate = true;
+            builder.MultipleActiveResultSets = true;
+            builder.ConnectTimeout = 3;
+
+            builder.UserID = System.Environment.GetEnvironmentVariable("MY_SQL_USR") ?? throw new InvalidOperationException("SQL USER NOT FOUND");
+            builder.Password= System.Environment.GetEnvironmentVariable("MY_SQL_PASSWORD") ?? throw new InvalidOperationException("SQL PASSWORD NOT FOUND");
+            connectionString = builder.ConnectionString;
+        }
+
+        services.AddDbContext<Models.ProjectsDbContext>(options =>
+        {
+            options.UseSqlServer(connectionString);
+            options.LogTo(Console.WriteLine, new[] { Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.CommandExecuting });
+        },
+        contextLifetime: ServiceLifetime.Transient,
+        optionsLifetime: ServiceLifetime.Transient);
+
+        return services;
+    }
+};
