@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace ProjectsPage.Components.Pages;
+namespace ProjectsPage.Components;
 
 public partial class SelectedWebsiteDetails : ComponentBase
 {

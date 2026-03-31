@@ -7,8 +7,12 @@
         <li>
             <div class="page-view-selection @(SelectedFrame?.Title == frame.Title ? "displaying" : "")" @onclick="() => OnSelectedOnClick(frame)">
                 <img src="@frame.ImageUrl" alt="@frame.ImageAltText"/>
-                <a class="page-view-link" href="@frame.Href"
-                   title="@frame.Title">@frame.InnerText</a>
+                <div class="page-view-selection-text">
+                    <a class="page-view-link" href="@frame.Href"
+                       title="@frame.Title">@frame.InnerText</a>
+                    <button class="details-panel-toggle disabled">Details</button>
+                </div>
+                <SelectedWebsiteDetails SelectedWebsite="@frame"/>
             </div>
         </li>
     }

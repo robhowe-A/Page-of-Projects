@@ -10,9 +10,8 @@
     else
     {
         <div id="menu-selection">
-            <img src="@_selectedWebsite.ImageUrl" alt="@_selectedWebsite.ImageAltText"/>
             <h1>@_selectedWebsite.Title</h1>
-            <button @onclick="OnDetailsToggleOpen" id="Details-Panel-Toggle">Details</button>
+            <button @onclick="OnDetailsToggleOpen" class="details-panel-toggle">Details</button>
             <a class="page-view-detail external" href="@_selectedWebsite.ExternalHref" id="Details-Panel-External"
                referrerpolicy="strict-origin-when-cross-origin"
                title="@_selectedWebsite.ExternalTitle"
@@ -23,7 +22,7 @@
                     <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
                 </svg>
             </button>
-            <SelectedWebsiteDetails SelectedWebsite="_selectedWebsite" ShowDetails="_toggleDetails"/>
+            <SelectedWebsiteDetails SelectedWebsite="@_selectedWebsite" ShowDetails="@_toggleDetails"/>
         </div>
     }
 <div id="growing-placeholder"></div>

@@ -42,7 +42,7 @@ body {
         }
 
         .page-view {
-            width: calc(100dvw - 240px);
+            width: calc(100dvw - 500px);
             height: auto;
             flex: 1 1 auto;
         }
@@ -56,7 +56,7 @@ body {
         
         & main[role="main"] {
             height: 100dvh;
-            width: calc(100dvw - 255px);
+            width: calc(100dvw - 515px);
             flex: 1 1 auto;
             
             & article {
@@ -120,9 +120,9 @@ body {
         }
         
         & #menu-selection {
-            width: 240px;
+            width: 500px;
             position: relative;
-            padding-bottom: .5rem;
+            padding-block: .75em .5rem;
             border-bottom: 1px solid #ccc;
             box-shadow: -4px 4px 8px black;
 
@@ -136,90 +136,93 @@ body {
                 display: block;
             }
             
-            & #Details-Panel-Toggle {
-                padding: 10px;
-                width: 5.5rem;
-                background-color: lightseagreen;
-                border: none;
-                font-weight: bold;
-                border-radius: 10px;
-                box-shadow: 0 2px 2px 2px lightgray;
-                margin-left: 1rem;
-                cursor: pointer;
-
-                &:hover {
-                    background-color: cyan;
-                }
-            }
-            
             & #Details-Panel-External {
                 font-weight: bold;
                 color: #2d95c5;
                 margin-right: .5rem;
             }
-            
-            & aside[data-dialog-index="0"] {
-                /*display: none;*/
-                position: absolute;
-                top: 0;
-                left: 100%;
-                bottom: 25vh;
-                width: clamp( 275px, 50vw, 800px);
-                height: min-content;
-                background-color: lightseagreen;
-                opacity: .97;
-                color: black;
-                cursor: initial;
-                font-size: 1.2em;
-                border-radius: 10px;
-                border: 2px solid black;
-                max-height: calc(100vh - 15px);
-                overflow: auto;
-                
-                & ul, ol {
-                    padding: revert;
-                    margin-block: 1rem;
-                }
-                
-                & p span {
-                    font-size: 16px;
-                    font-style: italic;
-                }
-                
-                & ol li {
-                    list-style: decimal;
-                }
-                
-                & ul li {
-                    list-style: circle;
-                }
-                
-                & .mb0 {
-                    margin-block: 0;
-                }
+        }
 
-                & .mb1 {
-                    margin-block: 1rem;
-                }
-                
-                & .mb2 {
-                    margin-block: 2rem;
-                }
-                
-                & > *:not(h3) {
-                    text-align: left;
-                }
-                
-                & button {
-                    cursor: pointer;
-                }
+        & .details-panel-toggle {
+            padding: 10px;
+            width: 5.5rem;
+            background-color: lightseagreen;
+            border: none;
+            font-weight: bold;
+            border-radius: 10px;
+            box-shadow: 0 2px 2px 2px lightgray;
+            margin-left: 1rem;
+            cursor: pointer;
+            
+            &.disabled {
+                background-color: lightgray;
+            }
+
+            &:not(.disabled):hover {
+                background-color: cyan;
+            }
+        }
+
+        & aside[data-dialog-index="0"] {
+            position: absolute;
+            top: 0;
+            left: 100%;
+            bottom: 25vh;
+            width: clamp( 275px, 50vw, 800px);
+            height: min-content;
+            background-color: lightseagreen;
+            opacity: .97;
+            color: black;
+            cursor: initial;
+            font-size: 1.2em;
+            border-radius: 10px;
+            border: 2px solid black;
+            max-height: calc(100vh - 15px);
+            overflow: auto;
+
+            & ul, ol {
+                padding: revert;
+                margin-block: 1rem;
+            }
+
+            & p span {
+                font-size: 16px;
+                font-style: italic;
+            }
+
+            & ol li {
+                list-style: decimal;
+            }
+
+            & ul li {
+                list-style: circle;
+            }
+
+            & .mb0 {
+                margin-block: 0;
+            }
+
+            & .mb1 {
+                margin-block: 1rem;
+            }
+
+            & .mb2 {
+                margin-block: 2rem;
+            }
+
+            & > *:not(h3) {
+                text-align: left;
+            }
+
+            & button {
+                cursor: pointer;
             }
         }
         
         & #menu {
-            width: 240px;
+            width: 500px;
             display: inline-block;
-            height: calc(100vh - 288px);
+            height: calc(100vh - 173px);
             overflow-y: scroll;
             overflow-x: clip;
             overflow-clip-margin: 0px;
@@ -230,19 +233,29 @@ body {
             }
             
             & li {
-                margin: 5% 3.5%;
+                padding-bottom: 1rem;
             }
             
             &.menu-collapsed {
                 height: calc(100vh - 57px);
             }
+            
+            & img {
+                width: 45%;
+            }
+            
+            & .page-view-link {
+                height: 2em;
+            }
         }
         
         .page-view-selection {
-            width: 90%;
+            width: 95%;
             max-width: 900px;
             margin: 0 auto;
             cursor: pointer;
+            display: flex;
+            flex-direction: row;
             
             &.displaying {
                 opacity: .5;
@@ -250,7 +263,15 @@ body {
 
             & img {
                 display: block;
-                border-radius: 5px 5px 0 0;
+                border-radius: 12px 12px 12px 12px;
+            }
+            
+            & .details-panel-toggle {
+                margin-top: 1rem;
+            }
+            
+            & .page-view-selection-text {
+                width: 100%;
             }
         }
 
