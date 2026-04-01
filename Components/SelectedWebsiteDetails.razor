@@ -30,7 +30,7 @@
                 <p class="mb0"><span>Framework: </span>@SelectedWebsite.SelectionDetails.Framework</p>
             }
             <p class="mb2">@SelectedWebsite.SelectionDetails.Details</p>
-            @if (string.Equals("Agilestock Web", SelectedWebsite.Title)) {
+            @if (string.Equals("AgileStock Web", SelectedWebsite.Title)) {
                 // only 'Agilestock Web' has a requirements list
                 @if (SelectedWebsite.SelectionDetails.Miscellaneous?.RequirementsOl is { Count: > 0 })
                 {
@@ -52,7 +52,7 @@
                     }
                 </ul>
             }
-            <button @onclick="OnDetailsToggleOpen" class="mb1">Close</button>
+        <button @onclick="OnDetailsToggleOpen" class="mb1 details-panel-toggle disabled secondary">Close</button>
         </aside>
     }
 @code {
