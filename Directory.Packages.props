@@ -9,4 +9,11 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="$(Net10)" />
     <PackageVersion Include="MySql.EntityFrameworkCore" Version="10.0.1" />
   </ItemGroup>
+  <ItemGroup>
+	<PackageVersion Include="coverlet.collector" Version="6.0.4" />
+	<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+	<PackageVersion Include="xunit" Version="2.9.3" />
+	<PackageVersion Include="xunit.runner.visualstudio" Version="3.1.4" />
+	<ProjectReference Include="..\Projects-Unit-Tests\UnitTests\UnitTests.csproj" />
+  </ItemGroup>
 </Project>
