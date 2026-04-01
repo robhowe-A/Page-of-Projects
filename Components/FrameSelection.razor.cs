@@ -37,27 +37,10 @@ public class FrameSelectionOption
 
 public partial class FrameSelection
 {
-        
-    private static ProjectsDbContext CreateContext()
+
+    private string[] GetWebsitesData(string site)
     {
-
-#if DEBUG
-        //Create a context for this backend request to use
-        var iConfig = new ConfigurationBuilder().AddEnvironmentVariables().AddUserSecrets(Assembly.GetExecutingAssembly()).Build();
-        string str = iConfig.GetConnectionString("ProjectsDb") ?? string.Empty;
-
-#else
-        //Create a context for this backend request to use
-        var iConfig = new ConfigurationBuilder().AddEnvironmentVariables().Build();
-        string str = System.Environment.GetEnvironmentVariable("ProjectsDb", EnvironmentVariableTarget.Machine) ?? string.Empty;
-#endif
-
-        return new ProjectsDbContext(str);
-    }
-
-    private static string[] GetWebsitesData(string site)
-    {
-        var context = CreateContext();
+        var context = EntityModels.CreateProjectsDbContext();
         var docs = (from j in context.projects where j.site == site select j.document);
         
         return docs.ToArray();
@@ -82,7 +65,7 @@ public partial class FrameSelection
         return valuelist;
     }
 
-    public static List<FrameSelectionOption> WebsitesOptionsData()
+    public List<FrameSelectionOption> WebsitesOptionsData()
     {
         var websitesDocsArray = GetWebsitesData("ProjectsPage");
         string websitesData = JDocsDataStringLoop(websitesDocsArray);
@@ -92,7 +75,7 @@ public partial class FrameSelection
                throw new ApplicationException("WebsitesOptions is null");
     }
 
-    public static List<FrameSelectionOption> DemosOptionsData()
+    public List<FrameSelectionOption> DemosOptionsData()
     {
         var demosDocsArray = GetWebsitesData("ProjectsPageDemos");
         string demosData = JDocsDataStringLoop(demosDocsArray);

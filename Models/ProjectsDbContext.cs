@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace ProjectsPage.Models
 {
@@ -26,6 +27,29 @@ namespace ProjectsPage.Models
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseMySQL(_connectionString ?? throw new ArgumentNullException(nameof(_connectionString)));
+        }
+
+        public ProjectsDbContext GetContext()
+        {
+            //LOGLEAF
+            return CreateContext();
+        }
+
+        private ProjectsDbContext CreateContext()
+        {
+
+#if DEBUG
+            //Create a context for this backend request to use
+            var iConfig = new ConfigurationBuilder().AddEnvironmentVariables().AddUserSecrets(Assembly.GetExecutingAssembly()).Build();
+            string str = iConfig.GetConnectionString("ProjectsDb") ?? string.Empty;
+
+#else
+        //Create a context for this backend request to use
+        var iConfig = new ConfigurationBuilder().AddEnvironmentVariables().Build();
+        string str = System.Environment.GetEnvironmentVariable("ProjectsDb", EnvironmentVariableTarget.Machine) ?? string.Empty;
+#endif
+
+            return new ProjectsDbContext(str);
         }
     }
 }
