@@ -1,7 +1,7 @@
-﻿@page "/demos"
+﻿@* @page "/demos" *@
 <h2>Demos</h2>
 
-<FrameSelectionItems FrameSelections="@DemosSelections" SelectedFrame="@SelectedFrame" OnSelected="@OnSelected" />
+<FrameSelectionItems FrameSelections="@DemosSelections" SelectedFrame="@SelectedFrame" OnSelected="@OnSelected" OnSelectionChange="@OnSelectionChange" SetDetail="@SetDetail" />
 
 @code {
     [Parameter]
@@ -12,4 +12,11 @@
 
     [Parameter]
     public FrameSelectionOption? SelectedFrame { get; set; } = null;
+
+    [Parameter]
+    public bool? SetDetail { get; set; }
+
+    [Parameter]
+    public EventCallback<(bool, FrameSelectionOption)> OnSelectionChange { get; set; }
+
 }

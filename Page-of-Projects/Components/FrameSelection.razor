@@ -11,7 +11,7 @@
     {
         <div id="menu-selection">
             <h1>@_selectedWebsite.Title</h1>
-            <button @onclick="OnDetailsToggleOpen" class="details-panel-toggle">Details</button>
+            <button @onclick="() => OnDetailsToggleOpen(true)" class="details-panel-toggle">Details</button>
             <a class="page-view-detail external" href="@_selectedWebsite.ExternalHref" id="Details-Panel-External"
                referrerpolicy="strict-origin-when-cross-origin"
                title="@_selectedWebsite.ExternalTitle"
@@ -22,7 +22,7 @@
                     <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
                 </svg>
             </button>
-            <SelectedWebsiteDetails SelectedWebsite="@_selectedWebsite" ShowDetails="@_toggleDetails"/>
+        <SelectedWebsiteDetails SelectedWebsite="@_selectedWebsiteDetails" ShowDetails="@_toggleDetails" OnCloseClicked="OnDetailsToggleOpen" />
         </div>
     }
 <div id="growing-placeholder"></div>
@@ -35,11 +35,17 @@
     <WebsitesFrameSelections
         WebsitesSelections="@_websiteSelections.ToList()"
         SelectedFrame="@_selectedWebsite"
-        OnSelected="HandleWebsiteSelected"/>
+        OnSelected="HandleWebsiteSelected"
+        SetDetail="@_toggleDetailsSet"
+        OnSelectionChange="ChangeSelectedWebsiteDetails"
+        />
     <DemosFrameSelections
         DemosSelections="@_demoSelections"
         SelectedFrame="@_selectedWebsite"
-        OnSelected="HandleWebsiteSelected"/>
+        OnSelected="HandleWebsiteSelected"
+        SetDetail="@_toggleDetailsSet"
+        OnSelectionChange="ChangeSelectedWebsiteDetails"
+        />
     
     <a href="/status"
        data-enhance-nav="false"
@@ -50,29 +56,42 @@
 
 @code {
     private FrameSelectionOption? _selectedWebsite;
+    private FrameSelectionOption? _selectedWebsiteDetails;
+
+    private void ChangeSelectedWebsiteDetails((bool open, FrameSelectionOption frame) selectionChangeDetails)
+    {
+        _selectedWebsiteDetails = selectionChangeDetails.frame;
+        _toggleDetails = selectionChangeDetails.open;
+    }
+
     private List<FrameSelectionOption> _websiteSelections = [];
     private List<FrameSelectionOption> _demoSelections = [];
     private bool _toggleDetails;
+    private bool? _toggleDetailsSet;
     private bool _copied;
-    
+
     [Inject] private ProjectsPage.Services.ClipboardService Clipboard { get; set; } = default!;
 
-    private void OnDetailsToggleOpen()
+    private void OnDetailsToggleOpen(bool opened)
     {
-        _toggleDetails = !_toggleDetails;
+        _toggleDetails = opened;
+
+        //reset the details when clicked
+        if (_selectedWebsiteDetails != _selectedWebsite)
+            _selectedWebsiteDetails = _selectedWebsite;
     }
-    
+
     private async Task CopyExternalHrefAsync()
     {
         await Clipboard.CopyTextAsync(_selectedWebsite?.ExternalHref);
         _copied = true;
     }
-    
+
     private void HandleWebsiteSelected(FrameSelectionOption clicked)
     {
         // Reset copied due to new selection clicked
         _copied = false;
-        
+
         _websiteSelections = WebsitesOptionsData();
         _demoSelections = DemosOptionsData();
 
@@ -85,11 +104,13 @@
         {
             //new tile has been selected. replace frame selection with the clicked choice
             _selectedWebsite = _websiteSelections[index];
-            }
+            _selectedWebsiteDetails = _selectedWebsite;
+        }
 
         if (demosIndex >= 0)
         {
             _selectedWebsite = _demoSelections[demosIndex];
+            _selectedWebsiteDetails = _selectedWebsite;
         }
 
         // Navigate after selection is applied
@@ -115,6 +136,8 @@
             case >= 0:
                 //new tile has been selected. replace frame selection with the clicked choice
                 _selectedWebsite = _websiteSelections[index];
+                _selectedWebsiteDetails = _selectedWebsite;
+
                 break;
         }
 

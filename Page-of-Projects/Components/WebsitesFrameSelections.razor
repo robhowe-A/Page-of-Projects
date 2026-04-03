@@ -1,15 +1,22 @@
-﻿@page "/websites"
+﻿@* @page "/websites" *@
 <h2>Websites</h2>
 
-<FrameSelectionItems FrameSelections="@WebsitesSelections" SelectedFrame="@SelectedFrame" OnSelected="@OnSelected" />
+<FrameSelectionItems FrameSelections="@WebsitesSelections" SelectedFrame="@SelectedFrame" OnSelected="@OnSelected" OnSelectionChange="@OnSelectionChange" SetDetail="@SetDetail" />
 
 @code {
     [Parameter]
     public EventCallback<FrameSelectionOption> OnSelected { get; set; }
-    
+
     [Parameter]
     public required List<FrameSelectionOption> WebsitesSelections { get; set; }
-    
+
     [Parameter]
     public FrameSelectionOption? SelectedFrame { get; set; } = null;
+
+    [Parameter]
+    public bool? SetDetail { get; set; }
+
+    [Parameter]
+    public EventCallback<(bool, FrameSelectionOption)> OnSelectionChange { get; set; }
+
 }

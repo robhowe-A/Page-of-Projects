@@ -8,19 +8,55 @@
                 <div class="page-view-selection-text">
                     <a class="page-view-link" href="@frame.Href"
                        title="@frame.Title">@frame.InnerText</a>
-                    <button class="details-panel-toggle disabled">Details</button>
+                    @if(SelectedFrame != null)
+                    {
+                        <button class="details-panel-toggle disabled" @onclick:stopPropagation="true" @onclick="() => ToggleDetailsOnClick(frame)">Details</button>
+                    }
+                    else
+                    {
+                        <button class="details-panel-toggle disabled greyed" @onclick:stopPropagation="true" @onclick="() => ToggleDetailsOnClick(frame)">Details</button>
+                    }
                 </div>
-                <SelectedWebsiteDetails SelectedWebsite="@frame" />
             </div>
         </li>
     }
 </ul>
 
 @code {
-    [Parameter] public EventCallback<FrameSelectionOption> OnSelected { get; set; }
+    [Parameter]
+    public required List<FrameSelectionOption> FrameSelections { get; set; }
+
+    [Parameter]
+    public FrameSelectionOption? SelectedFrame { get; set; } = null;
+
+    [Parameter]
+    public EventCallback<FrameSelectionOption> OnSelected { get; set; }
+
+    [Parameter]
+    public EventCallback<(bool, FrameSelectionOption)> OnSelectionChange { get; set; }
+
+    [Parameter]
+    public bool? SetDetail { get; set; }
+
+    public static bool IsDetailsShowing { get; set; } = true;
+
+    private void ToggleDetailsOnClick(FrameSelectionOption selectedFrame)
+    {
+        //ready for toggle button if needed
+        if (SetDetail != null && IsDetailsShowing == SetDetail)
+        {
+            OnSelectionChange.InvokeAsync((false,selectedFrame));
+            
+        }
+        else {
+            OnSelectionChange.InvokeAsync((true, selectedFrame));
+
+        }
+    }
 
     private void OnSelectedOnClick(FrameSelectionOption frame)
     {
         OnSelected.InvokeAsync(frame);
     }
+   
 }
