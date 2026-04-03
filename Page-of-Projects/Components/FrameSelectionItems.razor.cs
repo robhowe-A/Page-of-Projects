@@ -2,11 +2,11 @@
 
 namespace ProjectsPage.Components;
 
-public partial class WebsitesFrameSelections
+public partial class FrameSelectionItems
 {
     [Parameter]
-    public required List<FrameSelectionOption> WebsitesSelections { get; set; }
-    
+    public required List<FrameSelectionOption> FrameSelections { get; set; }
+
     [Parameter]
     public FrameSelectionOption? SelectedFrame { get; set; } = null;
 }

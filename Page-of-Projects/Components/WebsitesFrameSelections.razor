@@ -1,31 +1,15 @@
 ﻿@page "/websites"
-@using ProjectsPage.Components.Pages
 <h2>Websites</h2>
 
-<ul>
-    @foreach (var frame in @WebsitesSelections.ToArray())
-    {
-        <li data-frame-id="">
-            <div class="page-view-selection @(SelectedFrame?.Title == frame.Title ? "displaying" : "")" @onclick="() => OnSelectedOnClick(frame)">
-                <img src="@frame.ImageUrl" alt="@frame.ImageAltText" />
-                <div class="page-view-selection-text">
-                    <a class="page-view-link" href="@frame.Href"
-                        title="@frame.Title"
-                    >@frame.InnerText</a>
-                    <button class="details-panel-toggle disabled">Details</button>
-                </div>
-                <SelectedWebsiteDetails SelectedWebsite="@frame"/>
-            </div>
-        </li>
-    }
-</ul>
+<FrameSelectionItems FrameSelections="@WebsitesSelections" SelectedFrame="@SelectedFrame" OnSelected="@OnSelected" />
 
 @code {
-    [Parameter] public EventCallback<FrameSelectionOption> OnSelected { get; set; }
-
-    private void OnSelectedOnClick(FrameSelectionOption frame)
-    {
-        OnSelected.InvokeAsync(frame);
-    }
-
+    [Parameter]
+    public EventCallback<FrameSelectionOption> OnSelected { get; set; }
+    
+    [Parameter]
+    public required List<FrameSelectionOption> WebsitesSelections { get; set; }
+    
+    [Parameter]
+    public FrameSelectionOption? SelectedFrame { get; set; } = null;
 }
