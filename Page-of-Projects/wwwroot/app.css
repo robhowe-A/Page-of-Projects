@@ -233,7 +233,7 @@ body {
             }
         }
 
-        & #menu {
+        & #menu:not(.information-panel) {
             width: 500px;
             display: inline-block;
             height: calc(100vh - 173px);
@@ -266,7 +266,11 @@ body {
         & .displaying:not(aside) {
             opacity: .5;
         }
-
+        
+        ul:last-of-type li:last-of-type .information-panel{
+            top: -275% !important;
+        }
+        
         .page-view-selection {
             width: 95%;
             max-width: 900px;
@@ -286,6 +290,37 @@ body {
 
             & .page-view-selection-text {
                 width: 100%;
+
+                & .information-panel-toggle {
+                    color: darkcyan;
+                    position: relative;
+                    
+                    .information-panel {
+                        position: absolute;
+                        top: 100%;
+                        left: -250px;
+                        display: none;
+                        color: black;
+                        background-color: lightseagreen;
+                        border: none;
+                        border-radius: 12px 12px 12px 12px;
+                        padding: 8px;
+                        width: 385px;
+                    }
+                    
+                    &:hover {
+                        display: inline-block;
+                    }
+                    
+                    & svg:hover {
+                        color: steelblue;
+                    }
+                }
+                
+                & .information-panel-toggle:hover .information-panel {
+                    display: inline-block;
+                    z-index: 5;
+                }
             }
         }
 

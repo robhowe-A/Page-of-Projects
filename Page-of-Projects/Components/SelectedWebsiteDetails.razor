@@ -7,24 +7,7 @@
             {
                 <p class="mb0"><span>Programming Language: </span>@SelectedWebsite.SelectionDetails.ProgrammingLanguage</p>
             }
-            @if (SelectedWebsite.SelectionDetails.SecondaryLanguage is not null && SelectedWebsite.SelectionDetails.SecondaryLanguage.Count > 0)
-            {
-                <p class="mb0"><span>Secondary Language(s): </span>
-                    @for (var i = 0; i < SelectedWebsite.SelectionDetails.SecondaryLanguage.Count; i++)
-                    {
-                        @if (SelectedWebsite.SelectionDetails.SecondaryLanguage.Count - 1 == i)
-                        {
-                            @SelectedWebsite.SelectionDetails.SecondaryLanguage[i]
-                            break;
-                        }
-                        else
-                        {
-                            @SelectedWebsite.SelectionDetails.SecondaryLanguage[i]
-                            <span> + </span>
-                        }
-                    }
-                </p>
-            }
+            <SecondaryLanguage SelectedWebsite="@SelectedWebsite" IsHoverElement="false"/>
             @if (!string.IsNullOrEmpty(SelectedWebsite.SelectionDetails.Framework))
             {
                 <p class="mb0"><span>Framework: </span>@SelectedWebsite.SelectionDetails.Framework</p>

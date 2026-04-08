@@ -1,0 +1,33 @@
+﻿
+@if (SelectedWebsite.SelectionDetails.SecondaryLanguage is not null && SelectedWebsite.SelectionDetails.SecondaryLanguage.Count > 0)
+{
+
+    <p class="mb0">
+    @if(IsHoverElement)
+    {
+        <strong>Secondary Language(s): </strong>
+    }
+    else {
+        <span>Secondary Language(s): </span>
+    }
+
+    @for (var i = 0; i < SelectedWebsite.SelectionDetails.SecondaryLanguage.Count; i++)
+        {
+            @if (SelectedWebsite.SelectionDetails.SecondaryLanguage.Count - 1 == i)
+            {
+                @SelectedWebsite.SelectionDetails.SecondaryLanguage[i]
+                break;
+            }
+            else
+            {
+                @SelectedWebsite.SelectionDetails.SecondaryLanguage[i]
+                <span> + </span>
+            }
+        }
+    </p>
+}
+
+@code {
+    [Parameter] public required FrameSelectionOption SelectedWebsite { get; set; }
+    [Parameter] public required bool IsHoverElement { get; set; }
+}
