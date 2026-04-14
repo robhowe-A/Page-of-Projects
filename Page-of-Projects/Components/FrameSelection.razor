@@ -69,6 +69,7 @@
     private bool _toggleDetails;
     private bool? _toggleDetailsSet;
     private bool _copied;
+    private const string WEBSITESPROJECT = "ProjectsPage";
 
     [Inject] private ProjectsPage.Services.ClipboardService Clipboard { get; set; } = default!;
 
@@ -92,7 +93,7 @@
         // Reset copied due to new selection clicked
         _copied = false;
 
-        _websiteSelections = WebsitesOptionsData();
+        _websiteSelections = WebsitesOptionsData(WEBSITESPROJECT);
         _demoSelections = DemosOptionsData();
 
         var index = _websiteSelections.FindIndex(x => x.InnerText == clicked.InnerText);
@@ -119,7 +120,7 @@
     
     protected override void OnInitialized()
     {
-        _websiteSelections = WebsitesOptionsData();
+        _websiteSelections = WebsitesOptionsData(WEBSITESPROJECT);
         _demoSelections = DemosOptionsData();
 
         //On refresh, Frame Selection should match the current url data

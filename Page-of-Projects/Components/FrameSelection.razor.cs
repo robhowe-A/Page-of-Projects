@@ -31,11 +31,11 @@ public partial class FrameSelection
         return valuelist;
     }
 
-    public List<FrameSelectionOption> WebsitesOptionsData()
+    public List<FrameSelectionOption> WebsitesOptionsData(string projectName)
     {
-        var websitesDocsArray = new FrameSelectionFetch().GetWebsitesData("ProjectsPage");
+        var websitesDocsArray = new FrameSelectionFetch().GetWebsitesData(projectName);
         string websitesData = JDocsDataStringLoop(websitesDocsArray);
-
+        
         return JsonSerializer.Deserialize<List<FrameSelectionOption>>(websitesData,
                    options: new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ??
                throw new ApplicationException("WebsitesOptions is null");

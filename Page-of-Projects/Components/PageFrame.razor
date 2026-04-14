@@ -1,0 +1,51 @@
+﻿@using ProjectsPage.Models
+<PageTitle>@_centralizedTitleStr</PageTitle>
+
+@{ GetPageOptionDetail(); }
+@if (String.Equals(_centralizedPageUrl, String.Empty))
+{
+    <iframe id="SFNA" class="page-view" src="@Url"></iframe>
+}
+else
+{
+    <iframe class="page-view" src="@_centralizedPageUrl"></iframe>
+}
+
+@code {
+    [Parameter]
+    public string Url { get; set; } = string.Empty;
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+    [Parameter]
+    public bool IsWebsite { get; set; }
+
+    private string _centralizedPageUrl = string.Empty;
+    private string _centralizedTitleStr = string.Empty;
+
+    private void GetPageOptionDetail()
+    {
+        var websitesOptionsData = new FrameSelection().WebsitesOptionsData(
+            IsWebsite ? "ProjectsPage" : "ProjectsPageDemos"
+            );
+
+        FrameSelectionOption spaceFlightWeb;
+        try
+        {
+            spaceFlightWeb = (FrameSelectionOption)websitesOptionsData
+                .Find(x =>
+                {
+                    return x.Title == Title;
+                })! ?? throw new InvalidDataException();
+        }
+        catch (Exception e)
+        {
+            Console.Write("An exception occurred due to invalid data: ");
+            Console.Write($"{e.Message}\n{e.StackTrace}\n");
+            Console.Write($"Continuing to display the page with URL {Url}.");
+            return;
+        }
+
+        _centralizedPageUrl = spaceFlightWeb.ExternalHref;
+        _centralizedTitleStr = spaceFlightWeb.Title;
+    }
+}
