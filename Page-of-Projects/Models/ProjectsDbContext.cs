@@ -5,7 +5,7 @@ namespace ProjectsPage.Models
 {
     public class ProjectsDbContext : DbContext
     {
-        public DbSet<Class> projects { get; set; } = default;
+        public DbSet<ProjectPage> projects { get; set; } = default;
 
         private readonly string _connectionString;
 

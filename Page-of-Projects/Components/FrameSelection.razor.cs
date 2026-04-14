@@ -5,46 +5,12 @@ using System.Text.Json;
 
 namespace ProjectsPage.Components;
 
-public class SubselectionMiscellaneous
-{
-    public List<string>? Items { get; set; }
-    public List<string>? RequirementsOl { get; set; }
-}
 
-public class SelectionDetails
-{
-    public string? Details { get; set; }
-    public string? ProgrammingLanguage { get; set; }
-    public string? Framework { get; set; }
-    public List<string>? SecondaryLanguage { get; set; }
-    public List<string>? DetailsList { get; set; }
-    public List<string>? Descriptions { get; set; }
-    public SubselectionMiscellaneous? Miscellaneous { get; set; }
-}
-
-public class FrameSelectionOption
-{
-    public required string Href { get; set; }
-    public required string Title { get; set; }
-    public required string InnerText { get; set; }
-    public required string ExternalHref { get; set; }
-    public required string ExternalTitle { get; set; }
-    public required string ImageUrl { get; set; }
-    public required string ImageAltText { get; set; }
-    public required SelectionDetails SelectionDetails { get; set; }
-    public bool IsSelected { get; set; } = false;
-};
 
 public partial class FrameSelection
 {
 
-    private string[] GetWebsitesData(string site)
-    {
-        var context = EntityModels.CreateProjectsDbContext();
-        var docs = (from j in context.projects where j.site == site select j.document);
-        
-        return docs.ToArray();
-    }
+    
 
     private static string JDocsDataStringLoop(string[] docsArr) {
 
@@ -67,7 +33,7 @@ public partial class FrameSelection
 
     public List<FrameSelectionOption> WebsitesOptionsData()
     {
-        var websitesDocsArray = GetWebsitesData("ProjectsPage");
+        var websitesDocsArray = new FrameSelectionFetch().GetWebsitesData("ProjectsPage");
         string websitesData = JDocsDataStringLoop(websitesDocsArray);
 
         return JsonSerializer.Deserialize<List<FrameSelectionOption>>(websitesData,
@@ -77,7 +43,7 @@ public partial class FrameSelection
 
     public List<FrameSelectionOption> DemosOptionsData()
     {
-        var demosDocsArray = GetWebsitesData("ProjectsPageDemos");
+        var demosDocsArray = new FrameSelectionFetch().GetWebsitesData("ProjectsPageDemos");
         string demosData = JDocsDataStringLoop(demosDocsArray);
 
         return JsonSerializer.Deserialize<List<FrameSelectionOption>>(demosData,

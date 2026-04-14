@@ -1,4 +1,43 @@
 ﻿@page "/websites/spaceflight-news-app"
-<PageTitle>SpaceFlight News App</PageTitle>
+@using ProjectsPage.Models
+<PageTitle>@_centralizedTitleStr</PageTitle>
 
-<iframe class="page-view" src="https://rh-snapi-site.rhdeveloping.com/"></iframe>
+@{ GetPageOptionDetail(); }
+@if (!String.Equals(_centralizedPageUrl, String.Empty))
+{
+    <iframe id="SFNA" class="page-view" src="@Url"></iframe>
+}
+else
+{
+    <iframe class="page-view" src="@_centralizedPageUrl"></iframe>
+}
+
+@code {
+    
+    private const string Url = "https://spaceflight-web.rhdeveloping.com/";
+    
+    private string _centralizedPageUrl = string.Empty;
+    private string _centralizedTitleStr = string.Empty;
+
+    private void GetPageOptionDetail()
+    {
+        var websitesOptionsData = new FrameSelection().WebsitesOptionsData();
+
+        FrameSelectionOption spaceFlightWeb;
+        try
+        {
+            spaceFlightWeb = (FrameSelectionOption)websitesOptionsData
+                .Find(x => x.Title == "SpaceFlight News App1234")! ?? throw new InvalidDataException();
+        }
+        catch (Exception e)
+        {
+            Console.Write("An exception occurred due to invalid data: ");
+            Console.Write($"{e.Message}\n{e.StackTrace}\n");
+            Console.Write($"Continuing to display the page with URL {Url}.");
+            return;
+        }
+
+        _centralizedPageUrl = spaceFlightWeb.ExternalHref;
+        _centralizedTitleStr = spaceFlightWeb.Title;
+    }
+}

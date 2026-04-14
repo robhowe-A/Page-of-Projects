@@ -17,8 +17,8 @@ namespace UnitTests
         public void JsonDocSoreCountConfirmation()
         {
             using ProjectsDbContext db = EntityModels.CreateProjectsDbContext();
-            var count = (from project in db.projects where project.site == "ProjectsPage" select project.site).Count();
-            count += (from project in db.projects where project.site == "ProjectsPageDemos" select project.site).Count();
+            var count = (from project in db.projects where project.Site == "ProjectsPage" select project.Site).Count();
+            count += (from project in db.projects where project.Site == "ProjectsPageDemos" select project.Site).Count();
             db.Dispose();
 
             Assert.True( count == 12 );
@@ -30,7 +30,7 @@ namespace UnitTests
             using ProjectsDbContext db = EntityModels.CreateProjectsDbContext();
             
             //var DocumentTitles = db.projects.FromSqlRaw("""select document->"$.Title" from projects where site='ProjectsPage';"""); //Not an OOM: no array or list method
-            var AgileStockDocument = (from project in db.projects where project.site == "ProjectsPage" && project.document.Contains("AgileStock Web") select project.document).ToList();
+            var AgileStockDocument = (from project in db.projects where project.Site == "ProjectsPage" && project.Document.Contains("AgileStock Web") select project.Document).ToList();
             db.Dispose();
 
             if (AgileStockDocument.Count < 1) throw new NullReferenceException();
