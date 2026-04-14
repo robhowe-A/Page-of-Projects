@@ -17,20 +17,24 @@ else
     [Parameter]
     public string Title { get; set; } = string.Empty;
     [Parameter]
-    public bool IsWebsite { get; set; }
+    public bool? IsWebsite { get; set; }
 
     private string _centralizedPageUrl = string.Empty;
     private string _centralizedTitleStr = string.Empty;
 
     private void GetPageOptionDetail()
     {
-        var websitesOptionsData = new FrameSelection().WebsitesOptionsData(
-            IsWebsite ? "ProjectsPage" : "ProjectsPageDemos"
-            );
+        if(IsWebsite == null)
+            throw new InvalidDataException();
+        var website = (bool)IsWebsite;
 
         FrameSelectionOption spaceFlightWeb;
         try
         {
+            var websitesOptionsData = new FrameSelection().WebsitesOptionsData(
+                website ? "ProjectsPage" : "ProjectsPageDemos"
+                );
+            
             spaceFlightWeb = (FrameSelectionOption)websitesOptionsData
                 .Find(x =>
                 {
