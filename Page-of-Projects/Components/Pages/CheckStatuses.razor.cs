@@ -1,5 +1,7 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Components;
+using ProjectsPage.Components.Primary;
+using ProjectsPage.Models;
 
 namespace ProjectsPage.Components.Pages;
 
@@ -20,7 +22,7 @@ public partial class CheckStatuses : ComponentBase
     private const string Ok = "OK";
     private const string Down = "DOWN";
 
-    private readonly List<DomainOption> _domainOptions = DomainOptionsData();
+    private readonly List<DomainOption> _domainOptions = new FrameSelection().DomainOptionsData(Projects.Domains);
     private List<string> UrlsToCheck { get; set; } = new();
 
     private Task? _backgroundWork;
@@ -59,7 +61,7 @@ public partial class CheckStatuses : ComponentBase
     
     [Inject] private HttpClient Http { get; set; } = default!;
     
-    private async Task<bool> IsSiteUp(string url) 
+    private async Task<bool> IsSiteUp(string url)
     {
         try
         {
@@ -72,72 +74,8 @@ public partial class CheckStatuses : ComponentBase
         }
     }
 
-    private const string DomainOptions = """
-                                            [
-                                                { 
-                                                    "tld": "rhdeveloping.com",
-                                                    "sites": [
-                                                        {
-                                                            "name": "Creative Single Page",
-                                                            "url": "https://creative-demo.rhdeveloping.com/"
-                                                        },
-                                                        {
-                                                            "name": "RH Developing Docs",
-                                                            "url": "https://docs.rhdeveloping.com/"
-                                                        },
-                                                        {
-                                                            "name": "Easybank",
-                                                            "url": "https://easybank.rhdeveloping.com/"
-                                                        },
-                                                        {
-                                                            "name": "Payment Form",
-                                                            "url": "https://encryptedpaymentinformation-demo.rhdeveloping.com/form"
-                                                        },
-                                                        {
-                                                            "name": "Secure Password Generator",
-                                                            "url": "https://passwordgenerator-demo.rhdeveloping.com/"
-                                                        },
-                                                        {
-                                                            "name": "Products",
-                                                            "url": "https://products.rhdeveloping.com/"
-                                                        },
-                                                        {
-                                                            "name": "Typing Speed Test",
-                                                            "url": "https://typingspeedtest-demo.rhdeveloping.com/"
-                                                        },
-                                                        {
-                                                            "name": "Quizzes App",
-                                                            "url": "https://quizzes-demo.rhdeveloping.com/"
-                                                        },
-                                                        {
-                                                            "name": "SpaceFlight News App",
-                                                            "url": "https://rh-snapi-site.rhdeveloping.com/"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "tld": "randomwebbits.com",
-                                                    "sites": [
-                                                        {
-                                                            "name": "Random Web Bits",
-                                                            "url": "https://www.randomwebbits.com/"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "tld": "httprequest.app",
-                                                    "sites": [
-                                                        {
-                                                            "name": "Http Request",
-                                                            "url": "https://www.httprequest.app/"
-                                                        }
-                                                    ]
-                                                }
-                                            ] 
-                                        """;
-    
     private static List<DomainOption> DomainOptionsData()
     {
-        return JsonSerializer.Deserialize<List<DomainOption>>(DomainOptions, new JsonSerializerOptions{ PropertyNameCaseInsensitive = true }) ?? throw new ApplicationException("DomainOptions is null") ;
+        return JsonSerializer.Deserialize<List<DomainOption>>(@"{}", new JsonSerializerOptions{ PropertyNameCaseInsensitive = true }) ?? throw new ApplicationException("DomainOptions is null") ;
     }
 }

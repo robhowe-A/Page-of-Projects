@@ -2,15 +2,12 @@
 using ProjectsPage.Models;
 using System.Reflection;
 using System.Text.Json;
+using ProjectsPage.Components.Pages;
 
-namespace ProjectsPage.Components;
-
-
+namespace ProjectsPage.Components.Primary;
 
 public partial class FrameSelection
 {
-
-    
 
     private static string JDocsDataStringLoop(string[] docsArr) {
 
@@ -31,23 +28,23 @@ public partial class FrameSelection
         return valuelist;
     }
 
-    public List<FrameSelectionOption> WebsitesOptionsData(string projectName)
+    public List<FrameSelectionOption> WebsitesOptionsData(string projectName, string projectName2)
     {
-        var websitesDocsArray = new FrameSelectionFetch().GetWebsitesData(projectName);
+        var websitesDocsArray = new FrameSelectionFetch().GetWebsitesData(projectName, String.IsNullOrEmpty(projectName2) ? null : projectName2 );
         string websitesData = JDocsDataStringLoop(websitesDocsArray);
         
         return JsonSerializer.Deserialize<List<FrameSelectionOption>>(websitesData,
                    options: new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ??
                throw new ApplicationException("WebsitesOptions is null");
     }
-
-    public List<FrameSelectionOption> DemosOptionsData()
+    
+    public List<DomainOption> DomainOptionsData(string projectName)
     {
-        var demosDocsArray = new FrameSelectionFetch().GetWebsitesData("ProjectsPageDemos");
-        string demosData = JDocsDataStringLoop(demosDocsArray);
-
-        return JsonSerializer.Deserialize<List<FrameSelectionOption>>(demosData,
-                   new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ??
-               throw new ApplicationException("DemosOptions is null");
+        var websitesDocsArray = new FrameSelectionFetch().GetWebsitesData(projectName, null );
+        string websitesData = websitesDocsArray.First().ToString();
+        
+        return JsonSerializer.Deserialize<List<DomainOption>>(websitesData,
+                   options: new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ??
+               throw new ApplicationException("WebsitesOptions is null");
     }
 };

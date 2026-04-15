@@ -2,6 +2,13 @@
 
 namespace ProjectsPage.Models
 {
+    internal struct Projects
+    {
+        public const string Websites = "ProjectsPage";
+        public const string Demos = "ProjectsPageDemos";
+        public const string Domains = "DomainOptions";
+    }
+    
     public class ProjectPage
     {
         [Key] public int Id { get; init; }
@@ -41,10 +48,12 @@ namespace ProjectsPage.Models
 
     internal sealed class FrameSelectionFetch
     {
-        public string[]? GetWebsitesData(string site)
+        public string[]? GetWebsitesData(string site, string? site2)
         {
             if (string.IsNullOrWhiteSpace(site))
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(site));
+            if (!string.IsNullOrWhiteSpace(site2))
+                return FetchProjectsData(site, site2);
             string siteName = site;
 
             return FetchWebsitesData(siteName);
@@ -54,6 +63,14 @@ namespace ProjectsPage.Models
         {
             var context = EntityModels.CreateProjectsDbContext();
             var docs = (from j in context.projects where j.Site == site select j.Document);
+
+            return docs.ToArray();
+        }
+        
+        private string[] FetchProjectsData(string site, string site2)
+        {
+            var context = EntityModels.CreateProjectsDbContext();
+            var docs = (from j in context.projects where j.Site == site || j.Site == site2 select j.Document);
 
             return docs.ToArray();
         }
