@@ -23,6 +23,10 @@
                 </svg>
             </button>
         <SelectedWebsiteDetails SelectedWebsite="@_selectedWebsiteDetails" ShowDetails="@_toggleDetails" OnCloseClicked="OnDetailsToggleOpen" />
+        <HyperTextMarkdownSearch
+            OnCount="SetCount"
+        />
+        <div>@Found</div>
         </div>
     }
 <div id="growing-placeholder"></div>
@@ -57,7 +61,13 @@
 @code {
     private FrameSelectionOption? _selectedWebsite;
     private FrameSelectionOption? _selectedWebsiteDetails;
-
+    private int Found { get; set; }
+    
+    public void SetCount(int count)
+    {
+        Found = count;
+    }
+    
     private void ChangeSelectedWebsiteDetails((bool open, FrameSelectionOption frame) selectionChangeDetails)
     {
         _selectedWebsiteDetails = selectionChangeDetails.frame;

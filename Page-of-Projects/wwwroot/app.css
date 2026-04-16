@@ -146,6 +146,10 @@ body {
                 color: #2d95c5;
                 margin-right: .5rem;
             }
+            
+            & #domSearch {
+                display: inline-block;
+            }
         }
 
         & .details-panel-toggle {

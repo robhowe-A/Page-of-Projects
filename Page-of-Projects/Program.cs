@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+    .AddInteractiveServerComponents(circuit => circuit.DetailedErrors = true);
 builder.Services.AddScoped<ClipboardService>();
 builder.Services.AddCookiePolicy(options =>
 {

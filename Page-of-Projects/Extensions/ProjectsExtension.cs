@@ -12,10 +12,15 @@ public static class WebApplicationExtensions
     {
         app.Use((context, next) =>
         {
+#if DEBUG
             context.Response.Headers.Append(
                 "Content-Security-Policy",
-                "upgrade-insecure-requests; default-src 'self' wss:; img-src 'self' data:; connect-src https: wss:; frame-ancestors 'self'; frame-src 'self' *; script-src 'self' https://static.cloudflareinsights.com 'sha256-f97Y2Dpz08nctjpmlolnUHCpzBPzgBQNuU9k3U8rCJg=' 'sha256-TlR0wK5VhVNKCRNCjZDLXK4LmS2rxHXS+M6ooMqO//c=' 'sha256-PWJ72QSVNqhMJQvmMDLk9r4IylnqHkLPiWnSe0qVn8k=' 'sha256-9uKR2oMobB7SIG1VdHGDlonPdBCtzSM8jqLE0yzPa3k='");
-
+                "upgrade-insecure-requests; default-src 'self' wss:; img-src 'self' data:; connect-src https: wss:; frame-ancestors 'self'; frame-src 'self' *; script-src 'self' 'unsafe-inline'");
+#else
+            context.Response.Headers.Append(
+                "Content-Security-Policy",
+                "upgrade-insecure-requests; default-src 'self' wss:; img-src 'self' data:; connect-src https: wss:; frame-ancestors 'self'; frame-src 'self' *; script-src 'self' https://static.cloudflareinsights.com 'sha256-f97Y2Dpz08nctjpmlolnUHCpzBPzgBQNuU9k3U8rCJg=' 'sha256-TlR0wK5VhVNKCRNCjZDLXK4LmS2rxHXS+M6ooMqO//c=' 'sha256-PWJ72QSVNqhMJQvmMDLk9r4IylnqHkLPiWnSe0qVn8k=' 'sha256-9uKR2oMobB7SIG1VdHGDlonPdBCtzSM8jqLE0yzPa3k=' 'sha256-QvWGboKGmU9tmscoI+YdYRFTRftLGlXGC1ttnpp7DOw=' 'sha256-Jvc0TGT8uqTg7H1/lxh7C0wcChvE2tXatM70n4UZd2k='");
+#endif
             context.Response.Headers.Append("Permissions-Policy", "geolocation=(), microphone=()");
             context.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
             context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
