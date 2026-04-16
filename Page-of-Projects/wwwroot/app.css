@@ -40,8 +40,7 @@ body {
         div.nav {
             position: relative;
         }
-
-
+        
         & > * {
             flex: 0 0 auto;
         }
@@ -146,9 +145,16 @@ body {
                 color: #2d95c5;
                 margin-right: .5rem;
             }
-            
+
             & #domSearch {
                 display: inline-block;
+                position: relative;
+
+                & #domSearchOutput {
+                    display: inline-block;
+                    visibility: hidden;
+                    position: absolute;
+                }
             }
         }
 
@@ -274,6 +280,12 @@ body {
         ul:last-of-type li:last-of-type .information-panel{
             top: -275% !important;
         }
+
+        .page-view-detail.hidden-details {
+            display: inline-block !important;
+            overflow: hidden;
+            height: 0;
+        }
         
         .page-view-selection {
             width: 95%;
@@ -303,17 +315,17 @@ body {
                         position: absolute;
                         top: 100%;
                         left: -250px;
-                        display: none;
+                        visibility: hidden;
                         color: black;
                         background-color: lightseagreen;
                         border: none;
                         border-radius: 12px 12px 12px 12px;
                         padding: 8px;
                         width: 385px;
-                    }
-                    
-                    &:hover {
-                        display: inline-block;
+
+                        /*&:has(> *[data-visibility="initial"]), .information-panel > [data-visibility="initial"] {*/
+                        /*    visibility: visible;*/
+                        /*}*/
                     }
                     
                     & svg:hover {
@@ -322,7 +334,7 @@ body {
                 }
                 
                 & .information-panel-toggle:hover .information-panel {
-                    display: inline-block;
+                    visibility: initial;
                     z-index: 5;
                 }
             }
@@ -386,7 +398,6 @@ body {
         .page-view-link, .page-view-detail {
             text-align: center;
             cursor: pointer;
-            color: #0077cc;
             display: inline-block;
         }
 

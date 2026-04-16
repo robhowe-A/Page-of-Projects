@@ -3,13 +3,13 @@
 @if (SelectedWebsite.SelectionDetails.SecondaryLanguage is not null && SelectedWebsite.SelectionDetails.SecondaryLanguage.Count > 0)
 {
 
-    <p class="mb0">
+    <p class="mb0" data-visibility="none">
     @if(IsHoverElement)
     {
-        <strong>Secondary Language(s): </strong>
+        <strong data-visibility="none">Secondary Language(s): </strong>
     }
     else {
-        <span>Secondary Language(s): </span>
+        <span data-visibility="none">Secondary Language(s): </span>
     }
 
     @for (var i = 0; i < SelectedWebsite.SelectionDetails.SecondaryLanguage.Count; i++)
@@ -22,7 +22,7 @@
             else
             {
                 @SelectedWebsite.SelectionDetails.SecondaryLanguage[i]
-                <span> + </span>
+                <span data-visibility="none"> + </span>
             }
         }
     </p>

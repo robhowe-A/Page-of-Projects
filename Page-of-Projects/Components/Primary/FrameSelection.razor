@@ -1,4 +1,5 @@
-﻿@using ProjectsPage.Models
+﻿@using ProjectsPage.Components.Subcomponents
+@using ProjectsPage.Models
 @rendermode InteractiveServer
 @inject NavigationManager Nav
 
@@ -22,11 +23,18 @@
                     <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
                 </svg>
             </button>
-        <SelectedWebsiteDetails SelectedWebsite="@_selectedWebsiteDetails" ShowDetails="@_toggleDetails" OnCloseClicked="OnDetailsToggleOpen" />
+            @* <SelectedWebsiteDetails  *@
+            @*     SelectedWebsite="@_selectedWebsiteDetails"  *@
+            @*     ShowDetails="@_toggleDetails"  *@
+            @*     OnCloseClicked="OnDetailsToggleOpen" /> *@
+            <SelectWebsiteDetails
+                SelectedWebsite="@_selectedWebsiteDetails"
+                ShowDetails="@_toggleDetails"
+                OnCloseClicked="OnDetailsToggleOpen" />
         <HyperTextMarkdownSearch
             OnCount="SetCount"
+            Nodes="@FoundElements"
         />
-        <div>@Found</div>
         </div>
     }
 <div id="growing-placeholder"></div>
@@ -62,10 +70,12 @@
     private FrameSelectionOption? _selectedWebsite;
     private FrameSelectionOption? _selectedWebsiteDetails;
     private int Found { get; set; }
+    private List<object> FoundElements = [];
     
     public void SetCount(int count)
     {
         Found = count;
+        WriteLine($"{this}::SetCount count find: {Found}");
     }
     
     private void ChangeSelectedWebsiteDetails((bool open, FrameSelectionOption frame) selectionChangeDetails)
@@ -77,13 +87,14 @@
     private List<FrameSelectionOption> _websiteSelections = [];
     private List<FrameSelectionOption> _demoSelections = [];
     private bool _toggleDetails;
+
     private bool? _toggleDetailsSet;
     private bool _copied;
     private Projects Projects;
 
     [Inject] private ProjectsPage.Services.ClipboardService Clipboard { get; set; } = default!;
 
-    private void OnDetailsToggleOpen(bool opened)
+    public void OnDetailsToggleOpen(bool opened)
     {
         _toggleDetails = opened;
 

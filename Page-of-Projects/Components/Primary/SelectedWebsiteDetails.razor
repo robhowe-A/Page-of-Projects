@@ -1,7 +1,7 @@
 ﻿@using ProjectsPage.Models
-@if (ShowDetails)
-    {
-        <aside class="page-view-detail" data-dialog-index="0">
+@* @if (ShowDetails) *@
+@*     { *@
+        <div class="page-view-detail hidden-details" data-dialog-index="0">
             <h3>Details</h3>
             <p class="mb0"><span>Name: </span>@SelectedWebsite.Title</p>
             @if (SelectedWebsite.SelectionDetails.ProgrammingLanguage is not null)
@@ -36,18 +36,14 @@
                     }
                 </ul>
             }
-        <button @onclick="() => OnCloseClicked.InvokeAsync(false)" class="mb1 details-panel-toggle disabled secondary">Close</button>
-        </aside>
-    }
+        </div>
+    @* } *@
 @code {
     [Parameter] 
     public bool ShowDetails { get; set; }
 
     [Parameter]
     public required FrameSelectionOption SelectedWebsite { get; set; }
-
-    [Parameter]
-    public EventCallback<bool> OnCloseClicked { get; set; }
 
     public void OnDetailsToggleOpen(EventArgs e)
     {

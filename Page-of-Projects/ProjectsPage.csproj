@@ -27,5 +27,7 @@
       </PackageReference>
       <PackageReference Include="MySql.EntityFrameworkCore" />
 	</ItemGroup>
-
+    <ItemGroup Label="Console.WriteLine use">
+        <Using Include="System.Console" Static="True" />
+    </ItemGroup>
 </Project>
