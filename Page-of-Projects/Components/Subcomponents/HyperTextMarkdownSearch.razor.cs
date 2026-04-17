@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace ProjectsPage.Components.Primary;
+namespace ProjectsPage.Components.Subcomponents;
 
 public partial class HyperTextMarkdownSearch : ComponentBase
 {

@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ProjectsPage.Models;
-using System.Reflection;
+﻿using ProjectsPage.Models;
 using System.Text.Json;
 using ProjectsPage.Components.Pages;
 
@@ -32,17 +30,17 @@ public partial class FrameSelection
     {
         var websitesDocsArray = new FrameSelectionFetch().GetWebsitesData(projectName, String.IsNullOrEmpty(projectName2) ? null : projectName2 );
         string websitesData = JDocsDataStringLoop(websitesDocsArray);
-        
+
         return JsonSerializer.Deserialize<List<FrameSelectionOption>>(websitesData,
                    options: new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ??
                throw new ApplicationException("WebsitesOptions is null");
     }
-    
+
     public List<DomainOption> DomainOptionsData(string projectName)
     {
         var websitesDocsArray = new FrameSelectionFetch().GetWebsitesData(projectName, null );
         string websitesData = websitesDocsArray.First().ToString();
-        
+
         return JsonSerializer.Deserialize<List<DomainOption>>(websitesData,
                    options: new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ??
                throw new ApplicationException("WebsitesOptions is null");

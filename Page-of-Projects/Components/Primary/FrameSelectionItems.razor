@@ -54,22 +54,20 @@
 
     [Parameter]
     public bool? SetDetail { get; set; }
-    
+
     public static bool IsDetailsShowing { get; set; } = true;
     private bool IsMouseOver = false;
     private Dictionary<string, string> ItemsInfoPanelAreOpen = new();
 
     private void ToggleDetailsOnClick(FrameSelectionOption selectedFrame)
     {
-        //ready for toggle button if needed
+        //NEEDED? ... ready for toggle button
         if (SetDetail != null && IsDetailsShowing == SetDetail)
         {
             OnSelectionChange.InvokeAsync((false,selectedFrame));
-            
         }
         else {
             OnSelectionChange.InvokeAsync((true, selectedFrame));
-
         }
     }
 
@@ -78,18 +76,8 @@
         OnSelected.InvokeAsync(frame);
     }
 
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        // foreach (var item in FrameSelections)
-        // {
-        //     ItemsInfoPanelAreOpen.Add(item.Title, "false");
-        // }
-    }
-
     private void OnMouseOverInfoToggle()
     {
         IsMouseOver = true;
     }
-   
 }

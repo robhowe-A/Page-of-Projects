@@ -1,5 +1,5 @@
 ﻿@using ProjectsPage.Models
-@* @page "/demos" *@
+
 <h2>Demos</h2>
 
 <FrameSelectionItems FrameSelections="@DemosSelections" SelectedFrame="@SelectedFrame" OnSelected="@OnSelected" OnSelectionChange="@OnSelectionChange" SetDetail="@SetDetail" />
@@ -7,7 +7,7 @@
 @code {
     [Parameter]
     public EventCallback<FrameSelectionOption> OnSelected { get; set; }
-    
+
     [Parameter]
     public required List<FrameSelectionOption> DemosSelections { get; set; }
 

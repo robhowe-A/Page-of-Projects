@@ -1,52 +1,46 @@
 ﻿@using ProjectsPage.Models
-@* @if (ShowDetails) *@
-@*     { *@
-        <div class="page-view-detail hidden-details" data-dialog-index="0">
-            <h3>Details</h3>
-            <p class="mb0"><span>Name: </span>@SelectedWebsite.Title</p>
-            @if (SelectedWebsite.SelectionDetails.ProgrammingLanguage is not null)
-            {
-                <p class="mb0"><span>Programming Language: </span>@SelectedWebsite.SelectionDetails.ProgrammingLanguage</p>
-            }
-            <SecondaryLanguage SelectedWebsite="@SelectedWebsite" IsHoverElement="false"/>
-            @if (!string.IsNullOrEmpty(SelectedWebsite.SelectionDetails.Framework))
-            {
-                <p class="mb0"><span>Framework: </span>@SelectedWebsite.SelectionDetails.Framework</p>
-            }
-            <p class="mb2">@SelectedWebsite.SelectionDetails.Details</p>
-            @if (string.Equals("AgileStock Web", SelectedWebsite.Title)) {
-                // only 'Agilestock Web' has a requirements list
-                @if (SelectedWebsite.SelectionDetails.Miscellaneous?.RequirementsOl is { Count: > 0 })
+
+<div class="page-view-detail hidden-details" data-dialog-index="0">
+    <h3>Details</h3>
+    <p class="mb0"><span>Name: </span>@SelectedWebsite.Title</p>
+    @if (SelectedWebsite.SelectionDetails.ProgrammingLanguage is not null)
+    {
+        <p class="mb0"><span>Programming Language: </span>@SelectedWebsite.SelectionDetails.ProgrammingLanguage</p>
+    }
+    <SecondaryLanguage SelectedWebsite="@SelectedWebsite" IsHoverElement="false"/>
+    @if (!string.IsNullOrEmpty(SelectedWebsite.SelectionDetails.Framework))
+    {
+        <p class="mb0"><span>Framework: </span>@SelectedWebsite.SelectionDetails.Framework</p>
+    }
+    <p class="mb2">@SelectedWebsite.SelectionDetails.Details</p>
+    @if (string.Equals("AgileStock Web", SelectedWebsite.Title)) {
+        // only 'Agilestock Web' has a requirements list
+        @if (SelectedWebsite.SelectionDetails.Miscellaneous?.RequirementsOl is { Count: > 0 })
+        {
+            <ol>
+                @foreach (var requirement in SelectedWebsite.SelectionDetails.Miscellaneous.RequirementsOl)
                 {
-                    <ol>
-                        @foreach (var requirement in SelectedWebsite.SelectionDetails.Miscellaneous.RequirementsOl)
-                        {
-                            <li>@requirement</li>
-                        }
-                    </ol>
-                    <p>@SelectedWebsite.SelectionDetails.Descriptions?[0]</p>
+                    <li>@requirement</li>
                 }
-            }
-            @if (SelectedWebsite.SelectionDetails.DetailsList?.Count > 0)
+            </ol>
+            <p>@SelectedWebsite.SelectionDetails.Descriptions?[0]</p>
+        }
+    }
+    @if (SelectedWebsite.SelectionDetails.DetailsList?.Count > 0)
+    {
+        <ul>
+            @foreach (var listItem in SelectedWebsite.SelectionDetails.DetailsList)
             {
-                <ul>
-                    @foreach (var listItem in SelectedWebsite.SelectionDetails.DetailsList)
-                    {
-                        <li>@listItem</li>
-                    }
-                </ul>
+                <li>@listItem</li>
             }
-        </div>
-    @* } *@
+        </ul>
+    }
+</div>
+
 @code {
     [Parameter] 
     public bool ShowDetails { get; set; }
 
     [Parameter]
     public required FrameSelectionOption SelectedWebsite { get; set; }
-
-    public void OnDetailsToggleOpen(EventArgs e)
-    {
-        //ShowDetails = !ShowDetails;
-    }
 }

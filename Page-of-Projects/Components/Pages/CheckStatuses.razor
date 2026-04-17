@@ -26,7 +26,7 @@
 
 @code {
     private readonly Dictionary<string, string> _statuses = new();
-    
+
     protected override void OnInitialized()
     {
         UrlsToCheck = _domainOptions
@@ -36,7 +36,7 @@
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
     }
-    
+
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender || _backgroundWork is not null)

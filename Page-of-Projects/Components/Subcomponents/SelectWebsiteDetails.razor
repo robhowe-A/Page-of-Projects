@@ -1,24 +1,25 @@
 ﻿@using ProjectsPage.Models
+
 @if (ShowDetails)
 {
     WriteLine("ShowDetails");
-<aside class="page-view-detail
-            @( ShowDetails ? "show-details" : "" )" data-dialog-index="0">
-<SelectedWebsiteDetails 
-    SelectedWebsite="@SelectedWebsite" 
-    ShowDetails="ShowDetails" 
-/>
-<button @onclick="() => OnCloseClicked.InvokeAsync(false)" class="mb1 details-panel-toggle disabled secondary">Close</button>
+    <aside class="page-view-detail
+        @( ShowDetails ? "show-details" : "" )" data-dialog-index="0">
+    <SelectedWebsiteDetails 
+        SelectedWebsite="@SelectedWebsite" 
+        ShowDetails="ShowDetails" 
+    />
+    <button @onclick="() => OnCloseClicked.InvokeAsync(false)" class="mb1 details-panel-toggle disabled secondary">Close</button>
 </aside>
 }
 
 @code {
     [Parameter]
     public required FrameSelectionOption SelectedWebsite { get; set; }
-    
-    [Parameter] 
+
+    [Parameter]
     public bool ShowDetails { get; set; }
-    
+
     [Parameter]
     public EventCallback<bool> OnCloseClicked { get; set; }
 }

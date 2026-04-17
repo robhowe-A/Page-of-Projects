@@ -1,4 +1,5 @@
 ﻿@inject IJSRuntime JS
+
 <div id="domSearch">
     <search>
         <a>
@@ -23,7 +24,7 @@
     private int _count;
     private DotNetObjectReference<HyperTextMarkdownSearch>? objRef;
     [Parameter] public List<object> Nodes { get; set; } = [];
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -32,7 +33,7 @@
             await JS.InvokeVoidAsync("main.input", objRef);
         }
     }
-    
+
     [JSInvokable]
     public Task ReceiveCount(int value)
     {

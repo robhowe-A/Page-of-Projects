@@ -1,4 +1,5 @@
 ﻿@using ProjectsPage.Models
+
 <PageTitle>@_centralizedTitleStr</PageTitle>
 
 @{ GetPageOptionDetail(); }
@@ -35,7 +36,7 @@ else
                 website ? "ProjectsPage" : "ProjectsPageDemos",
                 null
                 );
-            
+
             spaceFlightWeb = (FrameSelectionOption)websitesOptionsData
                 .Find(x =>
                 {

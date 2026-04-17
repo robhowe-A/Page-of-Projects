@@ -1,5 +1,6 @@
 ﻿window.main = {
     domSearch: {
+        domSearchOutputCount: document.createElement("span"),
         highlight: function (query) {
             document.querySelectorAll("mark.search-highlight").forEach(m => {
                 const parent = m.parentNode;
@@ -28,10 +29,11 @@
             //     //e.remove()
             //     }
             // )
-            
+
             const domSearchOutput = document.querySelector("#domSearch");
 
-            const domSearchOutputCount = document.createElement("span");
+            //const domSearchOutputCount = document.createElement("span");
+            domSearchOutputCount.innerText = "";
             domSearchOutputElem.insertAdjacentElement("afterbegin", domSearchOutputCount);
             domSearchOutputCount.style.display = "inline-block";
 
@@ -174,6 +176,7 @@
                 `details`,
                 `develop`,
                 `developed`,
+                `developer`,
                 `developers`,
                 `developing`,
                 `development`,
@@ -457,3 +460,11 @@
             return count;
     }
 }
+
+Blazor.start({
+    circuit: {
+        configureSignalR: function (builder) {
+            builder.configureLogging("Error");
+        }
+    }
+});

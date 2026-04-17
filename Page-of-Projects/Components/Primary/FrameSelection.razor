@@ -3,7 +3,6 @@
 @rendermode InteractiveServer
 @inject NavigationManager Nav
 
-
     @if (_selectedWebsite is null)
     {
         //_selectedWebsite = _websiteSelections[0];
@@ -23,27 +22,23 @@
                     <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
                 </svg>
             </button>
-            @* <SelectedWebsiteDetails  *@
-            @*     SelectedWebsite="@_selectedWebsiteDetails"  *@
-            @*     ShowDetails="@_toggleDetails"  *@
-            @*     OnCloseClicked="OnDetailsToggleOpen" /> *@
             <SelectWebsiteDetails
                 SelectedWebsite="@_selectedWebsiteDetails"
                 ShowDetails="@_toggleDetails"
                 OnCloseClicked="OnDetailsToggleOpen" />
-        <HyperTextMarkdownSearch
-            OnCount="SetCount"
-            Nodes="@FoundElements"
-        />
+            <HyperTextMarkdownSearch
+                OnCount="SetCount"
+                Nodes="@FoundElements" />
         </div>
     }
+
 <div id="growing-placeholder"></div>
 <nav id="menu" class="@(_selectedWebsite is null ? "menu-collapsed" : "")">
     <h1><a href="/"
             rel="opener"
             title="roberthowell.dev"
             target="_self">roberthowell.dev</a></h1>
-        
+
     <WebsitesFrameSelections
         WebsitesSelections="@_websiteSelections.ToList()"
         SelectedFrame="@_selectedWebsite"
@@ -58,7 +53,7 @@
         SetDetail="@_toggleDetailsSet"
         OnSelectionChange="ChangeSelectedWebsiteDetails"
         />
-    
+
     <a href="/status"
        data-enhance-nav="false"
        rel="opener"
@@ -71,13 +66,13 @@
     private FrameSelectionOption? _selectedWebsiteDetails;
     private int Found { get; set; }
     private List<object> FoundElements = [];
-    
+
     public void SetCount(int count)
     {
         Found = count;
         WriteLine($"{this}::SetCount count find: {Found}");
     }
-    
+
     private void ChangeSelectedWebsiteDetails((bool open, FrameSelectionOption frame) selectionChangeDetails)
     {
         _selectedWebsiteDetails = selectionChangeDetails.frame;
@@ -138,7 +133,7 @@
         // Navigate after selection is applied
         Nav.NavigateTo(_selectedWebsite!.Href);
     }
-    
+
     protected override void OnInitialized()
     {
         _websiteSelections = WebsitesOptionsData(Projects.Websites, null);
