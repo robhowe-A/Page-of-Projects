@@ -83,46 +83,72 @@
                     const foundNode = domSearchOutputElem.insertAdjacentElement('beforeend',document.createElement("div"));
 
                     let originalNode_FoundCharacters = node.parentNode.textContent;
-                    let foundNode_FoundCharacters = originalNode_FoundCharacters;
-                    
-                    
-                    let queryResultingEndCharactersFull;
+                    let foundNode_CharactersFindings = originalNode_FoundCharacters;
 
                     // set a char limit
                     const findShowingCharLength = 30;
-                    let originalNodeStartingCharacters = originalNode_FoundCharacters.slice(0, findShowingCharLength);
+                    let originalNode_StartingCharacters = originalNode_FoundCharacters.slice(0, findShowingCharLength);
 
-                    let queryResultingEndCharactersStartIndexNum;
+                    let queryResultingEndCharactersStartIndexNum; 
+                    let queryResultingEndCharacters;
+                    let queryResultingEndCharactersFull;
+                    let queryResultingEndCharactersResult
+                    
                     if (domWalkerFindingIndex < findShowingCharLength) { //query finding is before cutoff
-                        foundNode_FoundCharacters = originalNodeStartingCharacters;
+                        foundNode_CharactersFindings = originalNode_StartingCharacters;
                         let trailingCharacters = originalNode_FoundCharacters.slice(30, originalNode_FoundCharacters.length);
                         queryResultingEndCharactersFull = originalNode_FoundCharacters.slice(queryResultingEndCharactersStartIndexNum, queryResultingEndCharactersStartIndexNum + 30);
 
-                        foundNode_FoundCharacters += trailingCharacters;
+                        foundNode_CharactersFindings += trailingCharacters;
                         //repeated
                     }
                     else { // query finding is after cutoff
-                        foundNode_FoundCharacters = originalNodeStartingCharacters + `...${queryFinding} `; // cut down query result length
+                        foundNode_CharactersFindings = originalNode_StartingCharacters + `...${queryFinding} `; // cut down query result length
                         //NEEDED: check query length to return precision string length
                         
                         queryResultingEndCharactersStartIndexNum = 30 + queryFinding.length;
+                        //this finding is at 106 from the original node characters full
+
+                        let queryResultingEndCutoffIndexStart = domWalkerFindingIndex //may just be the index number of the query finding as domWalkerFindingIndex [106].
+                        queryResultingEndCutoffIndexStart = 0;
 
                         // take out from short query result the middle bits
-                        // 36 to the resultingendcharacterstart(which is the queryResultingEndCharactersStartIndexNum?)
-                        queryResultingEndCharacters = queryResultingEndCharactersFull.slice(queryResultingEndCharactersStartIndexNum, domWalkerFindingIndex);
-                        
-                        queryResultingEndCharactersFull = originalNode_FoundCharacters.slice(queryResultingEndCharactersStartIndexNum, queryResultingEndCharactersStartIndexNum + 30);
-                        foundNode_FoundCharacters += queryResultingEndCharactersFull;
+                        // 70 to the resultingendcharacterstart(which is the queryResultingEndCharactersStartIndexNum?)
+                        queryResultingEndCharactersFull = originalNode_FoundCharacters.substring(queryResultingEndCharactersStartIndexNum, originalNode_FoundCharacters.length);
+
+                        // new variable that describes the difference from the full lengths' findings from the queryResultingEndCharactersFulll
+                        //let queryResultingEndCharactersCutoff = originalNode_FoundCharacters.substring(domWalkerFindingIndex, originalNode_FoundCharacters.length);
+                        queryResultingEndCharactersResult = originalNode_FoundCharacters.substring(domWalkerFindingIndex, originalNode_FoundCharacters.length);
+                        foundNode_CharactersFindings += queryResultingEndCharactersResult;
+                        //foundNode_CharactersFindings += queryResultingEndCharactersFull;
+                        //foundNode_CharactersFindings = foundNode_CharactersFindings.substring(queryResultingEndCharactersFull, originalNode_FoundCharacters.length);
 
                         let querysEndIndexCharacterCount = queryResultingEndCharactersStartIndexNum + 30;
                     }
-                    let findingStartIndex = walkerFindingIndex + query.length;
+                    let findingStartIndex = domWalkerFindingIndex + query.length;
                     let captureNextSpaceCharacterIndex = originalNode_FoundCharacters.indexOf(" ", findingStartIndex);
                     let capturePreviousSpaceCharacterIndex = originalNode_FoundCharacters.lastIndexOf(" ", findingStartIndex - 1);
-                    let captureWordWithWhitespaceCharacters = originalNode_FoundCharacters.substring(capturePreviousSpaceCharacterIndex, captureNextSpaceCharacterIndex);
-                    let queryResultingFirstPartialWordAfterWhitespace = queryResultingEndCharactersFull.indexOf(" ", findingStartIndex - 1);
+                    let captureWordWithWhitespaceLeadingCharacters = originalNode_FoundCharacters.substring(capturePreviousSpaceCharacterIndex, captureNextSpaceCharacterIndex);
 
-                        foundNode.textContent = foundNode_FoundCharacters;
+                    //"e major capstone course. We, a team of 5, developed a desktop-and-web accessible software solution for book inventory management. Our application met the following requirements set:"
+                    //foundNode_FoundCharacters
+                    // "This project was for computer ...access e major capstone course. We, a team of 5, developed a desktop-and-web accessible software solution for book inventory management. Our application met the following requirements set:"
+
+                    //let queryResultingFirstPartialWordAfterWhitespace = queryResultingEndCharactersFull.indexOf(" ", findingStartIndex);
+                    //this stuff to remove
+                    //e major capstone course.We, a team of 5, developed a desktop - and - web
+                    //
+                    var short = queryResultingEndCharactersFull.substring( findingStartIndex, queryResultingEndCharactersFull.length );
+
+                    /*it's an ending index;, so use Indexlastfinding findingENDIndex. it's
+                    so it's the findingStartIndexEnd
+                                startofwordcharacter endofwordcharacter        queryResultingEndCharactersStartIndexNum 
+                    
+                                */
+
+                    let queryResultingFirstPartialWordAfterWhitespace = queryResultingEndCharactersFull.indexOf(" ", findingStartIndex);
+
+                    foundNode.textContent = foundNode_CharactersFindings;
                     //click on node
 
                     //go to element
