@@ -111,7 +111,7 @@
                         queryResultingEndCharactersFull = originalNode_FoundCharacters.slice(queryResultingEndCharactersStartIndexNum, queryResultingEndCharactersStartIndexNum + 30);
 
                         foundNode_CharactersFindings += trailingCharacters;
-                        //repeated
+                        
                     }
                     else { // query finding is after cutoff
                         foundNode_CharactersFindings = originalNode_StartingCharacters + `...${queryFinding} `; // cut down query result length
@@ -142,6 +142,14 @@
                     let queryResultingFirstPartialWordAfterWhitespace = queryResultingEndCharactersFull.indexOf(" ", findingStartIndex);
 
                     foundNode.textContent = foundNode_CharactersFindings;
+
+                    if (node) {
+                        const domSearchOutputElemRulingBreaker = foundNode.insertAdjacentElement(
+                            "afterend",
+                            document.createElement("hr")
+                        );
+                    }
+
                     //click on node
 
                     //go to element
@@ -152,7 +160,7 @@
                     }
 
                     //replace node
-                    console.log("inserted");
+                    console.debug("inserted");
                     parent.replaceChild(after, node);
                     //get rid of mark
                     //parent.insertBefore(this.searchElems.mark, after);
