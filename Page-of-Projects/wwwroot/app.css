@@ -299,6 +299,8 @@ body {
             display: flex;
             flex-direction: row;
 
+            
+
             & img {
                 display: block;
                 border-radius: 12px 12px 12px 12px;
@@ -310,6 +312,10 @@ body {
 
             & .page-view-selection-text {
                 width: 100%;
+
+                &:hover {
+                    transition: all 2s ease-in;
+                }
 
                 & .information-panel-toggle {
                     color: darkcyan;
