@@ -48,8 +48,8 @@
                 const text = node.nodeValue;
                 const domWalkerFindingIndex = text.toLowerCase().indexOf(lowerQuery);
 
-                let queryFinding = text.substring(domWalkerFindingIndex, query.length);
-                
+                let queryFinding = text.slice(domWalkerFindingIndex, domWalkerFindingIndex + query.length); //TODO:NOW: has inconsistent query findings
+
                 if (domWalkerFindingIndex >= 0) {
                     let countElement;
                     let domSearchOutputCount;
@@ -71,16 +71,10 @@
 
 
                     const mark = document.createElement("mark"); //from 1.x.x version, before
-                    ///get rid of mark
+
                     mark.className = "search-highlight";
-                    ///this.searchElems.mark.className = "search-highlight";
-
                     //                               from: domWalkerFindingIndex
-                    ///queryFinding = text.substr(domWalkerFindingIndex, query.length);
-
-                    ///get rid of mark
                     mark.textContent = text.substr(domWalkerFindingIndex, query.length); //from 1.x.x version, before, with changes to index substr param
-                    ///this.searchElems.mark.textContent = queryFinding;
     
                     const after = document.createTextNode(text.substring(domWalkerFindingIndex + query.length));
                     const before = document.createTextNode(text.substring(0, domWalkerFindingIndex));
@@ -97,7 +91,7 @@
 
                     // set a char limit
                     const findShowingCharLength = 30;
-                    //const queryResultingEndCutoffIndexStart = 0;
+                    
                     let originalNode_StartingCharacters = originalNode_FoundCharacters.slice(0, findShowingCharLength);
 
                     let queryResultingEndCharactersStartIndexNum;
@@ -107,43 +101,35 @@
                     
                     if (domWalkerFindingIndex < findShowingCharLength) { //query finding is before cutoff
                         foundNode_CharactersFindings = originalNode_StartingCharacters;
+                        
                         let trailingCharacters = originalNode_FoundCharacters.slice(30, originalNode_FoundCharacters.length);
-                        queryResultingEndCharactersFull = originalNode_FoundCharacters.slice(queryResultingEndCharactersStartIndexNum, queryResultingEndCharactersStartIndexNum + 30);
 
                         foundNode_CharactersFindings += trailingCharacters;
-                        
                     }
                     else { // query finding is after cutoff
-                        foundNode_CharactersFindings = originalNode_StartingCharacters + `...${queryFinding} `; // cut down query result length
+                        foundNode_CharactersFindings = originalNode_StartingCharacters + `... `; // cut down query result length
 
                         //NEEDED: check query length to return precision string length
                         queryResultingEndCharactersStartIndexNum = findShowingCharLength + queryFinding.length;
-                        //this finding is at 106 from the original node characters full
-
-                        let queryResultingEndCutoffIndexStart = domWalkerFindingIndex; //may just be the index number of the query finding as domWalkerFindingIndex [106].
-                        queryResultingEndCutoffIndexStart = 0;
-
-                        // take out from short query result the middle bits
-                        queryResultingEndCharactersFull = originalNode_FoundCharacters.substring(queryResultingEndCharactersStartIndexNum, originalNode_FoundCharacters.length);
 
                         // new variable that describes the difference from the full lengths' findings from the queryResultingEndCharactersFulll
                         queryResultingEndCharactersResult = originalNode_FoundCharacters.substring(domWalkerFindingIndex, originalNode_FoundCharacters.length);
                         foundNode_CharactersFindings += queryResultingEndCharactersResult;
 
-                        let querysEndIndexCharacterCount = queryResultingEndCharactersStartIndexNum + findShowingCharLength;
+                        let querysEndIndexCharacterCount = queryResultingEndCharactersStartIndexNum + findShowingCharLength; //TODO - for now, unused
                     }
                     let findingStartIndex = domWalkerFindingIndex + query.length;
                     let captureNextSpaceCharacterIndex = originalNode_FoundCharacters.indexOf(" ", findingStartIndex);
                     let capturePreviousSpaceCharacterIndex = originalNode_FoundCharacters.lastIndexOf(" ", findingStartIndex - 1);
-                    let captureWordWithWhitespaceLeadingCharacters = originalNode_FoundCharacters.substring(capturePreviousSpaceCharacterIndex, captureNextSpaceCharacterIndex);
 
-                    var short = queryResultingEndCharactersFull.substring( findingStartIndex, queryResultingEndCharactersFull.length );
+                    // take out from short query result the middle bits
+                    queryResultingEndCharactersFull = originalNode_FoundCharacters.substring(queryResultingEndCharactersStartIndexNum, originalNode_FoundCharacters.length);
 
                     let queryResultingFirstPartialWordAfterWhitespace = queryResultingEndCharactersFull.indexOf(" ", findingStartIndex);
 
                     foundNode.textContent = foundNode_CharactersFindings;
 
-                    if (node) {
+                    if (node) { //TODO: trim last hr element
                         const domSearchOutputElemRulingBreaker = foundNode.insertAdjacentElement(
                             "afterend",
                             document.createElement("hr")
@@ -179,14 +165,7 @@
 
             return count;
 
-            function newFunction(foundNode_CharactersFindings, originalNode_StartingCharacters, originalNode_FoundCharacters, findShowingCharLength, queryResultingEndCharactersFull, queryResultingEndCharactersStartIndexNum) {
-                foundNode_CharactersFindings = originalNode_StartingCharacters;
-                let trailingCharacters = originalNode_FoundCharacters.slice(findShowingCharLength, originalNode_FoundCharacters.length);
-                queryResultingEndCharactersFull = originalNode_FoundCharacters.slice(queryResultingEndCharactersStartIndexNum, queryResultingEndCharactersStartIndexNum + findShowingCharLength);
-
-                foundNode_CharactersFindings += trailingCharacters;
-                return { foundNode_CharactersFindings, queryResultingEndCharactersFull };
-            }
+            
         }
     },
     input: (dotNetRef) => {
