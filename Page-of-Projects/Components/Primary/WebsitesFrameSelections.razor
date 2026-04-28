@@ -24,7 +24,7 @@
     public bool? SetDetail { get; set; }
 
     [Parameter]
-    public EventCallback<(bool, FrameSelectionOption)> OnSelectionChange { get; set; }
+    public EventCallback<(bool, FrameSelectionOption, int)> OnSelectionChange { get; set; }
 
     [Parameter]
     public int StartingNumber { get; set; }

@@ -34,14 +34,19 @@
             <SelectedWebsiteDetails
                 SelectedWebsite="@frame"
                 ShowDetails="@true"
-                StartingNumber="@StartingNumber"
-                />
-            @{ StartingNumber++; }
+                DialogIndex="@StartingNumber" />
+            @{
+                MaintainDialogIndex.TryAdd(frame.Title, StartingNumber);
+                StartingNumber++; 
+            }
+            
         </li>
     }
 </ul>
 
 @code {
+    public Dictionary<string, int> MaintainDialogIndex = new();
+
     [Parameter]
     public required List<FrameSelectionOption> FrameSelections { get; set; }
 
@@ -52,7 +57,7 @@
     public EventCallback<FrameSelectionOption> OnSelected { get; set; }
 
     [Parameter]
-    public EventCallback<(bool, FrameSelectionOption)> OnSelectionChange { get; set; }
+    public EventCallback<(bool, FrameSelectionOption, int)> OnSelectionChange { get; set; }
 
     [Parameter]
     public bool? SetDetail { get; set; }
@@ -66,10 +71,10 @@
         //NEEDED? ... ready for toggle button
         if (SetDetail != null && IsDetailsShowing == SetDetail)
         {
-            OnSelectionChange.InvokeAsync((false,selectedFrame));
+            OnSelectionChange.InvokeAsync((false,selectedFrame,MaintainDialogIndex[selectedFrame.Title]));
         }
         else {
-            OnSelectionChange.InvokeAsync((true, selectedFrame));
+            OnSelectionChange.InvokeAsync((true, selectedFrame,MaintainDialogIndex[selectedFrame.Title]));
         }
     }
 

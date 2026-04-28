@@ -26,7 +26,7 @@
                 SelectedWebsite="@_selectedWebsiteDetails"
                 ShowDetails="@_toggleDetails"
                 OnCloseClicked="OnDetailsToggleOpen"
-                StartingNumber="0"/>
+                StartingNumber="@OtherIndexOpened" />
             <HyperTextMarkdownSearch
                 OnCount="SetCount"
                 Nodes="@FoundElements" />
@@ -65,6 +65,11 @@
 </nav>
 
 @code {
+    [Parameter]
+    public int StartingNumber { get; set; }
+    [Parameter]
+    public int UseDialogIndex { get; set; }
+
     private FrameSelectionOption? _selectedWebsite;
     private FrameSelectionOption? _selectedWebsiteDetails;
     private int Found { get; set; }
@@ -76,10 +81,11 @@
         WriteLine($"{this}::SetCount count find: {Found}");
     }
 
-    private void ChangeSelectedWebsiteDetails((bool open, FrameSelectionOption frame) selectionChangeDetails)
+    private void ChangeSelectedWebsiteDetails((bool open, FrameSelectionOption frame, int IndexNumber) selectionChangeDetails)
     {
         _selectedWebsiteDetails = selectionChangeDetails.frame;
         _toggleDetails = selectionChangeDetails.open;
+        OtherIndexOpened = selectionChangeDetails.IndexNumber;
     }
 
     private List<FrameSelectionOption> _websiteSelections = [];
@@ -99,6 +105,12 @@
         //reset the details when clicked
         if (_selectedWebsiteDetails != _selectedWebsite)
             _selectedWebsiteDetails = _selectedWebsite;
+    }
+
+    public int OtherIndexOpened { get; set; } = -1;
+    public void OnOtherDetailsToggleOpen(int OtherIndexOpened)
+    {
+        this.OtherIndexOpened = OtherIndexOpened;
     }
 
     private async Task CopyExternalHrefAsync()

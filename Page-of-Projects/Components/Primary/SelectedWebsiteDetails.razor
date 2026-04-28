@@ -1,6 +1,7 @@
 ﻿@using ProjectsPage.Models
 
-<div class="page-view-detail hidden-details" data-dialog-index="@StartingNumber">
+
+<div class="page-view-detail hidden-details" data-dialog-index="@DialogIndex)">
     <h3>Details</h3>
     <p class="mb0"><span>Name: </span>@SelectedWebsite.Title</p>
     @if (SelectedWebsite.SelectionDetails.ProgrammingLanguage is not null)
@@ -38,6 +39,8 @@
 </div>
 
 @code {
+    
+    
     [Parameter] 
     public bool ShowDetails { get; set; }
 
@@ -45,5 +48,5 @@
     public required FrameSelectionOption SelectedWebsite { get; set; }
     
     [Parameter]
-    public int StartingNumber { get; set; }
+    public int DialogIndex { get; set; }
 }
