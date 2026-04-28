@@ -2,7 +2,13 @@
 
 <h2>Websites</h2>
 
-<FrameSelectionItems FrameSelections="@WebsitesSelections" SelectedFrame="@SelectedFrame" OnSelected="@OnSelected" OnSelectionChange="@OnSelectionChange" SetDetail="@SetDetail" />
+<FrameSelectionItems
+    FrameSelections="@WebsitesSelections"
+    SelectedFrame="@SelectedFrame"
+    OnSelected="@OnSelected"
+    OnSelectionChange="@OnSelectionChange"
+    SetDetail="@SetDetail"
+    StartingNumber="@StartingNumber" />
 
 @code {
     [Parameter]
@@ -20,4 +26,6 @@
     [Parameter]
     public EventCallback<(bool, FrameSelectionOption)> OnSelectionChange { get; set; }
 
+    [Parameter]
+    public int StartingNumber { get; set; }
 }

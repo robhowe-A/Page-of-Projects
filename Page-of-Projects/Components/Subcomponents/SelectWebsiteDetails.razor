@@ -7,8 +7,8 @@
         @( ShowDetails ? "show-details" : "" )" data-dialog-index="0">
     <SelectedWebsiteDetails 
         SelectedWebsite="@SelectedWebsite" 
-        ShowDetails="ShowDetails" 
-    />
+        ShowDetails="ShowDetails"
+        StartingNumber="StartingNumber" />
     <button @onclick="() => OnCloseClicked.InvokeAsync(false)" class="mb1 details-panel-toggle disabled secondary">Close</button>
 </aside>
 }
@@ -22,4 +22,7 @@
 
     [Parameter]
     public EventCallback<bool> OnCloseClicked { get; set; }
+    
+    [Parameter]
+    public int StartingNumber { get; set; }
 }

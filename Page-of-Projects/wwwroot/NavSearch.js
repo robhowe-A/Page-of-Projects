@@ -84,14 +84,37 @@
 
                     //NEEDED? return node for search value
                     //create node for search value
-                    const foundNode = domSearchOutputElem.insertAdjacentElement('beforeend',document.createElement("div"));
+                    const foundNode = domSearchOutputElem.insertAdjacentElement('beforeend',document.createElement("div")); //rename queryFinding?
+                    //const foundNodeId = new hidden element (non-input?)
+                    //if node container has a parent id, add it to the foundNode [div] dataset for use in click listener return
+                    //if (parent.parentElement && parent.parentElement.dataset.dialogIndex) {
+                        //if data node
 
+                        //temporary variable while loop
+                        let currentNode = parent;
+                        while (currentNode) {
+                            currentNode = currentNode.parentElement;
+
+                            if (currentNode && currentNode.dataset && currentNode.dataset.dialogIndex)
+                            {
+                                console.log(currentNode);
+                                break;
+                            }
+                        }
+
+                        //if parent.parentElement.dataset.dialogIndex is not null
+                        if (currentNode) {
+                            console.log("foundNode dialogIndex: ", currentNode.dataset.dialogIndex);
+                            foundNode.dataset.dialogIndex = currentNode.dataset.dialogIndex;
+                        }
+                    //}
+                    
                     let originalNode_FoundCharacters = node.parentNode.textContent;
                     let foundNode_CharactersFindings = originalNode_FoundCharacters;
 
                     // set a char limit
                     const findShowingCharacterLength = 20;
-                    const findShowingMaximumCharacterLength = 60;
+                    const findShowingMaximumCharacterLength = 110;
                     const getCharactersPreviousSpaceCharacterIndex = (characters, wordIndex) => {
                         return characters.lastIndexOf(" ", wordIndex - 1);
                     }
@@ -135,8 +158,8 @@
                         }
                     }
                     
+                    
                     foundNode.textContent = foundNode_CharactersFindings;
-
                     if (node) { //TODO: trim last hr element
                         const domSearchOutputElemRulingBreaker = foundNode.insertAdjacentElement(
                             "afterend",
@@ -155,6 +178,7 @@
 
                     //replace node
                     console.debug("inserted");
+                    
                     parent.replaceChild(after, node);
                     //get rid of mark
                     //parent.insertBefore(this.searchElems.mark, after);

@@ -25,7 +25,8 @@
             <SelectWebsiteDetails
                 SelectedWebsite="@_selectedWebsiteDetails"
                 ShowDetails="@_toggleDetails"
-                OnCloseClicked="OnDetailsToggleOpen" />
+                OnCloseClicked="OnDetailsToggleOpen"
+                StartingNumber="0"/>
             <HyperTextMarkdownSearch
                 OnCount="SetCount"
                 Nodes="@FoundElements" />
@@ -45,6 +46,7 @@
         OnSelected="HandleWebsiteSelected"
         SetDetail="@_toggleDetailsSet"
         OnSelectionChange="ChangeSelectedWebsiteDetails"
+        StartingNumber="0"
         />
     <DemosFrameSelections
         DemosSelections="@_demoSelections"
@@ -52,6 +54,7 @@
         OnSelected="HandleWebsiteSelected"
         SetDetail="@_toggleDetailsSet"
         OnSelectionChange="ChangeSelectedWebsiteDetails"
+        StartingNumber="6"
         />
 
     <a href="/status"
