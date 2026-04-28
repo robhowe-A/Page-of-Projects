@@ -114,7 +114,7 @@
 
                     // set a char limit
                     const findShowingCharacterLength = 20;
-                    const findShowingMaximumCharacterLength = 110;
+                    const findShowingMaximumCharacterLength = 130;
                     const getCharactersPreviousSpaceCharacterIndex = (characters, wordIndex) => {
                         return characters.lastIndexOf(" ", wordIndex - 1);
                     }

@@ -153,7 +153,21 @@ body {
                     display: inline-block;
                     visibility: hidden;
                     position: absolute;
-                    width:500px;
+                    width: 500px;
+                    max-height: 80dvh;
+                    overflow: scroll;
+                    background-color: steelblue;
+                    opacity: .999;
+                    z-index: 1;
+
+                    & div[data-dialog-index] {
+                    padding: 0 1em;
+
+                    &:hover {
+                        background-color: #468aaaaa;
+                        cursor: pointer;
+                    }
+                }
                 }
             }
         }
@@ -277,7 +291,7 @@ body {
         & .displaying:not(aside) {
             opacity: .5;
         }
-        
+
         & ul:last-of-type li:last-of-type .information-panel {
             top: -275% !important;
         }
@@ -285,13 +299,13 @@ body {
         & aside .page-view-detail.hidden-details {
             overflow: initial !important;
         }
-        
+
         & .page-view-detail.hidden-details {
-            display: inline-block !important;/* new selectors*/
+            display: inline-block !important; /* new selectors*/
             overflow: hidden;
             height: 0;
         }
-        
+
         & .page-view-selection {
             width: 95%;
             max-width: 900px;
@@ -300,7 +314,7 @@ body {
             display: flex;
             flex-direction: row;
 
-            
+
 
             & img {
                 display: block;
@@ -333,7 +347,6 @@ body {
                         border-radius: 12px 12px 12px 12px;
                         padding: 8px;
                         width: 385px;
-
                         /*&:has(> *[data-visibility="initial"]), .information-panel > [data-visibility="initial"] {*/
                         /*    visibility: visible;*/
                         /*}*/
@@ -344,10 +357,10 @@ body {
                     }
                 }
 
-                & .information-panel-toggle:hover .information-panel {
-                    visibility: initial;
-                    z-index: 5;
-                }
+                    & .information-panel-toggle:hover .information-panel {
+                        visibility: initial;
+                        z-index: 5;
+                    }
             }
         }
 
@@ -386,24 +399,24 @@ body {
                 position: relative;
             }
 
-            &.external::after {
-                content: "";
-                display: inline-block;
-                width: 12px;
-                height: 12px;
-                font-size: 0.8em;
-                color: #0077cc;
-                margin-bottom: 5px;
-                background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="rgb(0, 119, 204)" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/><path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/></svg>');
-                position: absolute;
-                right: -4px;
-                top: 0;
-                z-index: 1;
+                &.external::after {
+                    content: "";
+                    display: inline-block;
+                    width: 12px;
+                    height: 12px;
+                    font-size: 0.8em;
+                    color: #0077cc;
+                    margin-bottom: 5px;
+                    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="rgb(0, 119, 204)" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/><path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/></svg>');
+                    position: absolute;
+                    right: -4px;
+                    top: 0;
+                    z-index: 1;
 
-                &:hover {
-                    background-color: #ddd;
+                    &:hover {
+                        background-color: #ddd;
+                    }
                 }
-            }
         }
 
         & .page-view-link, .page-view-detail {
