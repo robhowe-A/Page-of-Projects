@@ -90,7 +90,8 @@
                     let foundNode_CharactersFindings = originalNode_FoundCharacters;
 
                     // set a char limit
-                    const findShowingCharacterLength = 30;
+                    const findShowingCharacterLength = 20;
+                    const findShowingMaximumCharacterLength = 60;
                     const getCharactersPreviousSpaceCharacterIndex = (characters, wordIndex) => {
                         return characters.lastIndexOf(" ", wordIndex - 1);
                     }
@@ -104,35 +105,36 @@
                     let queryResultingEndCharactersStartIndexNum;
                     let queryResultingEndCharacters;
                     let queryResultingEndCharactersFull;
-                    let queryResultingEndCharactersResult;
                     
                     
                     if (domWalkerFindingIndex < findShowingCharacterLength) { //query finding is before cutoff
                         foundNode_CharactersFindings = originalNode_StartingCharacters;
-                        
-                        let trailingCharacters = originalNode_FoundCharacters.slice(30, originalNode_FoundCharacters.length);
+                        //NEEDED?: query slice at character cutoff length
+                        let trailingCharacters = originalNode_FoundCharacters.slice(findShowingCharacterCutoffWordNextSpaceIndex, originalNode_FoundCharacters.length);
 
                         foundNode_CharactersFindings += trailingCharacters;
                     }
                     else { // query finding is after cutoff
                         foundNode_CharactersFindings = originalNode_StartingCharacters + `... `; // cut down query result length
 
-                        //NEEDED: check query length to return precision string length
+                        //NEEDED?: check query length to return precision string length
                         queryResultingEndCharactersStartIndexNum = findShowingCharacterLength + queryFinding.length;
 
                         // new variable that describes the difference from the full lengths' findings from the queryResultingEndCharactersFulll
-                        queryResultingEndCharactersResult = originalNode_FoundCharacters.substring(domWalkerFindingIndex, originalNode_FoundCharacters.length);
-                        foundNode_CharactersFindings += queryResultingEndCharactersResult;
+                        queryResultingEndCharactersFull = originalNode_FoundCharacters.substring(domWalkerFindingIndex, originalNode_FoundCharacters.length);
+                        foundNode_CharactersFindings += queryResultingEndCharactersFull;
 
-                        let querysEndIndexCharacterCount = queryResultingEndCharactersStartIndexNum + findShowingCharacterLength; //TODO - for now, unused
+                        //let querysEndIndexCharacterCount = queryResultingEndCharactersStartIndexNum + findShowingCharacterLength; //TODO - for now, unused
+                    }
+                    // clip the end from the findings' characters to a maximum number
+                    if (foundNode_CharactersFindings.length > findShowingMaximumCharacterLength) {
+                        let foundNode_CharactersFindingsEndWordIndex = getCharactersNextSpaceCharacterIndex(foundNode_CharactersFindings, findShowingMaximumCharacterLength)
+                        if (foundNode_CharactersFindingsEndWordIndex >= 0) {
+                            foundNode_CharactersFindings = foundNode_CharactersFindings.substring(0, foundNode_CharactersFindingsEndWordIndex);
+                            foundNode_CharactersFindings += "...";
+                        }
                     }
                     
-
-                    // take out from short query result the middle bits
-                    queryResultingEndCharactersFull = originalNode_FoundCharacters.substring(queryResultingEndCharactersStartIndexNum, originalNode_FoundCharacters.length);
-
-                    
-
                     foundNode.textContent = foundNode_CharactersFindings;
 
                     if (node) { //TODO: trim last hr element

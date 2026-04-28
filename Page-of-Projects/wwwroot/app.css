@@ -153,6 +153,7 @@ body {
                     display: inline-block;
                     visibility: hidden;
                     position: absolute;
+                    width:500px;
                 }
             }
         }
