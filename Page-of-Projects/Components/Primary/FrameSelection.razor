@@ -86,9 +86,15 @@
     {
         OtherIndexOpened = DialogIndexToOpen;
         //index data is maintained in FrameSelectionItems
+        //send func to frameselection to choose the data
+        var frame = FrameSelectionItems.DialogIndexDataFetch.SearchFindingNodeClickOption(OtherIndexOpened);
         
+        WriteLine(frame.Title);
         //YES, change the index, with which data?^
         //ChangeSelectedWebsiteDetails(DATAINSERT)
+        _selectedWebsiteDetails = frame;
+        _toggleDetails = true; //GOBACK?
+        
     }
 
     private void ChangeSelectedWebsiteDetails((bool open, FrameSelectionOption frame, int IndexNumber) selectionChangeDetails)

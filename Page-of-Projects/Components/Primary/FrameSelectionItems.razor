@@ -37,6 +37,7 @@
                 DialogIndex="@StartingNumber" />
             @{
                 MaintainDialogIndex.TryAdd(frame.Title, StartingNumber);
+                DialogIndexData.TryAdd(frame.Title, frame);
                 StartingNumber++; 
             }
             
@@ -45,7 +46,9 @@
 </ul>
 
 @code {
-    public Dictionary<string, int> MaintainDialogIndex = new();
+    private static Dictionary<string, int> MaintainDialogIndex { get; } = new();
+    
+    private static Dictionary<string, FrameSelectionOption> DialogIndexData = new();
 
     [Parameter]
     public required List<FrameSelectionOption> FrameSelections { get; set; }
@@ -66,6 +69,24 @@
     private bool IsMouseOver = false;
     private Dictionary<string, string> ItemsInfoPanelAreOpen = new();
 
+    public class DialogIndexDataFetch
+    {
+        public static FrameSelectionOption SearchFindingNodeClickOption(int DialogIndexToOpen)
+        {
+        
+            DialogIndexDataFetch dialogIndexDataFetch = new DialogIndexDataFetch();
+            return dialogIndexDataFetch.GetDialofIndexDataFetch(DialogIndexData,MaintainDialogIndex,DialogIndexToOpen);
+            
+        }
+        public FrameSelectionOption GetDialofIndexDataFetch(Dictionary<string, FrameSelectionOption> dialogIndexData, Dictionary<string, int> maintainDialogIndex, int DialogIndexToOpen)
+        {
+            //var dialogIndex= maintainDialogIndex.ContainsValue(DialogIndexToOpen);
+            var dialogIndex = maintainDialogIndex.FirstOrDefault(x => x.Value == DialogIndexToOpen);
+            return dialogIndexData[dialogIndex.Key];
+        }
+    }
+    
+    
     private void ToggleDetailsOnClick(FrameSelectionOption selectedFrame)
     {
         //NEEDED? ... ready for toggle button
