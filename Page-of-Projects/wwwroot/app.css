@@ -217,6 +217,7 @@ body {
             border: 2px solid black;
             max-height: calc(100vh - 15px);
             overflow: auto;
+            /*z-index: 2;*/
 
             & ul, ol {
                 padding: revert;

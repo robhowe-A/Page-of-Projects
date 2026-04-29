@@ -47,7 +47,7 @@
 
 @code {
     private static Dictionary<string, int> MaintainDialogIndex { get; } = new();
-    
+
     private static Dictionary<string, FrameSelectionOption> DialogIndexData = new();
 
     [Parameter]
@@ -71,22 +71,32 @@
 
     public class DialogIndexDataFetch
     {
-        public static FrameSelectionOption SearchFindingNodeClickOption(int DialogIndexToOpen)
+        public static FrameSelectionOption SearchFindingNodeClicked_FindFrameOptionToOpen(int dialogIndexToOpen)
         {
-        
             DialogIndexDataFetch dialogIndexDataFetch = new DialogIndexDataFetch();
-            return dialogIndexDataFetch.GetDialofIndexDataFetch(DialogIndexData,MaintainDialogIndex,DialogIndexToOpen);
-            
+            return dialogIndexDataFetch.GetFrameOptionByIndex(DialogIndexData,MaintainDialogIndex,dialogIndexToOpen);
         }
-        public FrameSelectionOption GetDialofIndexDataFetch(Dictionary<string, FrameSelectionOption> dialogIndexData, Dictionary<string, int> maintainDialogIndex, int DialogIndexToOpen)
+
+        public static int GetFrameOptionIndexByFrameSelectionOption(FrameSelectionOption frame)
         {
-            //var dialogIndex= maintainDialogIndex.ContainsValue(DialogIndexToOpen);
-            var dialogIndex = maintainDialogIndex.FirstOrDefault(x => x.Value == DialogIndexToOpen);
+            DialogIndexDataFetch dialogIndexDataFetch = new DialogIndexDataFetch();
+            return dialogIndexDataFetch.GetDialogIndexByFrameSelectionOption(MaintainDialogIndex,frame);
+        }
+
+        private int GetDialogIndexByFrameSelectionOption(Dictionary<string, int> maintainDialogIndex, FrameSelectionOption frame)
+        {
+            var frameDialogIndex = maintainDialogIndex.FirstOrDefault(x => x.Key == frame.Title);
+            return frameDialogIndex.Value;
+        }
+        
+        private FrameSelectionOption GetFrameOptionByIndex(Dictionary<string, FrameSelectionOption> dialogIndexData, Dictionary<string, int> maintainDialogIndex, int dialogIndexToOpen)
+        {
+            var dialogIndex = maintainDialogIndex.FirstOrDefault(x => x.Value == dialogIndexToOpen);
             return dialogIndexData[dialogIndex.Key];
         }
     }
-    
-    
+
+
     private void ToggleDetailsOnClick(FrameSelectionOption selectedFrame)
     {
         //NEEDED? ... ready for toggle button

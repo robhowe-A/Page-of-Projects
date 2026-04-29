@@ -1,6 +1,5 @@
 ﻿@using ProjectsPage.Models
 
-
 <div class="page-view-detail hidden-details" data-dialog-index="@DialogIndex">
     <h3>Details</h3>
     <p class="mb0"><span>Name: </span>@SelectedWebsite.Title</p>
@@ -39,14 +38,14 @@
 </div>
 
 @code {
-    
-    
+
+
     [Parameter] 
     public bool ShowDetails { get; set; }
 
     [Parameter]
     public required FrameSelectionOption SelectedWebsite { get; set; }
-    
+
     [Parameter]
     public int DialogIndex { get; set; }
 }

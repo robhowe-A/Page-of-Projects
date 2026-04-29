@@ -26,7 +26,7 @@
                 SelectedWebsite="@_selectedWebsiteDetails"
                 ShowDetails="@_toggleDetails"
                 OnCloseClicked="OnDetailsToggleOpen"
-                StartingNumber="@OtherIndexOpened" />
+                StartingNumber="@_otherIndexOpened" />
             <HyperTextMarkdownSearch
                 OnReceiveSearchFindingNodeClicked="@SetOtherIndexOpened"
                 OnCount="SetCount"
@@ -82,25 +82,22 @@
         WriteLine($"{this}::SetCount count find: {Found}");
     }
 
-    private void SetOtherIndexOpened(int DialogIndexToOpen)
+    private void SetOtherIndexOpened(int dialogIndexToOpen)
     {
-        OtherIndexOpened = DialogIndexToOpen;
-        //index data is maintained in FrameSelectionItems
-        //send func to frameselection to choose the data
-        var frame = FrameSelectionItems.DialogIndexDataFetch.SearchFindingNodeClickOption(OtherIndexOpened);
-        
-        WriteLine(frame.Title);
-        //YES, change the index, with which data?^
-        //ChangeSelectedWebsiteDetails(DATAINSERT)
-        _selectedWebsiteDetails = frame;
-        _toggleDetails = true; //GOBACK?
-        
+        //first, set index number change 
+        //change the selection details and fetch index data 
+        ChangeSelectedWebsiteDetails((
+            true, 
+            FrameSelectionItems.DialogIndexDataFetch.SearchFindingNodeClicked_FindFrameOptionToOpen(dialogIndexToOpen),
+                dialogIndexToOpen
+            ));
     }
 
     private void ChangeSelectedWebsiteDetails((bool open, FrameSelectionOption frame, int IndexNumber) selectionChangeDetails)
     {
         _selectedWebsiteDetails = selectionChangeDetails.frame;
         _toggleDetails = selectionChangeDetails.open;
+        _otherIndexOpened = selectionChangeDetails.IndexNumber;
     }
 
     private List<FrameSelectionOption> _websiteSelections = [];
@@ -116,17 +113,16 @@
     public void OnDetailsToggleOpen(bool opened)
     {
         _toggleDetails = opened;
-
+        
         //reset the details when clicked
         if (_selectedWebsiteDetails != _selectedWebsite)
+        {
             _selectedWebsiteDetails = _selectedWebsite;
+            _otherIndexOpened = FrameSelectionItems.DialogIndexDataFetch.GetFrameOptionIndexByFrameSelectionOption(_selectedWebsiteDetails);
+        }
     }
 
-    public int OtherIndexOpened { get; set; } = -1;
-    public void OnOtherDetailsToggleOpen(int OtherIndexOpened)
-    {
-        this.OtherIndexOpened = OtherIndexOpened;
-    }
+    private int _otherIndexOpened { get; set; } = -1;
 
     private async Task CopyExternalHrefAsync()
     {
@@ -152,12 +148,16 @@
             //new tile has been selected. replace frame selection with the clicked choice
             _selectedWebsite = _websiteSelections[index];
             _selectedWebsiteDetails = _selectedWebsite;
+            _otherIndexOpened = FrameSelectionItems.DialogIndexDataFetch.GetFrameOptionIndexByFrameSelectionOption(_selectedWebsiteDetails);
+
         }
 
         if (demosIndex >= 0)
         {
             _selectedWebsite = _demoSelections[demosIndex];
             _selectedWebsiteDetails = _selectedWebsite;
+            _otherIndexOpened = FrameSelectionItems.DialogIndexDataFetch.GetFrameOptionIndexByFrameSelectionOption(_selectedWebsiteDetails);
+
         }
 
         // Navigate after selection is applied

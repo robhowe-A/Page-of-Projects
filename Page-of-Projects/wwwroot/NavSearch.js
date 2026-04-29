@@ -201,7 +201,7 @@
                 //go to element
             searchDataDialogElements.map((searchFindElem) => {
                 searchFindElem.addEventListener("click", (e) => {
-                    
+
                     console.debug(`searchFindElem: , ${searchFindElem.dataset.dialogIndex}`);
 
                     let searchFindElemData = {
@@ -210,7 +210,7 @@
                     };
                     searchFindElemsClicked.push(searchFindElemData); //NEEDED?: this data describes multiple search elements clicked
                     console.debug(`searchFindElemData: , ${searchFindElemData}`);
-                    
+
                     //take data-dialog-index
                     //return data-dialog-index for FrameSelection to trigger aside data showing
                     dotNetRef.invokeMethodAsync("ReceiveSearchFindingNodeClicked", Number.parseInt(searchFindElem.dataset.dialogIndex));
