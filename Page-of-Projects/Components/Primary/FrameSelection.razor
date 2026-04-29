@@ -28,6 +28,7 @@
                 OnCloseClicked="OnDetailsToggleOpen"
                 StartingNumber="@OtherIndexOpened" />
             <HyperTextMarkdownSearch
+                OnReceiveSearchFindingNodeClicked="@SetOtherIndexOpened"
                 OnCount="SetCount"
                 Nodes="@FoundElements" />
         </div>
@@ -81,11 +82,19 @@
         WriteLine($"{this}::SetCount count find: {Found}");
     }
 
+    private void SetOtherIndexOpened(int DialogIndexToOpen)
+    {
+        OtherIndexOpened = DialogIndexToOpen;
+        //index data is maintained in FrameSelectionItems
+        
+        //YES, change the index, with which data?^
+        //ChangeSelectedWebsiteDetails(DATAINSERT)
+    }
+
     private void ChangeSelectedWebsiteDetails((bool open, FrameSelectionOption frame, int IndexNumber) selectionChangeDetails)
     {
         _selectedWebsiteDetails = selectionChangeDetails.frame;
         _toggleDetails = selectionChangeDetails.open;
-        OtherIndexOpened = selectionChangeDetails.IndexNumber;
     }
 
     private List<FrameSelectionOption> _websiteSelections = [];

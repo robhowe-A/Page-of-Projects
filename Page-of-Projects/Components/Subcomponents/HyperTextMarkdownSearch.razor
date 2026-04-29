@@ -1,4 +1,5 @@
-﻿@inject IJSRuntime JS
+﻿@using System.Diagnostics.Tracing
+@inject IJSRuntime JS
 
 <div id="domSearch">
     <search>
@@ -34,15 +35,29 @@
         }
     }
 
+    private int _dialogIndexClicked { get; set; }
+    [Parameter] public EventCallback<int> OnReceiveSearchFindingNodeClicked { get; set; } 
+    [Parameter] public EventCallback<int> OnCount { get; set; }
     [JSInvokable]
-    public Task ReceiveCount(int value)
+    public Task ReceiveSearchFindingNodeClicked(int dialogIndexClicked)
+    {
+        _dialogIndexClicked = dialogIndexClicked;
+        WriteLine($"SearchFindingDialogIndexClicked: {dialogIndexClicked}");
+        StateHasChanged();
+        OnReceiveSearchFindingNodeClicked.InvokeAsync(dialogIndexClicked);
+        
+        return Task.CompletedTask;
+    }
+
+
+    [JSInvokable]
+    public Task ReceiveSearchFindingsCount(int value)
     {
         _count = value;
         OnCount.InvokeAsync(_count);
         StateHasChanged();
         return Task.CompletedTask;
     }
-    [Parameter] public EventCallback<int> OnCount { get; set; }
 
     public ValueTask DisposeAsync()
     {

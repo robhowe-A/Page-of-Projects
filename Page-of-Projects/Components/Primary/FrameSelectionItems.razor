@@ -71,10 +71,10 @@
         //NEEDED? ... ready for toggle button
         if (SetDetail != null && IsDetailsShowing == SetDetail)
         {
-            OnSelectionChange.InvokeAsync((false,selectedFrame,MaintainDialogIndex[selectedFrame.Title]));
+            OnSelectionChange.InvokeAsync((false, selectedFrame, MaintainDialogIndex[selectedFrame.Title]));
         }
         else {
-            OnSelectionChange.InvokeAsync((true, selectedFrame,MaintainDialogIndex[selectedFrame.Title]));
+            OnSelectionChange.InvokeAsync((true, selectedFrame, MaintainDialogIndex[selectedFrame.Title]));
         }
     }
 

@@ -7,7 +7,7 @@
         activePageElems: {
             domSearchOutputCount: document.createElement("p")
         },
-        highlight: function (query) {
+        highlight: (dotNetRef, query) => {
             document.querySelectorAll("mark.search-highlight").forEach(m => {
                 const parent = m.parentNode;
                 parent.replaceChild(document.createTextNode(m.textContent), m);
@@ -37,11 +37,14 @@
                 }
             )
 
-            this.activePageElems.domSearchOutputCount.innerText = "";
-            domSearchOutputElem.insertAdjacentElement("afterbegin", this.activePageElems.domSearchOutputCount);
-            this.activePageElems.domSearchOutputCount.style.display = "inline-block";
+            window.main.domSearch.activePageElems.domSearchOutputCount.innerText = "";
+            domSearchOutputElem.insertAdjacentElement("afterbegin", window.main.domSearch.activePageElems.domSearchOutputCount);
+            window.main.domSearch.activePageElems.domSearchOutputCount.style.display = "inline-block";
 
             let foundElem = false;
+            const searchDataDialogElements = []; ///Search Nodes
+            let searchFindElemsClicked = [];
+            
 
             //iterate node list of elements
             for (const node of nodes) {
@@ -61,7 +64,7 @@
                         "afterbegin",
                         document.createElement("span")
                     );
-                    this.activePageElems.domSearchOutputCount.innerText = "Count: ";
+                    window.main.domSearch.activePageElems.domSearchOutputCount.innerText = "Count: ";
                     domSearchOutputCount = document.querySelector("#domSearchOutput p");
                     domSearchOutputCount.insertAdjacentElement("beforeend", countElement);
 
@@ -86,28 +89,28 @@
                     //create node for search value
                     const foundNode = domSearchOutputElem.insertAdjacentElement('beforeend',document.createElement("div")); //rename queryFinding?
                     //const foundNodeId = new hidden element (non-input?)
+                    
                     //if node container has a parent id, add it to the foundNode [div] dataset for use in click listener return
-                    //if (parent.parentElement && parent.parentElement.dataset.dialogIndex) {
-                        //if data node
+                    //temporary variable loop finds parent data-dialog-index node
+                    let currentNode = parent;
+                    while (currentNode) {
+                        currentNode = currentNode.parentElement;
 
-                        //temporary variable while loop
-                        let currentNode = parent;
-                        while (currentNode) {
-                            currentNode = currentNode.parentElement;
-
-                            if (currentNode && currentNode.dataset && currentNode.dataset.dialogIndex)
-                            {
-                                console.log(currentNode);
-                                break;
-                            }
+                        if (currentNode && currentNode.dataset && currentNode.dataset.dialogIndex)
+                        {
+                            console.log(currentNode);
+                            break;
                         }
+                    }
 
-                        //if parent.parentElement.dataset.dialogIndex is not null
-                        if (currentNode) {
-                            console.log("foundNode dialogIndex: ", currentNode.dataset.dialogIndex);
-                            foundNode.dataset.dialogIndex = currentNode.dataset.dialogIndex;
-                        }
-                    //}
+                    //if parent.parentElement.dataset.dialogIndex is not null
+                    if (currentNode) {
+                        foundNode.dataset.dialogIndex = currentNode.dataset.dialogIndex;
+
+                        searchDataDialogElements.push(foundNode); 
+                        
+                    }
+
                     
                     let originalNode_FoundCharacters = node.parentNode.textContent;
                     let foundNode_CharactersFindings = originalNode_FoundCharacters;
@@ -167,9 +170,7 @@
                         );
                     }
 
-                    //click on node
 
-                    //go to element
 
                     //if visibility hidden, reveal
                     if(node.parentElement.dataset.visibility == 'none') {
@@ -195,7 +196,28 @@
                 }
             }
 
-            return count;
+            
+            //click on node
+                //go to element
+            searchDataDialogElements.map((searchFindElem) => {
+                searchFindElem.addEventListener("click", (e) => {
+                    
+                    console.debug(`searchFindElem: , ${searchFindElem.dataset.dialogIndex}`);
+
+                    let searchFindElemData = {
+                        dialogIndex: searchFindElem.dataset.dialogIndex,
+                        searchFinding: searchFindElem.textContent, //NEEDED?: mark with an identifier
+                    };
+                    searchFindElemsClicked.push(searchFindElemData); //NEEDED?: this data describes multiple search elements clicked
+                    console.debug(`searchFindElemData: , ${searchFindElemData}`);
+                    
+                    //take data-dialog-index
+                    //return data-dialog-index for FrameSelection to trigger aside data showing
+                    dotNetRef.invokeMethodAsync("ReceiveSearchFindingNodeClicked", Number.parseInt(searchFindElem.dataset.dialogIndex));
+                })
+            })///Search Nodes
+            
+            return {count, searchFindElemsClicked};
 
             
         }
@@ -203,6 +225,7 @@
     input: (dotNetRef) => {
         const search = document.querySelector("#search");
         let count;
+
         search.addEventListener('input', async e => {
             let message = e.target.value;
 
@@ -568,9 +591,9 @@
             ];
 
             if (!words.includes(message)) return;
-            count = window.main.domSearch.highlight(message);
-
-            dotNetRef.invokeMethodAsync("ReceiveCount", count);
+            count = window.main.domSearch.highlight(dotNetRef, message);
+            
+            dotNetRef.invokeMethodAsync("ReceiveSearchFindingsCount", count.count);
         })
 
             return count;
