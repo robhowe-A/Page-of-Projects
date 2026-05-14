@@ -1,0 +1,62 @@
+﻿<!-- --Copyright (c) 2026 Robert A. Howell -->
+
+@using ProjectsPage.Models
+@namespace ProjectPage.Components.Primary
+
+<PageTitle>@_centralizedTitleStr</PageTitle>
+
+@if (String.Equals(_centralizedPageUrl, String.Empty))
+{
+    <iframe id="SFNA" class="page-view" src="@Url"></iframe>
+}
+else
+{
+    <iframe class="page-view" src="@_centralizedPageUrl"></iframe>
+}
+
+@code {
+    [Parameter]
+    public string Url { get; set; } = string.Empty;
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+    [Parameter]
+    public bool? IsWebsite { get; set; }
+
+    private string _centralizedPageUrl = string.Empty;
+    private string _centralizedTitleStr = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        GetPageOptionDetail();
+    }
+
+    private void GetPageOptionDetail()
+    {
+        if(IsWebsite == null)
+            throw new InvalidDataException();
+        var website = (bool)IsWebsite;
+
+        FrameSelectionOption spaceFlightWeb;
+        try
+        {
+            var websitesOptionsData = FrameSelectionData.WebsiteSelections
+                .Concat(FrameSelectionData.DemoSelections);
+
+            spaceFlightWeb = websitesOptionsData
+                .FirstOrDefault(x =>
+                {
+                    return x.Title == Title;
+                })! ?? throw new InvalidDataException();
+        }
+        catch (Exception e)
+        {
+            Console.Write("An exception occurred due to invalid data: ");
+            Console.Write($"{e.Message}\n{e.StackTrace}\n");
+            Console.Write($"Continuing to display the page with URL {Url}.");
+            return;
+        }
+
+        _centralizedPageUrl = spaceFlightWeb.ExternalHref;
+        _centralizedTitleStr = spaceFlightWeb.Title;
+    }
+}

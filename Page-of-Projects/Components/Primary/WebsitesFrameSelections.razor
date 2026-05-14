@@ -1,0 +1,36 @@
+﻿<!-- --Copyright (c) 2026 Robert A. Howell -->
+
+@using ProjectsPage.Models
+@namespace ProjectPage.Components.Primary
+
+<h2>Websites</h2>
+
+<FrameSelectionItems
+    FrameSelections="@WebsitesSelections"
+    SelectedFrame="@SelectedFrame"
+    OnSelected="@OnSelected"
+    OnSelectionChange="@OnSelectionChange"
+    SetDetail="@SetDetail"
+    StartingNumber="@StartingNumber"
+    DeploymentAs="@DeploymentAs" />
+
+@code {
+    public const string DeploymentAs = "WEBSITE";
+    [Parameter]
+    public EventCallback<FrameSelectionOption> OnSelected { get; set; }
+
+    [Parameter]
+    public required List<FrameSelectionOption> WebsitesSelections { get; set; }
+
+    [Parameter]
+    public FrameSelectionOption? SelectedFrame { get; set; } = null;
+
+    [Parameter]
+    public bool? SetDetail { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnSelectionChange { get; set; }
+
+    [Parameter]
+    public int StartingNumber { get; set; }
+}

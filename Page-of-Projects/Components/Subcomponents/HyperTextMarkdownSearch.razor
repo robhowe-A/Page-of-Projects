@@ -1,0 +1,124 @@
+﻿<!-- --Copyright (c) 2026 Robert A. Howell -->
+
+@using System.Text.Json
+@using ProjectPage.Components.Primary
+@using ProjectsPage.Models
+@inject IJSRuntime JS
+
+@namespace ProjectsPage.Components.Subcomponents
+
+<div id="domSearch">
+    <search>
+        <button id="searchSubmit" type="submit" tabindex="-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+            </svg>
+        </button>
+        <input id="search" placeholder="...term" type="search" autofocus/>
+    </search>
+    <output id="domSearchOutput">
+    @if (Nodes.Count > 0)
+    {
+        foreach (var node in @Nodes)
+        {
+            <strong>node</strong>
+        }
+    }
+    </output>
+</div>
+
+@code {
+    private int _count;
+    private DotNetObjectReference<HyperTextMarkdownSearch>? objRef;
+    [Parameter] public List<object> Nodes { get; set; } = [];
+
+    private record SearchTerms
+    {
+        public string[] terms { get; init; }
+    }
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            objRef = DotNetObjectReference.Create(this);
+            
+            //
+            var dbSearchTerms = new FrameSelectionFetch().SearchIndexTerms;
+            string dbSearchTermsData = dbSearchTerms.First().ToString();
+            var stringArrayList = JsonSerializer.Deserialize<SearchTerms>(
+                                      dbSearchTermsData,
+                                      options: new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) 
+                                  ?? throw new ApplicationException("Search terms data is null");
+            
+            await JS.InvokeVoidAsync("main.input", objRef, stringArrayList.terms);
+        }
+    }
+
+    private int _dialogIndexClicked { get; set; }
+    [Parameter] public EventCallback<int> OnReceiveSearchFindingIndexClicked { get; set; }
+    [Parameter] public EventCallback<(bool, FrameSelectionOption, int)> OnReceiveSearchFindingNodeClicked { get; set; }
+    [Parameter] public EventCallback<int> OnCount { get; set; }
+
+    [JSInvokable]
+    public string FetchFrameOptionIndexTitle(int dialogIndex)
+    {
+        var frameOptionIndex = FrameSelectionItems.DialogIndexDataFetch.SearchFindingNodeClicked_FindFrameOptionToOpen(dialogIndex);
+        var indexTitle = frameOptionIndex.Title;
+        
+        return indexTitle;
+    }
+    [JSInvokable]
+    public string FetchFrameOptionIndexDeployment(int dialogIndex)
+    {
+        var frameOptionIndex = FrameSelectionItems.DialogIndexDataFetch.SearchFindingNodeClicked_FindFrameOptionToOpen(dialogIndex);
+        var indexDeploymentHref = frameOptionIndex.Href;
+        
+        return indexDeploymentHref;
+    }
+    
+    [JSInvokable]
+    public Task ReceiveSearchFindingNodeClicked(int dialogIndexClicked)
+    {
+        _dialogIndexClicked = dialogIndexClicked;
+        WriteLine($"SearchFindingDialogIndexClicked: {dialogIndexClicked}");
+        StateHasChanged();
+        OnReceiveSearchFindingIndexClicked.InvokeAsync(dialogIndexClicked);
+        
+        return Task.CompletedTask;
+    }
+    [JSInvokable]
+    public async Task ReceiveSearchFindingLinkClicked(int dialogIndexClicked)
+    {
+        var selectedFrame = FrameSelectionItems.DialogIndexDataFetch.SearchFindingNodeClicked_FindFrameOptionToOpen(dialogIndexClicked);
+
+        _dialogIndexClicked = dialogIndexClicked;
+        WriteLine($"SearchFindingDialogIndexClicked: {dialogIndexClicked}");
+        StateHasChanged();
+        await OnReceiveSearchFindingNodeClicked.InvokeAsync(
+            (
+                true, 
+                selectedFrame,
+                dialogIndexClicked
+                )
+            );
+        await InvokeAsync(StateHasChanged);
+        
+    }
+
+    [JSInvokable]
+    public async Task ReceiveSearchFindingsCount(int value)
+    {
+        _count = value;
+        await OnCount.InvokeAsync(_count);
+        //StateHasChanged();
+        await InvokeAsync(StateHasChanged);
+        
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        objRef?.Dispose();
+        return ValueTask.CompletedTask;
+    }
+}

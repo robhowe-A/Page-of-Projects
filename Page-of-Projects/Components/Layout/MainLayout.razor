@@ -1,0 +1,29 @@
+﻿<!-- --Copyright (c) 2026 Robert A. Howell -->
+
+@namespace ProjectsPage.Components.Layout
+@using ProjectPage.Components.Primary
+@inherits LayoutComponentBase
+
+<div id="main">
+    <div class="nav">
+        <FrameSelection/>
+        <footer class="border-top footer text-muted">
+            <p class="developer-attr">Developed by Robert Howell</p>
+            <div class="container">
+                @{
+                    var currentYear = DateTime.Now.Year;
+                }
+                &copy; @currentYear - Robert Howell
+            </div>
+        </footer>
+    </div>
+    <main role="main" class="page-view">
+        @Body
+    </main>
+</div>
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">🗙</span>
+</div>
