@@ -5,13 +5,22 @@
 
 <PageTitle>@_centralizedTitleStr</PageTitle>
 
-@if (String.Equals(_centralizedPageUrl, String.Empty))
+@if (string.Equals(_centralizedPageUrl, string.Empty))
 {
+
     <iframe id="SFNA" class="page-view" src="@Url"></iframe>
+
 }
 else
 {
-    <iframe class="page-view" src="@_centralizedPageUrl"></iframe>
+    @if (!string.IsNullOrEmpty(DocsPathUri))
+    {
+        <iframe id="SFNA" class="page-view" src="@(_centralizedPageUrl+DocsPathUri)"></iframe>
+    }
+    else
+    {
+        <iframe class="page-view" src="@_centralizedPageUrl"></iframe>
+    }
 }
 
 @code {
@@ -21,6 +30,8 @@ else
     public string Title { get; set; } = string.Empty;
     [Parameter]
     public bool? IsWebsite { get; set; }
+    [Parameter]
+    public string? DocsPathUri { get; set; }
 
     private string _centralizedPageUrl = string.Empty;
     private string _centralizedTitleStr = string.Empty;
@@ -34,7 +45,6 @@ else
     {
         if(IsWebsite == null)
             throw new InvalidDataException();
-        var website = (bool)IsWebsite;
 
         FrameSelectionOption spaceFlightWeb;
         try
@@ -59,4 +69,5 @@ else
         _centralizedPageUrl = spaceFlightWeb.ExternalHref;
         _centralizedTitleStr = spaceFlightWeb.Title;
     }
+
 }

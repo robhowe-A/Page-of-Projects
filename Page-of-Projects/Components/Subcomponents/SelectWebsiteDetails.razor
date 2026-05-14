@@ -12,7 +12,8 @@
         <SelectedWebsiteDetails 
         SelectedWebsite="@SelectedWebsite" 
         ShowDetails="ShowDetails"
-        DialogIndex="@StartingNumber" />
+        DialogIndex="@StartingNumber"
+        OnAfterNavigateClosePanel="@OnAfterNavigateClosePanel" />
     <button @onclick="() => OnCloseClicked.InvokeAsync(false)" class="mb1 details-panel-toggle disabled secondary">Close</button>
 </aside>
 }
@@ -26,6 +27,9 @@
 
     [Parameter]
     public EventCallback<bool> OnCloseClicked { get; set; }
+    
+    [Parameter]
+    public EventCallback<bool> OnAfterNavigateClosePanel { get; set; }
 
     [Parameter]
     public int StartingNumber { get; set; }

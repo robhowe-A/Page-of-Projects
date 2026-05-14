@@ -7,4 +7,11 @@
 <PageFrame 
     Url="https://docs.rhdeveloping.com/"
     Title="Project Docs"
-    IsWebsite="true"/>
+    IsWebsite="true"
+    DocsPathUri="@DocsPathUri"/>
+
+@code {
+    [SupplyParameterFromQuery(Name = "reluri")]
+    private string? DocsPathUri { get; set; }
+
+}

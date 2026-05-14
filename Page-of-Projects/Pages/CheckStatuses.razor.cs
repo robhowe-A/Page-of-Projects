@@ -2,10 +2,9 @@
 
 using System.Text.Json;
 using Microsoft.AspNetCore.Components;
-using ProjectsPage.Components.Primary;
 using ProjectsPage.Models;
 
-namespace ProjectsPage.Components.Pages;
+namespace ProjectsPage.Components.Primary;
 
 public class DomainOption
 {

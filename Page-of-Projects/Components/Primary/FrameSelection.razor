@@ -29,6 +29,7 @@
                 SelectedWebsite="@_selectedWebsiteDetails"
                 ShowDetails="@_toggleDetails"
                 OnCloseClicked="OnDetailsToggleOpen"
+                OnAfterNavigateClosePanel="OnDetailsToggleOpen"
                 StartingNumber="@_otherIndexOpened" />
             <HyperTextMarkdownSearch
                 OnReceiveSearchFindingIndexClicked="@SetOtherIndexOpened"

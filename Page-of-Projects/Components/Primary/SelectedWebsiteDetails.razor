@@ -3,6 +3,7 @@
 @using ProjectsPage.Components.Subcomponents
 @using ProjectsPage.Models
 @namespace ProjectPage.Components.Primary
+@inject NavigationManager Navigation
 
 <div class="page-view-detail hidden-details" data-dialog-index="@DialogIndex">
     <h3 data-visibility="@(ShowDetails ? null : "no-replace")">Details</h3>
@@ -48,16 +49,33 @@
         <h4>Links:</h4>
         @for (var i=0; i<SelectedWebsite.ReferenceHrefs.Count; i++)
         {
-            <a href="@SelectedWebsite.ReferenceHrefs[i]" title="@SelectedWebsite.DocHrefTitles[SelectedWebsite.ReferenceHrefs[i]]"
-               rel="alternate opener" target="_blank">@SelectedWebsite.DocHrefTitles[SelectedWebsite.ReferenceHrefs[i]]</a>
+            var absoluteUrl = new Uri(SelectedWebsite.ReferenceHrefs[i], UriKind.RelativeOrAbsolute);
+            
+            if (absoluteUrl.Authority == "docs.rhdeveloping.com")
+            {
+                <button class="app-internal-link" 
+                        @onclick="() => OpenToProjectDocsEndpoint(absoluteUrl.AbsolutePath)"
+                        title="@SelectedWebsite.DocHrefTitles[SelectedWebsite.ReferenceHrefs[i]]"
+                        type="button">
+                @SelectedWebsite.DocHrefTitles[SelectedWebsite.ReferenceHrefs[i]]
+                </button>
+            }
+            else
+            {
+                // add external link icon
+                <a class="external" href="@SelectedWebsite.ReferenceHrefs[i]"
+                   title="@SelectedWebsite.DocHrefTitles[SelectedWebsite.ReferenceHrefs[i]]"
+                   rel="alternate opener"
+                   target="_blank">
+                @SelectedWebsite.DocHrefTitles[SelectedWebsite.ReferenceHrefs[i]]
+                </a>
+                
+            }
         }
     }
     </div>
 
 @code {
-
-    
-
     [Parameter] 
     public bool ShowDetails { get; set; }
 
@@ -65,5 +83,14 @@
 
     [Parameter]
     public int DialogIndex { get; set; }
+    
+    [Parameter]
+    public EventCallback<bool> OnAfterNavigateClosePanel { get; set; }
 
+    private async Task OpenToProjectDocsEndpoint(string projectUrl)
+    {
+        var encoded = Uri.EscapeDataString(projectUrl);
+        await OnAfterNavigateClosePanel.InvokeAsync(false);
+        Navigation.NavigateTo($"/websites/project-docs?reluri={encoded}");
+    }
 }
