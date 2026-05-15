@@ -3,10 +3,13 @@
 @using ProjectsPage.Components.Subcomponents
 @using ProjectsPage.Models
 
-@namespace ProjectPage.Components.Primary
+@namespace ProjectPages.Components.Primary
 @if(AllSelections.HasValue){
 <button class="details-panel-sort" @onclick="sortAllAZ">A-Z</button>
 <button class="details-panel-sort" @onclick="sortAllZA">Z-A</button>
+<button class="details-panel-sort" @onclick="sortAllDateStart">Started</button>
+<button class="details-panel-sort" @onclick="sortAllDateEnd">Newest</button>
+
 }
 <ul>
     @foreach (var frame in @FrameSelections.ToArray())
@@ -56,6 +59,17 @@
 </ul>
 
 @code {
+
+    public void sortAllDateStart()
+    {
+        FrameSelections
+            .Sort((a, b) => Nullable.Compare(a.SelectionDetails.StartDate,b.SelectionDetails.StartDate));
+    }
+
+    public void sortAllDateEnd()
+    {
+        
+    }
     public void sortAllAZ()
     {
         FrameSelections
@@ -67,7 +81,7 @@
             .Sort((a, b) => (b.Title).CompareTo(a.Title));
     }
 
-    [Parameter] public bool? AllSelections { get; set; }
+    [Parameter] public bool? AllSelections { get; set; } //For full list sorting
     private static Dictionary<string, int> MaintainDialogIndex { get; } = new();
 
     private static Dictionary<string, FrameSelectionOption> DialogIndexData = new();

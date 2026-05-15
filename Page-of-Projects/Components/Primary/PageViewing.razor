@@ -2,7 +2,7 @@
 
 @using ProjectsPage.Models
 <p>Everything below is part of a test arrangement.</p>
-<h2>@PageSelection.Title</h2>
+<h2>@PageViewSelection.Title</h2>
 @* //////////TODOS////////// *@
 @* // Full Projects+Demos List *@
 @* //+Categorized by technology: Desktop, Cloud, Web *@
@@ -14,37 +14,38 @@
 @*     <li>Proj4</li> *@
 @* </ul> *@
 <div>
-    <p>@PageSelection.ExternalHref</p>
-    <p>@PageSelection.ExternalTitle</p>
-    <p>@PageSelection.Href</p>
-    <p>@PageSelection.ImageAltText</p>
-    <p>@PageSelection.ImageUrl</p>
-    <p>@PageSelection.InnerText</p>
-    @if(PageSelection.ReferenceHrefs is not null)
-    @foreach(var item in PageSelection.ReferenceHrefs){
+    <p>@PageViewSelection.ExternalHref</p>
+    <p>@PageViewSelection.ExternalTitle</p>
+    <p>@PageViewSelection.Href</p>
+    <p>@PageViewSelection.ImageAltText</p>
+    <p>@PageViewSelection.ImageUrl</p>
+    <p>@PageViewSelection.InnerText</p>
+    @if(PageViewSelection.ReferenceHrefs is not null)
+    @foreach(var item in PageViewSelection.ReferenceHrefs){
         <p>@item</p>
     }
-    @foreach(var item2 in PageSelection.DocHrefTitles)
+    @foreach(var item2 in PageViewSelection.DocHrefTitles)
     {
         <p>@item2</p>               
     }
-    <p>@PageSelection.SelectionDetails.Deployment</p>
-    @if(PageSelection.SelectionDetails.Descriptions is not null)
-    @foreach (var item3 in PageSelection.SelectionDetails.Descriptions)
+    <p>@PageViewSelection.SelectionDetails.Deployment</p>
+    @if(PageViewSelection.SelectionDetails.Descriptions is not null)
+    @foreach (var item3 in PageViewSelection.SelectionDetails.Descriptions)
     {
         <p>@item3</p>
     }
-    @if(PageSelection.SelectionDetails.DetailsList is not null)
-    @foreach (var item4 in PageSelection.SelectionDetails.DetailsList)
+    @if(PageViewSelection.SelectionDetails.DetailsList is not null)
+    @foreach (var item4 in PageViewSelection.SelectionDetails.DetailsList)
     {
         <p>@item4</p>
     }
-    <p>@PageSelection.SelectionDetails.Framework</p>
-    <p>@PageSelection.SelectionDetails.Miscellaneous</p>
-    <p>@PageSelection.SelectionDetails.ProgrammingLanguage</p>
+    <p>@PageViewSelection.SelectionDetails.Framework</p>
+    <p>@PageViewSelection.SelectionDetails.Miscellaneous</p>
+    <p>@PageViewSelection.SelectionDetails.ProgrammingLanguage</p>
+    <p>@PageViewSelection.SelectionDetails.StartDate</p>
 </div>
 
 @code {
     [Parameter]
-    public required FrameSelectionOption PageSelection { get; set; }
+    public required FrameSelectionOption PageViewSelection { get; set; }
 }

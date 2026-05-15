@@ -35,7 +35,7 @@ public class FrameSelectionOption
     public required string ImageAltText { get; init; }
     public List<string>? ReferenceHrefs { get; init; }
     public required SelectionDetails SelectionDetails { get; init; }
-    public bool IsSelected { get; init; }
+    public bool IsSelected { get; init; } //Not in JSON
     
     public readonly Dictionary<string, string> DocHrefTitles = [];
     private static readonly Dictionary<string, string> DocHrefTitleCache = new();
