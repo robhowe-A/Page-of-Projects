@@ -36,6 +36,12 @@
                 OnReceiveSearchFindingNodeClicked="@ChangeSelectedWebsiteDetails"
                 OnCount="SetCount"
                 Nodes="@FoundElements" />
+            @* how about a toggle? *@
+            <div class="page-frame-toggle">
+                <label id="testing">
+                    <input type="checkbox"><span>TEST</span>
+                </label>
+            </div>
         </div>
     }
 
@@ -45,57 +51,57 @@
            rel="opener"
            title="roberthowell.dev"
            target="_self">roberthowell.dev</a></h1>
-    @if (false)
-    {
-        <InputRadioGroup Name="menu" @bind-Value="_menuOptionSelection">
-            <label>Projects
-                <InputRadio Name="menu" Value="@ProjectsMenuOption"/>
-            </label>
-            <label>Proficiencies
-                <InputRadio Name="menu" Value="@ProficienciesMenuOption" Label="Proficiencies"/>
-            </label>
-            <label>Cybersecurity
-                <InputRadio Name="menu" Value="@CybersecurityMenuOption" Label="Cybersecurity"/>
-            </label>
-        </InputRadioGroup>
-    }
+
+    <InputRadioGroup Name="menu" @bind-Value="_menuOptionSelection">
+        <label>All
+            <InputRadio Name="menu" Value="@ProjectsAllMenuOption" Label="Proficiencies"/>
+        </label>
+        <label>By Type
+            <InputRadio Name="menu" Value="@ProjectsByTypeMenuOption"/>
+        </label>
+        @* <label>Cybersecurity *@
+        @*     <InputRadio Name="menu" Value="@CybersecurityMenuOption" Label="Cybersecurity"/> *@
+        @* </label> *@
+    </InputRadioGroup>
+
     <div>
         @switch (_menuOptionSelection)
         {
-            case ProjectsMenuOption:
+            case ProjectsByTypeMenuOption:
                 //////////TODOS//////////
                 // Sort component? (by date?, framework? secondary language?)
                 //Icons to fill in the cards and highlight the framing functionality limitations
                 //+Warnings
                 //+Errors (expected)
                 <WebsitesFrameSelections
-                    WebsitesSelections="@_websiteSelections.ToList()"
+                    WebsitesSelections="@WebsiteSelections.ToList()"
                     SelectedFrame="@_selectedWebsite"
                     OnSelected="HandleWebsiteSelected"
                     SetDetail="@_toggleDetailsSet"
                     OnSelectionChange="@SetOtherIndexOpened"
                     StartingNumber="0"/>
                 <DemosFrameSelections
-                    DemosSelections="@_demoSelections"
+                    DemosSelections="@DemoSelections"
                     SelectedFrame="@_selectedWebsite"
                     OnSelected="HandleWebsiteSelected"
                     SetDetail="@_toggleDetailsSet"
                     OnSelectionChange="@SetOtherIndexOpened"
                     StartingNumber="6"/>
                 break;
-            case ProficienciesMenuOption:
-                //////////TODOS//////////
-                // Full Projects+Demos List
-                //+Categorized by technology: Desktop, Cloud, Web
-                //+Subcategory? Programming language?, Database? CI/CD?
-                <ul>Azure
-                    <li>Proj1</li>
-                    <li>Proj2</li>
-                    <li>Proj3</li>
-                    <li>Proj4</li>
-                </ul>
+            case ProjectsAllMenuOption:
+
+                <FrameSelectionItems
+                    FrameSelections="@AllSelections"
+                    SelectedFrame="@_selectedWebsite"
+                    OnSelected="HandleWebsiteSelected"
+                    OnSelectionChange="@SetOtherIndexOpened"
+                    SetDetail="@_toggleDetailsSet"
+                    StartingNumber="0"
+                    DeploymentAs="@DeploymentAs"
+                    AllSelections="@true" />
+                
                 break;
-            case CybersecurityMenuOption:
+            case ProjectsCyberMenuOption:
                 //////////TODOS//////////
                 // Full Projects+Demos List
                 //+Error statuses
@@ -125,10 +131,20 @@
 </nav>
 
 @code {
-    private const string ProjectsMenuOption = "PROJECTS";
-    private const string ProficienciesMenuOption = "PROFICIENCIES";
-    private const string CybersecurityMenuOption = "CYBERSECURITY";
-    private string _menuOptionSelection = ProjectsMenuOption;
+
+    
+    public List<FrameSelectionOption> ConcatWebsiteAndDemoSelections()
+    {
+        var allSelections = WebsiteSelections.Concat(DemoSelections).ToList();
+            allSelections.Sort((a, b) => (a.Title).CompareTo(b.Title));
+            return allSelections;
+    }
+    public const string DeploymentAs = "ALL";
+
+    private const string ProjectsAllMenuOption = "ALL";
+    private const string ProjectsByTypeMenuOption = "PROFICIENCIES";
+    private const string ProjectsCyberMenuOption = "CYBERSECURITY";
+    private string _menuOptionSelection = ProjectsAllMenuOption;
 
     [Parameter]
     public int StartingNumber { get; set; }
@@ -171,9 +187,11 @@
         
     }
 
-    public required List<FrameSelectionOption> _websiteSelections = FrameSelectionData.WebsiteSelections;
+    public required List<FrameSelectionOption> WebsiteSelections = FrameSelectionData.WebsiteSelections;
 
-    public required List<FrameSelectionOption> _demoSelections = FrameSelectionData.DemoSelections;
+    public required List<FrameSelectionOption> DemoSelections = FrameSelectionData.DemoSelections;
+
+    private List<FrameSelectionOption> AllSelections => ConcatWebsiteAndDemoSelections();
 
     private bool _toggleDetails;
 
@@ -237,10 +255,10 @@
     {
         var relativePath = Nav.ToAbsoluteUri(uri).AbsolutePath;
 
-        var website = _websiteSelections.FirstOrDefault(option =>
+        var website = WebsiteSelections.FirstOrDefault(option =>
             string.Equals(option.Href, relativePath, StringComparison.OrdinalIgnoreCase));
 
-        var demo = _demoSelections.FirstOrDefault(option =>
+        var demo = DemoSelections.FirstOrDefault(option =>
             string.Equals(option.Href, relativePath, StringComparison.OrdinalIgnoreCase));
 
         var selected = website ?? demo;
@@ -262,7 +280,7 @@
     
     private bool SyncSelectionClicked(FrameSelectionOption clicked)
     {
-        var selections = _websiteSelections.Concat(_demoSelections);
+        var selections = WebsiteSelections.Concat(DemoSelections);
 
         var selected = selections.FirstOrDefault(x =>
             string.Equals(x.InnerText, clicked.InnerText, StringComparison.OrdinalIgnoreCase));

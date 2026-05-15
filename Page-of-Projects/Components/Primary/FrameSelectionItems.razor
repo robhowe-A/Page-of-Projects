@@ -4,7 +4,10 @@
 @using ProjectsPage.Models
 
 @namespace ProjectPage.Components.Primary
-
+@if(AllSelections.HasValue){
+<button class="details-panel-sort" @onclick="sortAllAZ">A-Z</button>
+<button class="details-panel-sort" @onclick="sortAllZA">Z-A</button>
+}
 <ul>
     @foreach (var frame in @FrameSelections.ToArray())
     {
@@ -53,6 +56,18 @@
 </ul>
 
 @code {
+    public void sortAllAZ()
+    {
+        FrameSelections
+            .Sort((a, b) => (a.Title).CompareTo(b.Title));
+    }
+    public void sortAllZA()
+    {
+        FrameSelections
+            .Sort((a, b) => (b.Title).CompareTo(a.Title));
+    }
+
+    [Parameter] public bool? AllSelections { get; set; }
     private static Dictionary<string, int> MaintainDialogIndex { get; } = new();
 
     private static Dictionary<string, FrameSelectionOption> DialogIndexData = new();

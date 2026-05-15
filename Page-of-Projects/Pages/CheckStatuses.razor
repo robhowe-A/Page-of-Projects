@@ -4,29 +4,31 @@
 @namespace ProjectsPage.Components.Primary
 @rendermode InteractiveServer
 
-<h2>Status</h2>
-<div>
-    @foreach (var domain in @_domainOptions)
-    {
-        <section>
-        <hgroup class="domain">
-             <h2>@domain.Tld</h2> 
-        </hgroup>
-        <table class="subdomain">
-            <tbody>
-                @foreach (var subdomain in domain.Sites)
-                {
-                <tr>
-                    <td class="status">@(_statuses.TryGetValue(subdomain.Url, out var status) ? status : "…")</td>
-                    <td><a href="@subdomain.Url" rel="noopener" title="@subdomain.Name" target="_blank">@subdomain.Name</a></td>
-                </tr>
-                }
-            </tbody>
-        </table>
-        </section>
-    }
-</div>
-
+<PageTitle>roberthowell.dev</PageTitle>
+<article>
+    <h2>Status</h2>
+    <div>
+        @foreach (var domain in @_domainOptions)
+        {
+            <section>
+            <hgroup class="domain">
+                 <h2>@domain.Tld</h2> 
+            </hgroup>
+            <table class="subdomain">
+                <tbody>
+                    @foreach (var subdomain in domain.Sites)
+                    {
+                    <tr>
+                        <td class="status">@(_statuses.TryGetValue(subdomain.Url, out var status) ? status : "…")</td>
+                        <td><a href="@subdomain.Url" rel="noopener" title="@subdomain.Name" target="_blank">@subdomain.Name</a></td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+            </section>
+        }
+    </div>
+</article>
 @code {
     private readonly Dictionary<string, string> _statuses = new();
 

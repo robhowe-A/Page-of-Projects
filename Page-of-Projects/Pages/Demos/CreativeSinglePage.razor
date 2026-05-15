@@ -2,9 +2,30 @@
 
 @page "/demos/creativesinglepage"
 @using ProjectPage.Components.Primary
+@using ProjectsPage.Models
 @namespace ProjectsPage.Components.Pages.Demos
 
 <PageFrame 
     Url="https://creative-demo.rhdeveloping.com/"
     Title="Creative Single Page"
-    IsWebsite="false"/>
+    IsWebsite="false"
+    SelectedWebsiteChanged="OnSelectedWebsiteChanged"/>
+
+@if (PageViewingSelected)
+{
+    <PageViewing PageSelection="SelectedWebsite"/>
+}
+
+@code {
+    
+    [Parameter] public required FrameSelectionOption SelectedWebsite { get; set; }
+    private static bool PageViewingSelected { get; set; }
+    private void OnSelectedWebsiteChanged(FrameSelectionOption? selectedWebsite)
+    {
+        SelectedWebsite = selectedWebsite ?? throw new ApplicationException("No website details");
+        PageViewingSelected = true;
+        WriteLine($"Page loaded project data: " +
+                  $"{selectedWebsite.Title} (selectedWebsite = " +
+                  $"{selectedWebsite.DocHrefTitles})");
+    }
+}

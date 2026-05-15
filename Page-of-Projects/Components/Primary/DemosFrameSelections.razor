@@ -4,6 +4,8 @@
 @namespace ProjectPage.Components.Primary
 
 <h2>Demos</h2>
+<button class="details-panel-sort" @onclick="sortDemosAZ">A-Z</button>
+<button class="details-panel-sort" @onclick="sortDemosZA">Z-A</button>
 
 <FrameSelectionItems
     FrameSelections="@DemosSelections"
@@ -15,6 +17,14 @@
     DeploymentAs="@DeploymentAs" />
 
 @code {
+    public void sortDemosAZ()
+    {
+        DemosSelections.Sort((a, b) => (a.Title).CompareTo(b.Title));
+    }
+    public void sortDemosZA()
+    {
+        DemosSelections.Sort((a, b) => (b.Title).CompareTo(a.Title));
+    }
     public const string DeploymentAs = "DEMO";
 
     [Parameter]

@@ -1,0 +1,50 @@
+<!-- --Copyright (c) 2026 Robert A. Howell -->
+
+@using ProjectsPage.Models
+<p>Everything below is part of a test arrangement.</p>
+<h2>@PageSelection.Title</h2>
+@* //////////TODOS////////// *@
+@* // Full Projects+Demos List *@
+@* //+Categorized by technology: Desktop, Cloud, Web *@
+@* //+Subcategory? Programming language?, Database? CI/CD? *@
+@* <ul>Azure *@
+@*     <li>Proj1</li> *@
+@*     <li>Proj2</li> *@
+@*     <li>Proj3</li> *@
+@*     <li>Proj4</li> *@
+@* </ul> *@
+<div>
+    <p>@PageSelection.ExternalHref</p>
+    <p>@PageSelection.ExternalTitle</p>
+    <p>@PageSelection.Href</p>
+    <p>@PageSelection.ImageAltText</p>
+    <p>@PageSelection.ImageUrl</p>
+    <p>@PageSelection.InnerText</p>
+    @if(PageSelection.ReferenceHrefs is not null)
+    @foreach(var item in PageSelection.ReferenceHrefs){
+        <p>@item</p>
+    }
+    @foreach(var item2 in PageSelection.DocHrefTitles)
+    {
+        <p>@item2</p>               
+    }
+    <p>@PageSelection.SelectionDetails.Deployment</p>
+    @if(PageSelection.SelectionDetails.Descriptions is not null)
+    @foreach (var item3 in PageSelection.SelectionDetails.Descriptions)
+    {
+        <p>@item3</p>
+    }
+    @if(PageSelection.SelectionDetails.DetailsList is not null)
+    @foreach (var item4 in PageSelection.SelectionDetails.DetailsList)
+    {
+        <p>@item4</p>
+    }
+    <p>@PageSelection.SelectionDetails.Framework</p>
+    <p>@PageSelection.SelectionDetails.Miscellaneous</p>
+    <p>@PageSelection.SelectionDetails.ProgrammingLanguage</p>
+</div>
+
+@code {
+    [Parameter]
+    public required FrameSelectionOption PageSelection { get; set; }
+}

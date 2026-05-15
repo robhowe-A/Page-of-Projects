@@ -2,19 +2,30 @@
 
 @page "/demos/typingspeedtest"
 @using ProjectPage.Components.Primary
+@using ProjectsPage.Models
 @namespace ProjectsPage.Components.Pages.Demos
 
 <PageFrame 
     Url="https://typingspeedtest-demo.rhdeveloping.com/"
     Title="Typing Speed Test"
-    IsWebsite="false"/>
+    IsWebsite="false"
+    SelectedWebsiteChanged="OnSelectedWebsiteChanged"/>
+
+@if (PageViewingSelected)
+{
+    <PageViewing PageSelection="SelectedWebsite"/>
+}
 
 @code {
-
-    protected override Task OnInitializedAsync()
+    
+    [Parameter] public required FrameSelectionOption SelectedWebsite { get; set; }
+    private static bool PageViewingSelected { get; set; }
+    private void OnSelectedWebsiteChanged(FrameSelectionOption? selectedWebsite)
     {
-        WriteLine("Typing Speed Test Demo");
-        InvokeAsync(StateHasChanged);
-        return base.OnInitializedAsync();
-    }   
+        SelectedWebsite = selectedWebsite ?? throw new ApplicationException("No website details");
+        PageViewingSelected = true;
+        WriteLine($"Page loaded project data: " +
+                  $"{selectedWebsite.Title} (selectedWebsite = " +
+                  $"{selectedWebsite.DocHrefTitles})");
+    }
 }

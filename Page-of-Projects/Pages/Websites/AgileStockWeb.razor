@@ -2,9 +2,30 @@
 
 @page "/websites/agilestock-web"
 @using ProjectPage.Components.Primary
+@using ProjectsPage.Models
 @namespace ProjectsPage.Components.Pages.Websites
 
 <PageFrame 
     Url="https://roberthagilestockweb.com/"
     Title="AgileStock Web"
-    IsWebsite="true"/>
+    IsWebsite="true"
+    SelectedWebsiteChanged="OnSelectedWebsiteChanged"/>
+
+@if (PageViewingSelected)
+{
+    <PageViewing PageSelection="SelectedWebsite"/>
+}
+
+@code {
+    
+    [Parameter] public required FrameSelectionOption SelectedWebsite { get; set; }
+    private static bool PageViewingSelected { get; set; }
+    private void OnSelectedWebsiteChanged(FrameSelectionOption? selectedWebsite)
+    {
+        SelectedWebsite = selectedWebsite ?? throw new ApplicationException("No website details");
+        PageViewingSelected = true;
+        WriteLine($"Page loaded project data: " +
+                  $"{selectedWebsite.Title} (selectedWebsite = " +
+                  $"{selectedWebsite.DocHrefTitles})");
+    }
+}

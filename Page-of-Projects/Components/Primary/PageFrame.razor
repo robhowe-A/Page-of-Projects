@@ -26,12 +26,39 @@ else
 @code {
     [Parameter]
     public string Url { get; set; } = string.Empty;
+
+    private static string TitleFrom { get; set; }
     [Parameter]
-    public string Title { get; set; } = string.Empty;
+    public string Title
+    {
+        get;
+        set 
+        { 
+            TitleFrom = value;
+            field = value;
+        }
+    }
+
+    private static bool IsWebsiteFrom { get; set; }
+
     [Parameter]
-    public bool? IsWebsite { get; set; }
+    public bool? IsWebsite
+    {
+        get;
+        set
+        {
+            IsWebsiteFrom = (bool)value;
+            field = value;
+        }
+    }
+
     [Parameter]
     public string? DocsPathUri { get; set; }
+
+    [Parameter] 
+    public EventCallback<FrameSelectionOption?> SelectedWebsiteChanged { get; set; }
+    
+    private FrameSelectionOption? SelectedWebsite { get; set; } = IsWebsiteFrom ? FrameSelectionData.WebsiteSelections.FirstOrDefault(x => x.Title == TitleFrom) : FrameSelectionData.DemoSelections.FirstOrDefault(x => x.Title == TitleFrom);
 
     private string _centralizedPageUrl = string.Empty;
     private string _centralizedTitleStr = string.Empty;
@@ -39,6 +66,10 @@ else
     protected override void OnInitialized()
     {
         GetPageOptionDetail();
+        if (SelectedWebsite != null)
+        {
+            SelectedWebsiteChanged.InvokeAsync(SelectedWebsite);
+        }
     }
 
     private void GetPageOptionDetail()
