@@ -5,6 +5,14 @@ using System.Text.Json.Serialization;
 
 namespace ProjectsPage.Models;
 
+public enum SortOrder
+{
+    NEWEST,
+    OLDEST,
+    AZ,
+    ZA
+};
+
 public class FrameSelectionOption
 {
     [JsonConstructor]
@@ -77,6 +85,7 @@ public class FrameSelectionOption
         return hrefs;
     }
 };
+
 internal sealed class FrameSelectionFetch
 {
     public string[] GetWebsitesData(string site)
@@ -152,4 +161,4 @@ internal static class FrameSelectionData
         return values;
     }
 
-}
+};
