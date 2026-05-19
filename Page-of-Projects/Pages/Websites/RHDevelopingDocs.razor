@@ -22,7 +22,7 @@
     private string? DocsPathUri { get; set; }
 
     
-    [Parameter] public required FrameSelectionOption SelectedWebsite { get; set; }
+    public required FrameSelectionOption SelectedWebsite { get; set; }
     private static bool PageViewingSelected { get; set; }
     private void OnSelectedWebsiteChanged(FrameSelectionOption? selectedWebsite)
     {

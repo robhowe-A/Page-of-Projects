@@ -65,25 +65,29 @@ else
 
     protected override void OnInitialized()
     {
-        GetPageOptionDetail();
+        var selectedWebsite = GetPageOptionDetail();
+        if (selectedWebsite != null)
+        {
+            SelectedWebsite = selectedWebsite;
+        }
         if (SelectedWebsite != null)
         {
             SelectedWebsiteChanged.InvokeAsync(SelectedWebsite);
         }
     }
 
-    private void GetPageOptionDetail()
+    private FrameSelectionOption? GetPageOptionDetail()
     {
         if(IsWebsite == null)
             throw new InvalidDataException();
 
-        FrameSelectionOption spaceFlightWeb;
+        FrameSelectionOption anyWebsite;
         try
         {
             var websitesOptionsData = FrameSelectionData.WebsiteSelections
                 .Concat(FrameSelectionData.DemoSelections);
 
-            spaceFlightWeb = websitesOptionsData
+            anyWebsite = websitesOptionsData
                 .FirstOrDefault(x =>
                 {
                     return x.Title == Title;
@@ -94,11 +98,13 @@ else
             Console.Write("An exception occurred due to invalid data: ");
             Console.Write($"{e.Message}\n{e.StackTrace}\n");
             Console.Write($"Continuing to display the page with URL {Url}.");
-            return;
+            return null;
         }
 
-        _centralizedPageUrl = spaceFlightWeb.ExternalHref;
-        _centralizedTitleStr = spaceFlightWeb.Title;
+        _centralizedPageUrl = anyWebsite.ExternalHref;
+        _centralizedTitleStr = anyWebsite.Title;
+        return anyWebsite;
+        
     }
 
 }
