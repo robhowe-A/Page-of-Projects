@@ -17,15 +17,22 @@
     DeploymentAs="@DeploymentAs" />
 
 @code {
-    public void sortDemosAZ()
+    public async Task sortDemosAZ()
     {
         DemosSelections.Sort((a, b) => (a.Title).CompareTo(b.Title));
+        SortOrderSelected = SortOrder.AZ;
+        await OnResortedListSelected.InvokeAsync((SortOrderSelected, DeploymentAs));
     }
-    public void sortDemosZA()
+    public async Task sortDemosZA()
     {
         DemosSelections.Sort((a, b) => (b.Title).CompareTo(a.Title));
+        SortOrderSelected = SortOrder.ZA;
+        await OnResortedListSelected.InvokeAsync((SortOrderSelected, DeploymentAs));
     }
     public const string DeploymentAs = "DEMO";
+    [Parameter]
+    public EventCallback<(SortOrder, string)> OnResortedListSelected { get; set; }
+    private SortOrder SortOrderSelected { get; set; }
 
     [Parameter]
     public EventCallback<FrameSelectionOption> OnSelected { get; set; }

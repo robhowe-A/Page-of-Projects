@@ -7,44 +7,45 @@
 @inject NavigationManager Nav
 @namespace ProjectsPages.Components.Primary
 
-    @if (_selectedWebsite is null)
-    {
-        //_selectedWebsite = _websiteSelections[0];
-    }
-    else
-    {
-        <div id="menu-selection">
-            <h1 data-visibility="no-result">@_selectedWebsite.Title</h1>
-            <button @onclick="() => OnDetailsToggleOpen(true)" class="details-panel-toggle">Details</button>
-            <a class="page-view-detail external" href="@_selectedWebsite.ExternalHref" id="Details-Panel-External"
-               referrerpolicy="strict-origin-when-cross-origin"
-               title="@_selectedWebsite.ExternalTitle"
-               target="_blank">Go there</a>
-            <button class="copy-link @(_copied ? "copied": "")" @onclick="CopyExternalHrefAsync">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
-                    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
-                    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
-                </svg>
-            </button>
-            <SelectWebsiteDetails
-                SelectedWebsite="@_selectedWebsiteDetails"
-                ShowDetails="@_toggleDetails"
-                OnCloseClicked="OnDetailsToggleOpen"
-                OnAfterNavigateClosePanel="OnDetailsToggleOpen"
-                StartingNumber="@_otherIndexOpened" />
-            <HyperTextMarkdownSearch
-                OnReceiveSearchFindingIndexClicked="@SetOtherIndexOpened"
-                OnReceiveSearchFindingNodeClicked="@ChangeSelectedWebsiteDetails"
-                OnCount="SetCount"
-                Nodes="@FoundElements" />
-            @* how about a toggle? *@
-            <div class="page-frame-toggle">
-                <label id="testing">
-                    <input type="checkbox"><span>TEST</span>
-                </label>
-            </div>
+@if(@_selectedWebsite != null)
+{
+<div id="menu-selection">
+    <h1 data-visibility="no-result">@_selectedWebsite.Title</h1>
+    <button @onclick="() => OnDetailsToggleOpen(true)" class="details-panel-toggle">Details</button>
+    <a class="page-view-detail external" href="@_selectedWebsite.ExternalHref" id="Details-Panel-External"
+       referrerpolicy="strict-origin-when-cross-origin"
+       title="@_selectedWebsite.ExternalTitle"
+       target="_blank">Go there</a>
+    <button class="copy-link @(_copied ? "copied": "")" @onclick="CopyExternalHrefAsync">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+            <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
+            <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
+        </svg>
+    </button>
+    <SelectWebsiteDetails
+        SelectedWebsite="@_selectedWebsiteDetails"
+        ShowDetails="@_toggleDetails"
+        OnCloseClicked="OnDetailsToggleOpen"
+        OnAfterNavigateClosePanel="OnDetailsToggleOpen"
+        StartingNumber="@OtherIndexOpened" />
+    <HyperTextMarkdownSearch
+        OnReceiveSearchFindingIndexClicked="@SetOtherIndexOpened"
+        OnReceiveSearchFindingNodeClicked="@ChangeSelectedWebsiteDetails"
+        OnCount="SetCount"
+        Nodes="@_foundElements" />
+    @* how about a toggle? *@
+    <div class="page-frame-toggle" >
+        <div id="pill-display" class="pill-toggle" @onclick="ToggleFrameView">
+            <div></div>
         </div>
-    }
+        <label id="testing">
+            <input type="checkbox" checked="@(_isFrameView ? true : null)">
+            <span id="frameview">Framed</span>
+            <span id="detailview">About</span>
+        </label>
+    </div>
+</div>
+}
 
 <div id="growing-placeholder"></div>
 <nav id="menu" class="@_menuOptionSelection.ToLower() @(_selectedWebsite is null ? "no-menu-selection" : "")">
@@ -80,14 +81,16 @@
                     OnSelected="HandleWebsiteSelected"
                     SetDetail="@_toggleDetailsSet"
                     OnSelectionChange="@SetOtherIndexOpened"
-                    StartingNumber="0"/>
+                    StartingNumber="0"
+                    OnResortedListSelected="@ResortListSelected" />
                 <DemosFrameSelections
                     DemosSelections="@DemoSelections"
                     SelectedFrame="@_selectedWebsite"
                     OnSelected="HandleWebsiteSelected"
                     SetDetail="@_toggleDetailsSet"
                     OnSelectionChange="@SetOtherIndexOpened"
-                    StartingNumber="6"/>
+                    StartingNumber="6"
+                    OnResortedListSelected="@ResortListSelected" />
                 break;
             case ProjectsAllMenuOption:
 
@@ -99,7 +102,7 @@
                     SetDetail="@_toggleDetailsSet"
                     StartingNumber="0"
                     DeploymentAs="@DeploymentAs"
-                    AllSelections="@true" />
+                    OnResortedListSelected="@ResortListSelected" />
                 
                 break;
             case ProjectsCyberMenuOption:
@@ -132,15 +135,74 @@
 </nav>
 
 @code {
+    private bool _isFrameView = false;
+    private void ToggleFrameView()
+    {
+        _isFrameView = !_isFrameView;    
+    } 
+    
+    private List<FrameSelectionOption> AllSelections { get; set; } = [];
+    private async Task ResortListSelected((SortOrder sortOrder, string deploymentAs) args)
+    {
 
+        switch (args.deploymentAs)
+        {
+            case "ALL":
+                if(args.sortOrder == SortOrder.NEWEST)
+                    AllSelections = AllSelections.OrderByDescending(x => x.SelectionDetails.StartDate)
+                        .ToList();
+                if (args.sortOrder == SortOrder.OLDEST)
+                    AllSelections = AllSelections.OrderBy(x => x.SelectionDetails.StartDate)
+                        .ToList();
+                if(args.sortOrder == SortOrder.AZ)
+                    AllSelections = AllSelections.OrderBy(x => x.Title)
+                        .ToList();
+                if(args.sortOrder == SortOrder.ZA)
+                    AllSelections = AllSelections.OrderByDescending(x => x.Title)
+                        .ToList();
+                break;  
+            case "WEBSITE":
+                if(args.sortOrder == SortOrder.NEWEST)
+                    WebsiteSelections = WebsiteSelections.OrderByDescending(x => x.SelectionDetails.StartDate)
+                        .ToList();
+                if(args.sortOrder == SortOrder.OLDEST)
+                    WebsiteSelections = WebsiteSelections.OrderBy(x => x.SelectionDetails.StartDate)
+                        .ToList();
+                if(args.sortOrder == SortOrder.AZ)
+                    WebsiteSelections = WebsiteSelections.OrderBy(x => x.Title)
+                        .ToList();
+                if(args.sortOrder == SortOrder.ZA)
+                    WebsiteSelections = WebsiteSelections.OrderByDescending(x => x.Title)
+                        .ToList();
+                break;
+            case "DEMO":
+                if(args.sortOrder == SortOrder.NEWEST)
+                    DemoSelections = DemoSelections.OrderByDescending(x => x.SelectionDetails.StartDate)
+                        .ToList();
+                if(args.sortOrder == SortOrder.OLDEST)
+                    DemoSelections = DemoSelections.OrderBy(x => x.SelectionDetails.StartDate)
+                        .ToList();
+                if(args.sortOrder == SortOrder.AZ)
+                    DemoSelections = DemoSelections.OrderBy(x => x.Title)
+                        .ToList();
+                if(args.sortOrder == SortOrder.ZA)
+                    DemoSelections = DemoSelections.OrderByDescending(x => x.Title)
+                        .ToList();
+                break;
+            default:
+                throw new ApplicationException("No selection found!");
+
+        }
+            await InvokeAsync(StateHasChanged);
+    }
     
     public List<FrameSelectionOption> ConcatWebsiteAndDemoSelections()
     {
         var allSelections = WebsiteSelections.Concat(DemoSelections).ToList();
-            allSelections.Sort((a, b) => (a.Title).CompareTo(b.Title));
+            allSelections.Sort((a, b) => string.Compare((a.Title), b.Title, StringComparison.OrdinalIgnoreCase));
             return allSelections;
     }
-    public const string DeploymentAs = "ALL";
+    private const string DeploymentAs = "ALL";
 
     private const string ProjectsAllMenuOption = "ALL";
     private const string ProjectsByTypeMenuOption = "PROFICIENCIES";
@@ -158,7 +220,7 @@
 
     private int Found { get; set; }
 
-    private List<object> FoundElements = [];
+    private List<object> _foundElements = [];
 
     public void SetCount(int count)
     {
@@ -173,7 +235,7 @@
         await InvokeAsync(StateHasChanged);
         _toggleDetails = true;
         _selectedWebsiteDetails = selectedFrame;
-        _otherIndexOpened = dialogIndexToOpen;
+        OtherIndexOpened = dialogIndexToOpen;
 
         await InvokeAsync(StateHasChanged);
     }
@@ -192,13 +254,10 @@
 
     public required List<FrameSelectionOption> DemoSelections = FrameSelectionData.DemoSelections;
 
-    private List<FrameSelectionOption> AllSelections => ConcatWebsiteAndDemoSelections();
-
     private bool _toggleDetails;
 
     private bool? _toggleDetailsSet;
     private bool _copied;
-    private Projects Projects;
 
     [Inject]
     private ProjectsPage.Services.ClipboardService Clipboard { get; set; } = default!;
@@ -211,11 +270,11 @@
         if (_selectedWebsiteDetails != _selectedWebsite)
         {
             _selectedWebsiteDetails = _selectedWebsite;
-            _otherIndexOpened = FrameSelectionItems.DialogIndexDataFetch.GetFrameOptionIndexByFrameSelectionOption(_selectedWebsiteDetails);
+            OtherIndexOpened = FrameSelectionItems.DialogIndexDataFetch.GetFrameOptionIndexByFrameSelectionOption(_selectedWebsiteDetails);
         }
     }
 
-    private int _otherIndexOpened { get; set; } = -1;
+    private int OtherIndexOpened { get; set; } = -1;
 
     private async Task CopyExternalHrefAsync()
     {
@@ -236,6 +295,13 @@
 
     protected override void OnInitialized()
     {
+        AllSelections = WebsiteSelections.Concat(DemoSelections)
+            .OrderByDescending(x => x.SelectionDetails.StartDate)
+            .ThenBy(x => x.Title)
+            .ToList();
+        
+        WebsiteSelections = FrameSelectionData.WebsiteSelections;
+
         //On refresh, Frame Selection should match the current url data
         //var relativePath = Nav.ToAbsoluteUri(Nav.Uri).AbsolutePath;
         Nav.LocationChanged += HandleLocationChanged;
@@ -268,14 +334,14 @@
         {
             _selectedWebsite = null;
             _selectedWebsiteDetails = null;
-            _otherIndexOpened = -1;
+            OtherIndexOpened = -1;
             return;
         }
 
         _selectedWebsite = selected;
         _selectedWebsiteDetails = selected;
 
-        _otherIndexOpened =
+        OtherIndexOpened =
             FrameSelectionItems.DialogIndexDataFetch.GetFrameOptionIndexByFrameSelectionOption(selected);
     }
     
@@ -291,7 +357,7 @@
         //replace frame selection with the clicked choice
         _selectedWebsite = selected;
         _selectedWebsiteDetails = _selectedWebsite;
-        _otherIndexOpened = FrameSelectionItems.DialogIndexDataFetch.GetFrameOptionIndexByFrameSelectionOption(_selectedWebsiteDetails);
+        OtherIndexOpened = FrameSelectionItems.DialogIndexDataFetch.GetFrameOptionIndexByFrameSelectionOption(_selectedWebsiteDetails);
         return true;
     }
     

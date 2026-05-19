@@ -14,18 +14,27 @@
     OnSelectionChange="@OnSelectionChange"
     SetDetail="@SetDetail"
     StartingNumber="@StartingNumber"
-    DeploymentAs="@DeploymentAs" />
+    DeploymentAs="@DeploymentAs"
+    OnResortedListSelected="@OnResortedListSelected" />
 
 @code {
-    public void sortWebsitesAZ()
+    public async Task sortWebsitesAZ()
     {
-        WebsitesSelections.Sort((a, b) => (a.Title).CompareTo(b.Title));
+        //WebsitesSelections.Sort((a, b) => (a.Title).CompareTo(b.Title));
+        SortOrderSelected = SortOrder.AZ;
+        await OnResortedListSelected.InvokeAsync((SortOrderSelected, DeploymentAs));
     }
-    public void sortWebsitesZA()
+    public async Task sortWebsitesZA()
     {
-        WebsitesSelections.Sort((a, b) => (b.Title).CompareTo(a.Title));
+        //WebsitesSelections.Sort((a, b) => (b.Title).CompareTo(a.Title));
+        SortOrderSelected = SortOrder.ZA;
+        await OnResortedListSelected.InvokeAsync((SortOrderSelected, DeploymentAs));
     }
     public const string DeploymentAs = "WEBSITE";
+    [Parameter]
+    public EventCallback<(SortOrder, string)> OnResortedListSelected { get; set; }
+    private SortOrder SortOrderSelected { get; set; }
+    
     [Parameter]
     public EventCallback<FrameSelectionOption> OnSelected { get; set; }
 

@@ -4,11 +4,11 @@
 @using ProjectsPage.Models
 
 @namespace ProjectPages.Components.Primary
-@if(AllSelections.HasValue){
+@if(DeploymentAs == "ALL"){
+<button class="details-panel-sort" @onclick="sortAllDateEnd">Newest</button>
+<button class="details-panel-sort" @onclick="sortAllDateStart">Started</button>
 <button class="details-panel-sort" @onclick="sortAllAZ">A-Z</button>
 <button class="details-panel-sort" @onclick="sortAllZA">Z-A</button>
-<button class="details-panel-sort" @onclick="sortAllDateStart">Started</button>
-<button class="details-panel-sort" @onclick="sortAllDateEnd">Newest</button>
 
 }
 <ul>
@@ -60,28 +60,28 @@
 
 @code {
 
-    public void sortAllDateStart()
+    public async Task sortAllDateStart()
     {
-        FrameSelections
-            .Sort((a, b) => Nullable.Compare(a.SelectionDetails.StartDate,b.SelectionDetails.StartDate));
+        SortOrderSelected = SortOrder.OLDEST;
+        await OnResortedListSelected.InvokeAsync((SortOrderSelected, DeploymentAs));
     }
 
-    public void sortAllDateEnd()
+    public async Task sortAllDateEnd()
     {
-        
+        SortOrderSelected = SortOrder.NEWEST;
+        await OnResortedListSelected.InvokeAsync((SortOrderSelected, DeploymentAs));
     }
-    public void sortAllAZ()
+    public async Task sortAllAZ()
     {
-        FrameSelections
-            .Sort((a, b) => (a.Title).CompareTo(b.Title));
+        SortOrderSelected = SortOrder.AZ;
+        await OnResortedListSelected.InvokeAsync((SortOrderSelected, DeploymentAs));
     }
-    public void sortAllZA()
+    public async Task sortAllZA()
     {
-        FrameSelections
-            .Sort((a, b) => (b.Title).CompareTo(a.Title));
+        SortOrderSelected = SortOrder.ZA;
+        await OnResortedListSelected.InvokeAsync((SortOrderSelected, DeploymentAs));
     }
 
-    [Parameter] public bool? AllSelections { get; set; } //For full list sorting
     private static Dictionary<string, int> MaintainDialogIndex { get; } = new();
 
     private static Dictionary<string, FrameSelectionOption> DialogIndexData = new();
@@ -96,6 +96,10 @@
 
     [Parameter]
     public EventCallback<FrameSelectionOption> OnSelected { get; set; }
+    
+    [Parameter]
+    public EventCallback<(SortOrder, string)> OnResortedListSelected { get; set; }
+    private SortOrder SortOrderSelected { get; set; }
 
     //[Parameter]
     //public EventCallback<(bool, FrameSelectionOption, int)> OnSelectionChange { get; set; }
