@@ -85,12 +85,12 @@
     public int DialogIndex { get; set; }
     
     [Parameter]
-    public EventCallback<bool> OnAfterNavigateClosePanel { get; set; }
+    public EventCallback<bool> OnAfterNavigateToDocsFrameCloseSelectionDetailPanel { get; set; }
 
     private async Task OpenToProjectDocsEndpoint(string projectUrl)
     {
         var encoded = Uri.EscapeDataString(projectUrl);
-        await OnAfterNavigateClosePanel.InvokeAsync(false);
+        await OnAfterNavigateToDocsFrameCloseSelectionDetailPanel.InvokeAsync(false);
         Navigation.NavigateTo($"/websites/project-docs?reluri={encoded}");
     }
 }

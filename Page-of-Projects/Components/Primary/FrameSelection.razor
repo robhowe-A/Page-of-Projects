@@ -26,7 +26,7 @@
         SelectedWebsite="@_selectedWebsiteDetails"
         ShowDetails="@_toggleDetails"
         OnCloseClicked="OnDetailsToggleOpen"
-        OnAfterNavigateClosePanel="OnDetailsToggleOpen"
+        OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="OnAfterNavigateClosePanel"
         StartingNumber="@OtherIndexOpened" />
     <HyperTextMarkdownSearch
         OnReceiveSearchFindingIndexClicked="@SetOtherIndexOpened"
@@ -39,7 +39,7 @@
             <div></div>
         </div>
         <label id="testing">
-            <input type="checkbox" checked="@(_isFrameView ? true : null)">
+            <input type="checkbox" checked="@(_isAboutMainView ? true : null)">
             <span id="frameview">Framed</span>
             <span id="detailview">About</span>
         </label>
@@ -135,10 +135,10 @@
 </nav>
 
 @code {
-    private bool _isFrameView = false;
+    private bool _isAboutMainView = false;
     private void ToggleFrameView()
     {
-        _isFrameView = !_isFrameView;    
+        _isAboutMainView = !_isAboutMainView;    
     } 
     
     private List<FrameSelectionOption> AllSelections { get; set; } = [];
@@ -262,6 +262,13 @@
     [Inject]
     private ProjectsPage.Services.ClipboardService Clipboard { get; set; } = default!;
 
+    private void OnAfterNavigateClosePanel(bool opened)
+    {
+        if(_isAboutMainView)
+            _isAboutMainView = false;
+        OnDetailsToggleOpen(opened);
+    }
+    
     public void OnDetailsToggleOpen(bool opened)
     {
         _toggleDetails = opened;
