@@ -61,8 +61,11 @@ public class FrameSelectionOption
                 continue;
             }
             var requestUri = new Uri(href, UriKind.Absolute);
+#if LOOPBACK
+            continue;
+#endif
             var response = client.GetAsync(requestUri).Result.Content.ReadAsStringAsync().Result;
-    
+
             //read result to show the html response head
             //filter for <title>
             var titleRegexMatch = System.Text.RegularExpressions.Regex.Match(

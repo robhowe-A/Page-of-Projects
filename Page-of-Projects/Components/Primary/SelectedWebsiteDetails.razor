@@ -44,7 +44,7 @@
             }
         </ul>
     }
-    @if (@SelectedWebsite.ReferenceHrefs is not null && @SelectedWebsite.ReferenceHrefs.Count > 0)
+    @if ((@SelectedWebsite.ReferenceHrefs is not null && @SelectedWebsite.ReferenceHrefs.Count > 0) && @SelectedWebsite.DocHrefTitles.Count == @SelectedWebsite.ReferenceHrefs.Count)
     {
         <h4>Links:</h4>
         @for (var i=0; i<SelectedWebsite.ReferenceHrefs.Count; i++)

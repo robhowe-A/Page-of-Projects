@@ -4,8 +4,14 @@
 @namespace ProjectPages.Components.Primary
 
 <h2>Demos</h2>
-<button class="details-panel-sort" @onclick="sortDemosAZ">A-Z</button>
-<button class="details-panel-sort" @onclick="sortDemosZA">Z-A</button>
+@if (!IsSortedAZ)
+{
+    <button class="details-panel-sort" @onclick="sortDemosAZ">A-Z</button>
+}
+@if (IsSortedAZ)
+{
+    <button class="details-panel-sort" @onclick="sortDemosZA">Z-A</button>
+}
 
 <FrameSelectionItems
     FrameSelections="@DemosSelections"
@@ -21,14 +27,17 @@
     {
         DemosSelections.Sort((a, b) => (a.Title).CompareTo(b.Title));
         SortOrderSelected = SortOrder.AZ;
+        IsSortedAZ = true;
         await OnResortedListSelected.InvokeAsync((SortOrderSelected, DeploymentAs));
     }
     public async Task sortDemosZA()
     {
         DemosSelections.Sort((a, b) => (b.Title).CompareTo(a.Title));
         SortOrderSelected = SortOrder.ZA;
+        IsSortedAZ = false;
         await OnResortedListSelected.InvokeAsync((SortOrderSelected, DeploymentAs));
     }
+    private bool IsSortedAZ = default;
     public const string DeploymentAs = "DEMO";
     [Parameter]
     public EventCallback<(SortOrder, string)> OnResortedListSelected { get; set; }

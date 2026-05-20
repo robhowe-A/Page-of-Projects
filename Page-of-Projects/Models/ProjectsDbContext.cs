@@ -40,7 +40,7 @@ namespace ProjectsPage.Models
         private ProjectsDbContext CreateContext()
         {
 
-#if DEBUG
+#if DEBUG || LOOPBACK
             //Create a context for this backend request to use
             var iConfig = new ConfigurationBuilder().AddEnvironmentVariables().AddUserSecrets(Assembly.GetExecutingAssembly()).Build();
             string str = iConfig.GetConnectionString("ProjectsDb") ?? string.Empty;

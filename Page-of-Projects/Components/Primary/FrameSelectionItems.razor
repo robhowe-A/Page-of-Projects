@@ -5,11 +5,22 @@
 
 @namespace ProjectPages.Components.Primary
 @if(DeploymentAs == "ALL"){
-<button class="details-panel-sort" @onclick="sortAllDateEnd">Newest</button>
-<button class="details-panel-sort" @onclick="sortAllDateStart">Started</button>
-<button class="details-panel-sort" @onclick="sortAllAZ">A-Z</button>
-<button class="details-panel-sort" @onclick="sortAllZA">Z-A</button>
-
+    @if (!IsSortedNewest)
+    {
+        <button class="details-panel-sort" @onclick="sortAllDateEnd">Newest</button>
+    }
+    @if (IsSortedNewest)
+    {
+        <button class="details-panel-sort" @onclick="sortAllDateStart">Started</button>
+    }
+    @if (!IsSortedAZ)
+    {
+        <button class="details-panel-sort" @onclick="sortAllAZ">A-Z</button>
+    }
+    @if (IsSortedAZ)
+    {
+        <button class="details-panel-sort" @onclick="sortAllZA">Z-A</button>
+    }
 }
 <ul>
     @foreach (var frame in @FrameSelections.ToArray())
@@ -63,25 +74,31 @@
     public async Task sortAllDateStart()
     {
         SortOrderSelected = SortOrder.OLDEST;
+        IsSortedNewest = false;
         await OnResortedListSelected.InvokeAsync((SortOrderSelected, DeploymentAs));
     }
-
     public async Task sortAllDateEnd()
     {
         SortOrderSelected = SortOrder.NEWEST;
+        IsSortedNewest = true;
         await OnResortedListSelected.InvokeAsync((SortOrderSelected, DeploymentAs));
     }
     public async Task sortAllAZ()
     {
         SortOrderSelected = SortOrder.AZ;
+        IsSortedAZ = true;
         await OnResortedListSelected.InvokeAsync((SortOrderSelected, DeploymentAs));
     }
     public async Task sortAllZA()
     {
         SortOrderSelected = SortOrder.ZA;
+        IsSortedAZ = false;
         await OnResortedListSelected.InvokeAsync((SortOrderSelected, DeploymentAs));
     }
 
+    private bool IsSortedAZ = default;
+    private bool IsSortedNewest = true; //sort order starts as NEWEST
+    
     private static Dictionary<string, int> MaintainDialogIndex { get; } = new();
 
     private static Dictionary<string, FrameSelectionOption> DialogIndexData = new();
@@ -99,7 +116,8 @@
     
     [Parameter]
     public EventCallback<(SortOrder, string)> OnResortedListSelected { get; set; }
-    private SortOrder SortOrderSelected { get; set; }
+
+    private SortOrder SortOrderSelected { get; set; } = SortOrder.NEWEST;
 
     //[Parameter]
     //public EventCallback<(bool, FrameSelectionOption, int)> OnSelectionChange { get; set; }
