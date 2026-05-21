@@ -11,7 +11,7 @@
 {
 <div id="menu-selection">
     <h1 data-visibility="no-result">@_selectedWebsite.Title</h1>
-    <button @onclick="() => OnDetailsToggleOpen(true)" class="details-panel-toggle">Details</button>
+    <button @onclick="() => OnDetailsToggleOpen(true)" id="details-panel-toggle">Details</button>
     <a class="page-view-detail external" href="@_selectedWebsite.ExternalHref" id="Details-Panel-External"
        referrerpolicy="strict-origin-when-cross-origin"
        title="@_selectedWebsite.ExternalTitle"

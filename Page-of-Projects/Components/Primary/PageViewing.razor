@@ -12,18 +12,12 @@
 @*     <li>Proj4</li> *@
 @* </ul> *@
 <div>
-<h2>@PageViewSelection.Title</h2>
 <div class="content">
     <div>
         <img src="@PageViewSelection.ImageUrl" alt="@PageViewSelection.ImageAltText" />
     </div>
+    <h2>@PageViewSelection.Title</h2>
     <table>
-        <thead>
-        <tr>
-            <th>TEXT</th>
-            <th>HREF</th>
-        </tr>
-        </thead>
         <tbody>
         <tr>
             <td>@PageViewSelection.ExternalTitle</td>
@@ -53,17 +47,17 @@
     <table>
         <thead>
         <tr>
-            <th>TEXT</th>
-            <th>URL</th>
+            <th>Reference Links</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
         @foreach (var (key, value) in PageViewSelection.DocHrefTitles)
         {
-        <tr>
-            <td>@value</td>
-            <td>@key</td>
-        </tr>
+            <tr>
+                <td>@value</td>
+                <td>@key</td>
+            </tr>
         }
         </tbody>
     </table>
@@ -71,7 +65,7 @@
         --> PageViewSelection.Networking.Type //i.e. Web, Desktop, Cloud 
         --> PageViewSelection.Networking.Description
     *@
-    <p>@PageViewSelection.SelectionDetails.StartDate</p>
+    <p>Created(Date_Created): @PageViewSelection.SelectionDetails.StartDateMonth</p>
 </div>
 </div>
 @code {
