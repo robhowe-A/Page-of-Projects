@@ -34,38 +34,125 @@
                 }
             </td>
         </tr>
-        @if (@PageViewSelection.SelectionDetails.Framework != null)
+        @if (!string.IsNullOrWhiteSpace(@PageViewSelection.SelectionDetails.Framework))
         {
-        <tr>
-            <td>React framework:</td>
-            <td>@PageViewSelection.SelectionDetails.Framework</td>
-        </tr>
+            <tr>
+                <td>React framework:</td>
+                <td>@PageViewSelection.SelectionDetails.Framework</td>
+            </tr>
+        }
+        @if (@PageViewSelection.SelectionDetails.StartDateMonth != null)
+        {
+            <tr>
+                <td>Created(Date_Created):</td>
+                <td>@PageViewSelection.SelectionDetails.StartDateMonth</td>
+            </tr>
+        }
+        @if (@PageViewSelection.Networking.IsCloud != null)
+        {
+            <tr>
+                <td>Deployed to cloud:</td>
+                <td>@PageViewSelection.Networking.IsCloud</td>
+            </tr>
+        }
+        @if (@PageViewSelection.Networking.Security != null)
+        {
+            <tr>
+                <td>Security:</td>
+                <td>
+                @{
+                    var secStr = PageViewSelection.Networking.Security.Split('|');
+                }
+                @for (var i = 0; i < PageViewSelection.Networking.Security.Split('|').Length; i++)
+                {
+                    if (i > 0)
+                    {
+                    <span>, </span>
+                    }
+                    <span>@secStr[i]</span>
+                }
+                </td>
+            </tr>
+        }
+        @if (@PageViewSelection.Networking.IsProxyBased != null)
+        {
+            <tr>
+                <td>Proxied:</td>
+                <td>@PageViewSelection.Networking.IsProxyBased</td>
+            </tr>
+        }
+        @if (@PageViewSelection.Networking.DnsRecordTypes is { Count: > 0 })
+        {
+            <tr>
+                <td>Records:</td>
+                <td>
+                @for (var i = 0; i < PageViewSelection.Networking.DnsRecordTypes.Count; i++)
+                {
+                    if (i > 0)
+                    {
+                        <span>, </span>
+                    }
+
+                    <span>@PageViewSelection.Networking.DnsRecordTypes[i]</span>
+                }
+                </td>
+            </tr>
+        }
+        @if (@PageViewSelection.Networking.IpAccessControlled != null)
+        {
+            <tr>
+                <td>IpControl:</td>
+                <td>@PageViewSelection.Networking.IpAccessControlled</td>
+            </tr>
+        }
+        @if (@PageViewSelection.Networking.BackendUriEndpoints is {Count: > 0})
+        {
+            for (var i = 0; i < PageViewSelection.Networking.BackendUriEndpoints.Count; i++)
+            {
+                var secBackStr = PageViewSelection.Networking.BackendUriEndpoints[i].Split('|');
+                if (secBackStr.Length == 2)
+                {
+                    <tr>
+                        <td>Endpoint @i:</td>
+                        <td>@secBackStr[0] @secBackStr[1]</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>Endpoint @i:</td>
+                        <td>@PageViewSelection.Networking.BackendUriEndpoints[i]</td>
+                    </tr>
+                }
+            }
         }
         </tbody>
     </table>
     
-    <table>
-        <thead>
-        <tr>
-            <th>Reference Links</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var (key, value) in PageViewSelection.DocHrefTitles)
-        {
+    @if (PageViewSelection.DocHrefTitles.Count > 0)
+    {
+        <table>
+            <thead>
             <tr>
-                <td>@value</td>
-                <td>@key</td>
+                <th>Reference Links</th>
+                <th></th>
             </tr>
-        }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            @foreach (var (key, value) in PageViewSelection.DocHrefTitles)
+            {
+                <tr>
+                    <td>@value</td>
+                    <td>@key</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
     @*Metadata: 
         --> PageViewSelection.Networking.Type //i.e. Web, Desktop, Cloud 
         --> PageViewSelection.Networking.Description
     *@
-    <p>Created(Date_Created): @PageViewSelection.SelectionDetails.StartDateMonth</p>
 </div>
 </div>
 @code {

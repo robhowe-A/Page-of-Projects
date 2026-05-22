@@ -32,7 +32,12 @@
                     <a class="page-view-link" href="@frame.Href"
                        title="@frame.Title">@frame.InnerText</a>
                     <div class="page-view-selection-info">
-                        <div><p>Created: @frame.SelectionDetails.StartDateMonth</p></div>
+                        <div><p>Created: @frame.SelectionDetails.StartDateMonth</p>
+                            @if (@frame.SelectionDetails.Framework != null)
+                            {
+                            <p>@frame.SelectionDetails.Framework</p>
+                            }
+                        </div>
                         <div>
                             <button class="details-panel-toggle @(SelectedFrame != null ? "disabled" : "disabled greyed")" @onclick:stopPropagation="true" @onclick="() => ToggleDetailsOnClick(frame)">Details</button>
                             <a class="information-panel-toggle">

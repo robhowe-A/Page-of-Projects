@@ -18,7 +18,7 @@ public class FrameSelectionOption
     [JsonConstructor]
     internal FrameSelectionOption(string href, string title, string innerText, string externalHref,
         string externalTitle, string imageUrl, string imageAltText, List<string>? referenceHrefs,
-        SelectionDetails selectionDetails, bool isSelected)
+        SelectionDetails selectionDetails, bool isSelected, Networking networking)
     {
         Href = href ?? throw new ArgumentNullException(nameof(href));
         Title = title ?? throw new ArgumentNullException(nameof(title));
@@ -32,6 +32,7 @@ public class FrameSelectionOption
         IsSelected = isSelected;
         if(ReferenceHrefs != null)
             DocHrefTitles = this.GetDocsHrefTitle(ReferenceHrefs);
+        Networking = networking ?? throw new ArgumentNullException(nameof(networking));
     }
 
     public required string Href { get; init; }
@@ -44,6 +45,7 @@ public class FrameSelectionOption
     public List<string>? ReferenceHrefs { get; init; }
     public required SelectionDetails SelectionDetails { get; init; }
     public bool IsSelected { get; init; } //Not in JSON
+    public required Networking Networking { get; init; }
     
     public readonly Dictionary<string, string> DocHrefTitles = [];
     private static readonly Dictionary<string, string> DocHrefTitleCache = new();
