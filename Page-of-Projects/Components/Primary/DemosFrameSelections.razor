@@ -17,6 +17,7 @@
     FrameSelections="@DemosSelections"
     SelectedFrame="@SelectedFrame"
     OnSelected="@OnSelected"
+    OnSetAboutView="@OnSetAboutView"
     OnSelectionChange="@OnSelectionChange"
     SetDetail="@SetDetail"
     StartingNumber="@StartingNumber"
@@ -45,6 +46,9 @@
 
     [Parameter]
     public EventCallback<FrameSelectionOption> OnSelected { get; set; }
+    
+    [Parameter]
+    public EventCallback<bool> OnSetAboutView { get; set; }
 
     [Parameter]
     public required List<FrameSelectionOption> DemosSelections { get; set; }

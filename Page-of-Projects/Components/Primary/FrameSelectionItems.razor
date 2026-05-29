@@ -29,17 +29,22 @@
             <div class="page-view-selection @(SelectedFrame?.Title == frame.Title ? "displaying" : "")" @onclick="() => OnSelectedOnClick(frame)">
                 <img src="@frame.ImageUrl" alt="@frame.ImageAltText"/>
                 <div class="page-view-selection-text">
-                    <a class="page-view-link" href="@frame.Href"
+                    <a onclick="@(()=>OnClickSetAboutView(true))" class="page-view-link"
+                       href="@frame.Href"
                        title="@frame.Title">@frame.InnerText</a>
                     <div class="page-view-selection-info">
-                        <div><p>Created: @frame.SelectionDetails.StartDateMonth</p>
+                        <div>
+                        <p>Created: @frame.SelectionDetails.StartDateMonth</p>
+                        <a onclick="@(()=>OnClickSetAboutView(false))" class="details-panel-button slim"
+                           href="@frame.Href"
+                           title="@frame.Title">Embedded Page</a>
                             @if (@frame.SelectionDetails.Framework != null)
                             {
                             <p>@frame.SelectionDetails.Framework</p>
                             }
                         </div>
                         <div>
-                            <button class="details-panel-toggle @(SelectedFrame != null ? "disabled" : "disabled greyed")" @onclick:stopPropagation="true" @onclick="() => ToggleDetailsOnClick(frame)">Details</button>
+                            <button class="details-panel-button @(SelectedFrame != null ? "disabled" : "disabled greyed")" @onclick:stopPropagation="true" @onclick="() => ToggleDetailsOnClick(frame)">Details</button>
                             <a class="information-panel-toggle">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
                                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
@@ -123,14 +128,14 @@
     [Parameter]
     public EventCallback<FrameSelectionOption> OnSelected { get; set; }
     
+    [Parameter]public EventCallback<bool> OnSetAboutView { get; set; }
+    
     [Parameter]
     public EventCallback<(SortOrder, string)> OnResortedListSelected { get; set; }
 
     private SortOrder SortOrderSelected { get; set; } = SortOrder.NEWEST;
 
-    //[Parameter]
-    //public EventCallback<(bool, FrameSelectionOption, int)> OnSelectionChange { get; set; }
-[Parameter]public EventCallback<int> OnSelectionChange { get; set; }
+    [Parameter]public EventCallback<int> OnSelectionChange { get; set; }
 
     [Parameter]
     public bool? SetDetail { get; set; }
@@ -184,6 +189,10 @@
     private void OnSelectedOnClick(FrameSelectionOption frame)
     {
         OnSelected.InvokeAsync(frame);
+    }
+    private void OnClickSetAboutView(bool setAboutView)
+    {
+        OnSetAboutView.InvokeAsync(setAboutView);
     }
 
     private void OnMouseOverInfoToggle()

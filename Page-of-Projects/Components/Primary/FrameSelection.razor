@@ -35,7 +35,7 @@
         Nodes="@_foundElements" />
     @* how about a toggle? *@
     <div class="page-frame-toggle" >
-        <div id="pill-display" class="pill-toggle" @onclick="ToggleFrameView">
+        <div id="pill-display" class="pill-toggle" @onclick="@(() => ToggleFrameView(null))">
             <div></div>
         </div>
         <label id="testing">
@@ -81,6 +81,7 @@
                     OnSelected="HandleWebsiteSelected"
                     SetDetail="@_toggleDetailsSet"
                     OnSelectionChange="@SetOtherIndexOpened"
+                    OnSetAboutView="@SetToggleAboutView"
                     StartingNumber="0"
                     OnResortedListSelected="@ResortListSelected" />
                 <DemosFrameSelections
@@ -89,6 +90,7 @@
                     OnSelected="HandleWebsiteSelected"
                     SetDetail="@_toggleDetailsSet"
                     OnSelectionChange="@SetOtherIndexOpened"
+                    OnSetAboutView="@SetToggleAboutView"
                     StartingNumber="6"
                     OnResortedListSelected="@ResortListSelected" />
                 break;
@@ -97,12 +99,13 @@
                 <FrameSelectionItems
                     FrameSelections="@AllSelections"
                     SelectedFrame="@_selectedWebsite"
-                    OnSelected="HandleWebsiteSelected"
+                    OnSelected="@HandleWebsiteSelected"
                     OnSelectionChange="@SetOtherIndexOpened"
+                    OnSetAboutView="@SetToggleAboutView"
+                    OnResortedListSelected="@ResortListSelected"
                     SetDetail="@_toggleDetailsSet"
                     StartingNumber="0"
-                    DeploymentAs="@DeploymentAs"
-                    OnResortedListSelected="@ResortListSelected" />
+                    DeploymentAs="@DeploymentAs"/>
                 
                 break;
             case ProjectsCyberMenuOption:
@@ -136,9 +139,20 @@
 
 @code {
     private bool _isAboutMainView = false;
-    private void ToggleFrameView()
+
+    private void SetToggleAboutView(bool setAboutView)
     {
-        _isAboutMainView = !_isAboutMainView;    
+        ToggleFrameView(setAboutView);
+    }
+    private void ToggleFrameView(bool? setAboutView)
+    {
+        if (setAboutView.HasValue)
+        {
+            _isAboutMainView = setAboutView.Value;
+        }
+        else{
+            _isAboutMainView = !_isAboutMainView;
+        }
     } 
     
     private List<FrameSelectionOption> AllSelections { get; set; } = [];
