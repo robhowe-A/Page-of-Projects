@@ -6,6 +6,7 @@
 @rendermode InteractiveServer
 @inject NavigationManager Nav
 @namespace ProjectsPages.Components.Primary
+@inject IJSRuntime Js
 
 @if(@_selectedWebsite != null)
 {
@@ -22,17 +23,8 @@
             <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
         </svg>
     </button>
-    <SelectWebsiteDetails
-        SelectedWebsite="@_selectedWebsiteDetails"
-        ShowDetails="@_toggleDetails"
-        OnCloseClicked="OnDetailsToggleOpen"
-        OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="OnAfterNavigateClosePanel"
-        StartingNumber="@OtherIndexOpened" />
-    <HyperTextMarkdownSearch
-        OnReceiveSearchFindingIndexClicked="@SetOtherIndexOpened"
-        OnReceiveSearchFindingNodeClicked="@ChangeSelectedWebsiteDetails"
-        OnCount="SetCount"
-        Nodes="@_foundElements" />
+    
+    
     @* how about a toggle? *@
     <div class="page-frame-toggle" >
         <div id="pill-display" class="pill-toggle" @onclick="@(() => ToggleFrameView(null))">
@@ -48,15 +40,26 @@
 }
 
 <div id="growing-placeholder"></div>
+<h1><a href="/"
+       rel="opener"
+       title="roberthowell.dev"
+       target="_self">roberthowell.dev</a></h1>
+<HyperTextMarkdownSearch
+    OnReceiveSearchFindingIndexClicked="@SetOtherIndexOpened"
+    OnReceiveSearchFindingNodeClicked="@ChangeSelectedWebsiteDetails"
+    OnCount="@SetCount"
+    Nodes="@_foundElements" />
+<SelectWebsiteDetails
+    SelectedWebsite="@_selectedWebsiteDetails"
+    ShowDetails="@_toggleDetails"
+    OnCloseClicked="OnDetailsToggleOpen"
+    OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="OnAfterNavigateClosePanel"
+    StartingNumber="@OtherIndexOpened" />
 <nav id="menu" class="@_menuOptionSelection.ToLower() @(_selectedWebsite is null ? "no-menu-selection" : "")">
-    <h1><a href="/"
-           rel="opener"
-           title="roberthowell.dev"
-           target="_self">roberthowell.dev</a></h1>
-
+    
     <InputRadioGroup Name="menu" @bind-Value="_menuOptionSelection">
         <label>All
-            <InputRadio Name="menu" Value="@ProjectsAllMenuOption" Label="Proficiencies"/>
+            <InputRadio Name="menu" Value="@ProjectsAllMenuOption" Label="All"/>
         </label>
         <label>By Type
             <InputRadio Name="menu" Value="@ProjectsByTypeMenuOption"/>
@@ -78,7 +81,7 @@
                 <WebsitesFrameSelections
                     WebsitesSelections="@WebsiteSelections.ToList()"
                     SelectedFrame="@_selectedWebsite"
-                    OnSelected="HandleWebsiteSelected"
+                    OnSelected="@HandleWebsiteSelected"
                     SetDetail="@_toggleDetailsSet"
                     OnSelectionChange="@SetOtherIndexOpened"
                     OnSetAboutView="@SetToggleAboutView"
@@ -87,7 +90,7 @@
                 <DemosFrameSelections
                     DemosSelections="@DemoSelections"
                     SelectedFrame="@_selectedWebsite"
-                    OnSelected="HandleWebsiteSelected"
+                    OnSelected="@HandleWebsiteSelected"
                     SetDetail="@_toggleDetailsSet"
                     OnSelectionChange="@SetOtherIndexOpened"
                     OnSetAboutView="@SetToggleAboutView"
@@ -156,11 +159,27 @@
     } 
     
     private List<FrameSelectionOption> AllSelections { get; set; } = [];
+    private async Task ClearSearchHighlightsAsync()
+    {
+        try
+        {
+            await Js.InvokeVoidAsync("main.domSearch.clearHighlights");
+        }
+        catch (Microsoft.JSInterop.JSDisconnectedException)
+        {
+            // Circuit is already disconnected; nothing useful to do here.
+        }
+        catch (InvalidOperationException)
+        {
+            // JS runtime may not be available during prerender/disposal.
+        }
+    }
     private async Task ResortListSelected((SortOrder sortOrder, string deploymentAs) args)
     {
-
+        await ClearSearchHighlightsAsync();
         switch (args.deploymentAs)
         {
+                
             case "ALL":
                 if(args.sortOrder == SortOrder.NEWEST)
                     AllSelections = AllSelections.OrderByDescending(x => x.SelectionDetails.StartDate)
@@ -222,6 +241,7 @@
     private const string ProjectsByTypeMenuOption = "PROFICIENCIES";
     private const string ProjectsCyberMenuOption = "CYBERSECURITY";
     private string _menuOptionSelection = ProjectsAllMenuOption;
+    private int _searchRefreshKey;
 
     [Parameter]
     public int StartingNumber { get; set; }
@@ -236,10 +256,11 @@
 
     private List<object> _foundElements = [];
 
-    public void SetCount(int count)
+    public Task SetCount(int count)
     {
         Found = count;
         WriteLine($"{this}::SetCount count find: {Found}");
+        return Task.CompletedTask;
     }
 
     private async Task SetOtherIndexOpened(int dialogIndexToOpen)
@@ -288,7 +309,7 @@
         _toggleDetails = opened;
         
         //reset the details when clicked
-        if (_selectedWebsiteDetails != _selectedWebsite)
+        if (_selectedWebsite is not null && _selectedWebsiteDetails != _selectedWebsite)
         {
             _selectedWebsiteDetails = _selectedWebsite;
             OtherIndexOpened = FrameSelectionItems.DialogIndexDataFetch.GetFrameOptionIndexByFrameSelectionOption(_selectedWebsiteDetails);

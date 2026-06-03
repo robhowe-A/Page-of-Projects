@@ -57,12 +57,14 @@ public class FrameSelectionOption
         if (this.ReferenceHrefs != null && this.DocHrefTitles.Count == ReferenceHrefs.Count) return this.DocHrefTitles;
         foreach (var href in docsHref)
         {
+            var hrefColl = href.Split("|");
             if (DocHrefTitleCache.TryGetValue(href, out var cachedTitle))
             {
-                hrefs.Add(href, cachedTitle);
+                
+                hrefs.Add(hrefColl[0], cachedTitle);
                 continue;
             }
-            var requestUri = new Uri(href, UriKind.Absolute);
+            var requestUri = new Uri(hrefColl[0], UriKind.Absolute);
 #if LOOPBACK
             continue;
 #endif
@@ -74,17 +76,36 @@ public class FrameSelectionOption
                 response,
                 "<title>(.+?)</title>",
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            if (!titleRegexMatch.Success) continue;
-            
+            if (!titleRegexMatch.Success)
+            {
+                var link = hrefColl[0];
+                string linkTitle;
+                
+                // href|Code|<manual title>
+                if (hrefColl.Length == 3)
+                {
+                    linkTitle = hrefColl[2]; //href is the title
+                    DocHrefTitleCache[link] = linkTitle;
+                }
+                else
+                {
+                    linkTitle = "Missing title";
+                }
+
+                hrefs.Add(link, linkTitle);
+                continue;
+            }
+            //TODO: href|TitleOverride|<Manual Title>
+
             var title = titleRegexMatch.Groups[1].Value;
             
             //extract title value and return
             title = title.Replace("&#8212;", "-");
             
-            DocHrefTitleCache[href] = title;
+            DocHrefTitleCache[hrefColl[0]] = title;
             
             WriteLine($"DocHrefTitles-{requestUri.AbsoluteUri}-{requestUri.HostNameType}->title");
-            hrefs.Add(href, title);
+            hrefs.Add(hrefColl[0], title);
         }
         
         return hrefs;

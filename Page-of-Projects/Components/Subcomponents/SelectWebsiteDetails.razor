@@ -3,9 +3,9 @@
 @using ProjectsPage.Models
 @namespace ProjectsPage.Components.Subcomponents
 
-@if (ShowDetails)
+@if (SelectedWebsite != null && ShowDetails)
 {
-    WriteLine($"SelectDetails__{SelectedWebsite}Title:{SelectedWebsite.Title}");
+    // WriteLine($"SelectDetails__{SelectedWebsite}Title:{SelectedWebsite.Title}");
     <aside class="page-view-detail
         @( ShowDetails ? "show-details" : "" )" data-panel-index="0">
         <SelectedWebsiteDetails 
@@ -19,7 +19,7 @@
 
 @code {
     [Parameter]
-    public required FrameSelectionOption SelectedWebsite { get; set; }
+    public required FrameSelectionOption? SelectedWebsite { get; set; }
 
     [Parameter]
     public bool ShowDetails { get; set; }

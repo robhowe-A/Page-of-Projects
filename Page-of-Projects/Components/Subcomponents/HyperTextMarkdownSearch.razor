@@ -111,9 +111,6 @@
     {
         _count = value;
         await OnCount.InvokeAsync(_count);
-        //StateHasChanged();
-        await InvokeAsync(StateHasChanged);
-        
     }
 
     public ValueTask DisposeAsync()
