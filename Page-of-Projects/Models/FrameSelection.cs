@@ -70,44 +70,45 @@ public class FrameSelectionOption
 #endif
             var response = client.GetAsync(requestUri).Result.Content.ReadAsStringAsync().Result;
 
-            //read result to show the html response head
-            //filter for <title>
-            var titleRegexMatch = System.Text.RegularExpressions.Regex.Match(
-                response,
-                "<title>(.+?)</title>",
-                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            if (!titleRegexMatch.Success)
+            var link = hrefColl[0];
+            string linkTitle;
+            // href|Code|<manual title>
+            
+            if (hrefColl.Length != 1 || (hrefColl.Length > 1 && string.Equals(hrefColl[1], @"TitleOverride")))
             {
-                var link = hrefColl[0];
-                string linkTitle;
-                
-                // href|Code|<manual title>
-                if (hrefColl.Length == 3)
-                {
-                    linkTitle = hrefColl[2]; //href is the title
-                    DocHrefTitleCache[link] = linkTitle;
-                }
-                else
-                {
-                    linkTitle = "Missing title";
-                }
-
-                hrefs.Add(link, linkTitle);
-                continue;
+                linkTitle = hrefColl[2]; //href is the title
+                DocHrefTitleCache[link] = linkTitle;
             }
-            //TODO: href|TitleOverride|<Manual Title>
-
-            var title = titleRegexMatch.Groups[1].Value;
-            
-            //extract title value and return
-            title = title.Replace("&#8212;", "-");
-            
-            DocHrefTitleCache[hrefColl[0]] = title;
+            else
+            {
+                linkTitle = "Missing title";
+            }
             
             WriteLine($"DocHrefTitles-{requestUri.AbsoluteUri}-{requestUri.HostNameType}->title");
-            hrefs.Add(hrefColl[0], title);
+            if ((hrefColl.Length == 1 || (hrefColl.Length > 1 && !string.Equals(hrefColl[1], @"TitleOverride"))))
+            {
+                //read result to show the html response head
+                //filter for <title>
+                // href|TitleOverride|<Manual Title>
+                var titleRegexMatch = System.Text.RegularExpressions.Regex.Match(
+                    response,
+                    "<title>(.+?)</title>",
+                    System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                if (!titleRegexMatch.Success)
+                {
+                    hrefs.Add(link, linkTitle);
+                    continue;
+                }
+
+                //extract title value and return
+                linkTitle = titleRegexMatch.Groups[1].Value;
+                linkTitle = linkTitle.Replace("&#8212;", "-");
+                linkTitle = linkTitle.Replace("&lt;", "<");
+                linkTitle = linkTitle.Replace("&gt;", ">");
+            }
+            DocHrefTitleCache[link] = linkTitle;
+            hrefs.Add(link, linkTitle);
         }
-        
         return hrefs;
     }
 };
