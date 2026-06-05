@@ -7,15 +7,17 @@
 {
 
     <p class="mb0" data-visibility="@(IsHoverElement ? "no-scan" : "none")">
-    @if(IsHoverElement)
-    {
-        <strong data-visibility="@(IsHoverElement ? "no-scan" : "none")">Secondary Language(s): </strong>
-    }
-    else {
-        <span data-visibility="@(IsHoverElement ? "no-scan" : "none")">Secondary Language(s): </span>
-    }
+        @if(IsHoverElement)
+        {
+            <strong data-visibility="@(IsHoverElement ? "no-scan" : "none")">Secondary Language(s): </strong>
+        
+        }
+        else {
+            <span data-visibility="@(IsHoverElement ? "no-scan" : "none")">Secondary Language(s): </span>
+        }
+    
 
-    @for (var i = 0; i < SelectedWebsite.SelectionDetails.SecondaryLanguage.Count; i++)
+        @for (var i = 0; i < SelectedWebsite.SelectionDetails.SecondaryLanguage.Count; i++)
         {
             @if (SelectedWebsite.SelectionDetails.SecondaryLanguage.Count - 1 == i)
             {
@@ -29,6 +31,48 @@
             }
         }
     </p>
+    @if (!String.IsNullOrWhiteSpace(SelectedWebsite.SelectionDetails.Framework))
+    {
+        <p class="mb0" data-visibility="@(IsHoverElement ? "no-scan" : "no-replace")">
+        @if (IsHoverElement)
+        {
+            <strong data-visibility="@(IsHoverElement ? "no-scan" : "no-replace")">Framework: </strong>
+        }
+        else
+        {
+            <span data-visibility="@(IsHoverElement ? "no-scan" : "no-replace")">Framework: </span>
+        }
+        @SelectedWebsite.SelectionDetails.Framework
+         </p>
+    }
+    @if (SelectedWebsite.SelectionDetails.Database is { HasDatabase: true })
+    {
+        <p class="mb0" data-visibility="@(IsHoverElement ? "no-scan" : "none")">
+            @if (IsHoverElement)
+            {
+                <strong data-visibility="@(IsHoverElement ? "no-scan" : "no-replace")">Has Database: </strong>
+            }
+            else
+            {
+                <span data-visibility="@(IsHoverElement ? "no-scan" : "no-replace")">Has Database: </span>
+            }
+             @SelectedWebsite.SelectionDetails.Database.HasDatabase
+        </p>
+    }
+    @if (SelectedWebsite.SelectionDetails.HostingDetails is { IsCloud: true })
+    {
+        <p class="mb0" data-visibility="@(IsHoverElement ? "no-scan" : "none")">
+            @if (IsHoverElement)
+            {
+                <strong data-visibility="@(IsHoverElement ? "no-scan" : "no-replace")">Cloud Hosted: </strong>
+            }
+            else
+            {
+                <span data-visibility="@(IsHoverElement ? "no-scan" : "no-replace")">Cloud Hosted: </span>
+            }
+            @SelectedWebsite.SelectionDetails.HostingDetails.IsCloud
+        </p>
+    }
 }
 
 @code {
