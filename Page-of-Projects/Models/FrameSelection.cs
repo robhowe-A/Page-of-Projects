@@ -31,7 +31,8 @@ public class FrameSelectionOption
         SelectionDetails = selectionDetails ?? throw new ArgumentNullException(nameof(selectionDetails));
         IsSelected = isSelected;
         if(ReferenceHrefs != null)
-            DocHrefTitles = this.GetDocsHrefTitle(ReferenceHrefs);
+            //DocHrefTitles = this.GetDocsHrefTitleAsync(ReferenceHrefs).GetAwaiter().GetResult();
+            DocHrefTitles = this.GetDocsHrefTitleAsync(ReferenceHrefs);
         Networking = networking ?? throw new ArgumentNullException(nameof(networking));
     }
 
@@ -48,8 +49,9 @@ public class FrameSelectionOption
     public required Networking Networking { get; init; }
     
     public readonly Dictionary<string, string> DocHrefTitles = [];
-    private static readonly Dictionary<string, string> DocHrefTitleCache = new();
-    private Dictionary<string, string> GetDocsHrefTitle(List<string> docsHref)
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, string> DocHrefTitleCache = new();
+    //private async Task<Dictionary<string, string>> GetDocsHrefTitleAsync(List<string> docsHref)
+    private Dictionary<string, string> GetDocsHrefTitleAsync(List<string> docsHref)
     {
         Dictionary<string, string> hrefs = [];
         using var client = new HttpClient();
@@ -68,7 +70,9 @@ public class FrameSelectionOption
 #if LOOPBACK
             continue;
 #endif
-            var response = client.GetAsync(requestUri).Result.Content.ReadAsStringAsync().Result;
+            var responseResult = client.GetAsync(requestUri).Result.Content.ReadAsStringAsync().Result;
+            //var response = client.GetAsync(requestUri);
+            //var responseResult = response.Content.ReadAsStringAsync().Result;
 
             var link = hrefColl[0];
             string linkTitle;
@@ -91,7 +95,7 @@ public class FrameSelectionOption
                 //filter for <title>
                 // href|TitleOverride|<Manual Title>
                 var titleRegexMatch = System.Text.RegularExpressions.Regex.Match(
-                    response,
+                    responseResult,
                     "<title>(.+?)</title>",
                     System.Text.RegularExpressions.RegexOptions.IgnoreCase);
                 if (!titleRegexMatch.Success)

@@ -28,7 +28,11 @@ namespace ProjectsPage.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySQL(_connectionString ?? throw new ArgumentNullException(nameof(_connectionString)));
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseMySQL(_connectionString ??
+                    throw new ArgumentNullException(nameof(_connectionString)));
+            }
         }
 
         public ProjectsDbContext GetContext()
