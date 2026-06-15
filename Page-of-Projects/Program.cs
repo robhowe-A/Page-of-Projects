@@ -2,10 +2,8 @@
 
 using Microsoft.EntityFrameworkCore;
 using ProjectsPage.Components;
-using ProjectsPage.Models;
 using ProjectsPage.Services;
 using ProjectsPage.Extensions;
-using ProjectsPage.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +13,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddScoped<ClipboardService>();
 builder.Services.AddCookiePolicy(options =>
 {
-    options.MinimumSameSitePolicy = SameSiteMode.None;
+    options.MinimumSameSitePolicy = SameSiteMode.Strict;
     options.Secure = CookieSecurePolicy.Always;
     options.HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.Always;
 });
@@ -23,7 +21,7 @@ builder.Services.AddCookiePolicy(options =>
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromSeconds(10);
+    options.IdleTimeout = TimeSpan.FromMinutes(15.0);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
@@ -47,10 +45,8 @@ var conString = builder.Configuration.GetConnectionString("ProjectsDb") ??
      throw new InvalidOperationException("Connection string 'ProjectsDb' not found.");
 
 builder.Services.AddProjectsContext(conString);
-builder.Services.AddResponseCompression(options =>
-{
-    options.EnableForHttps = true;
-});
+builder.Services.AddResponseCompression(options => options.EnableForHttps = true);
+builder.WebHost.UseKestrel(options => options.AddServerHeader = false);
 
 var app = builder.Build();
 
@@ -72,6 +68,6 @@ app.UseResponseCompression();
 app.MapStaticAssets();
 
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+    .AddInteractiveServerRenderMode(defaults => defaults.ContentSecurityFrameAncestorsPolicy = null);
 
 app.Run();
