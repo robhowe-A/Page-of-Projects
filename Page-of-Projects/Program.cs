@@ -1,6 +1,5 @@
 // --Copyright (c) 2026 Robert A. Howell
 
-using Microsoft.EntityFrameworkCore;
 using ProjectsPage.Components;
 using ProjectsPage.Services;
 using ProjectsPage.Extensions;
@@ -46,7 +45,7 @@ var conString = builder.Configuration.GetConnectionString("ProjectsDb") ??
 
 builder.Services.AddProjectsContext(conString);
 builder.Services.AddResponseCompression(options => options.EnableForHttps = true);
-builder.WebHost.UseKestrel(options => options.AddServerHeader = false);
+//builder.WebHost.UseKestrel(options => options.AddServerHeader = false);
 
 var app = builder.Build();
 

@@ -3,7 +3,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace ProjectsPage.Models;
+namespace ProjectsPage.Domain;
 
 public enum SortOrder
 {
@@ -191,5 +191,4 @@ internal static class FrameSelectionData
 
         return values;
     }
-
 };

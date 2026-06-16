@@ -2,7 +2,7 @@
 
 @using ProjectPages.Components.Primary
 @using ProjectsPage.Components.Subcomponents
-@using ProjectsPage.Models
+@using ProjectsPage.Domain
 @rendermode InteractiveServer
 @inject NavigationManager Nav
 @namespace ProjectsPages.Components.Primary
@@ -138,7 +138,7 @@
 </nav>
 
 @code {
-    private bool _isAboutMainView = false;
+    private bool _isAboutMainView;
 
     private void SetToggleAboutView(bool setAboutView)
     {
@@ -162,7 +162,7 @@
         {
             await Js.InvokeVoidAsync("main.domSearch.clearHighlights");
         }
-        catch (Microsoft.JSInterop.JSDisconnectedException)
+        catch (JSDisconnectedException)
         {
             // Circuit is already disconnected; nothing useful to do here.
         }
@@ -238,7 +238,6 @@
     private const string ProjectsByTypeMenuOption = "PROFICIENCIES";
     private const string ProjectsCyberMenuOption = "CYBERSECURITY";
     private string _menuOptionSelection = ProjectsAllMenuOption;
-    private int _searchRefreshKey;
 
     [Parameter]
     public int StartingNumber { get; set; }
@@ -253,7 +252,7 @@
 
     private List<object> _foundElements = [];
 
-    public Task SetCount(int count)
+    private Task SetCount(int count)
     {
         Found = count;
         WriteLine($"{this}::SetCount count find: {Found}");
@@ -288,7 +287,7 @@
 
     private bool _toggleDetails;
 
-    private bool? _toggleDetailsSet;
+    private bool? _toggleDetailsSet = null;
     private bool _copied;
 
     [Inject]
@@ -348,7 +347,7 @@
         SyncSelectionWithCurrentUrl(Nav.Uri);
     }
     
-    private void HandleLocationChanged(object sender, LocationChangedEventArgs e)
+    private void HandleLocationChanged(object? sender, LocationChangedEventArgs e)
     {
         _ = InvokeAsync(() =>
         {

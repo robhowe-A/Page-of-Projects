@@ -12,9 +12,10 @@ This project was created as an addition/wrapper/showcase for my portfolio projec
 Restrictions: You may not use this code in commercial applications, production environments, or for unauthorized purposes without explicit permission from the author.  
 Author: *see document metadata in code or raw view*    
 
-## Data Topography
-
-![Screen Shot 2026-04-28 at 11.59.24-fullpage](./Screen_Shot_2026-04-28_at_11.59.24-fullpage.png)
+## Project Security  
+- HTTP security headers and middleware extension design  
+- ASP.NET, ASP.NET Core secure cookies, session, HTTP, API configuration  
+- Mitigate common attacks to XSS, CSRF, SQL injection, MITM attacks  
 
 ## Data Structure  
 ``` JSON
@@ -108,3 +109,7 @@ Author: *see document metadata in code or raw view*
 }
 
 ```
+
+## Data Topography
+
+![Screen Shot 2026-04-28 at 11.59.24-fullpage](./Screen_Shot_2026-04-28_at_11.59.24-fullpage.png)

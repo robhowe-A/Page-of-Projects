@@ -1,6 +1,6 @@
-﻿﻿<!-- --Copyright (c) 2026 Robert A. Howell -->
+﻿<!-- --Copyright (c) 2026 Robert A. Howell -->
 
-@using ProjectsPage.Models
+@using ProjectsPage.Domain
 @namespace ProjectsPage.Components.Primary
 
 <PageTitle>@_centralizedTitleStr</PageTitle>
@@ -27,9 +27,10 @@ else
     [Parameter]
     public string Url { get; set; } = string.Empty;
 
-    private static string TitleFrom { get; set; }
+    private static string TitleFrom { get; set; } = null!;
+
     [Parameter]
-    public string Title
+    public required string Title
     {
         get;
         set 
@@ -42,12 +43,12 @@ else
     private static bool IsWebsiteFrom { get; set; }
 
     [Parameter]
-    public bool? IsWebsite
+    public bool IsWebsite
     {
         get;
         set
         {
-            IsWebsiteFrom = (bool)value;
+            IsWebsiteFrom = value;
             field = value;
         }
     }
@@ -58,7 +59,7 @@ else
     [Parameter] 
     public EventCallback<FrameSelectionOption?> SelectedWebsiteChanged { get; set; }
     
-    private FrameSelectionOption? SelectedWebsite { get; set; } = IsWebsiteFrom ? FrameSelectionData.WebsiteSelections.FirstOrDefault(x => x.Title == TitleFrom) : FrameSelectionData.DemoSelections.FirstOrDefault(x => x.Title == TitleFrom);
+    private FrameSelectionOption? SelectedWebsite { get; set; } = (IsWebsiteFrom ? FrameSelectionData.WebsiteSelections.FirstOrDefault(x => x.Title == TitleFrom) : FrameSelectionData.DemoSelections.FirstOrDefault(x => x.Title == TitleFrom));
 
     private string _centralizedPageUrl = string.Empty;
     private string _centralizedTitleStr = string.Empty;
@@ -78,8 +79,6 @@ else
 
     private FrameSelectionOption? GetPageOptionDetail()
     {
-        if(IsWebsite == null)
-            throw new InvalidDataException();
 
         FrameSelectionOption anyWebsite;
         try

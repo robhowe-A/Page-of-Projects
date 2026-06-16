@@ -1,9 +1,8 @@
 ﻿// --Copyright (c) 2026 Robert A. Howell
 
 using System.Data;
-using ProjectsPage.Models;
+using ProjectsPage.Domain;
 using System.Text.Json;
-using ProjectsPage.Components.Pages;
 
 namespace ProjectsPage.Components.Primary;
 
