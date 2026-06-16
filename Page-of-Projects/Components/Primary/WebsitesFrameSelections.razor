@@ -1,17 +1,19 @@
 ﻿<!-- --Copyright (c) 2026 Robert A. Howell -->
 
+@using ProjectsPage.Components.Subcomponents
 @using ProjectsPage.Domain
-@namespace ProjectPages.Components.Primary
+@namespace ProjectsPage.Components.Primary
 
 <h2>Websites</h2>
-@if (!IsSortedAZ)
-{
-    <button class="details-panel-sort" @onclick="sortWebsitesAZ">A-Z</button>
-}
-@if (IsSortedAZ)
-{
-    <button class="details-panel-sort" @onclick="sortWebsitesZA">Z-A</button>
-}
+<SortSelectionsAZ
+    OnResortedListSelected="@OnResortedListSelected"
+    DemosSelections="@WebsitesSelections"
+    DeploymentAs="@DeploymentAs" />
+
+<SortSelectionsDateStart
+    OnResortedListSelected="@OnResortedListSelected"
+    DemosSelections="@WebsitesSelections"
+    DeploymentAs="@DeploymentAs" />
 
 <FrameSelectionItems
     FrameSelections="@WebsitesSelections"
@@ -25,24 +27,10 @@
     OnResortedListSelected="@OnResortedListSelected" />
 
 @code {
-    public async Task sortWebsitesAZ()
-    {
-        SortOrderSelected = SortOrder.AZ;
-        IsSortedAZ = true;
-        await OnResortedListSelected.InvokeAsync((SortOrderSelected, DeploymentAs));
-    }
-    public async Task sortWebsitesZA()
-    {
-        SortOrderSelected = SortOrder.ZA;
-        IsSortedAZ = false;
-        await OnResortedListSelected.InvokeAsync((SortOrderSelected, DeploymentAs));
-    }
     
-    private bool IsSortedAZ = default;
-    public const string DeploymentAs = "WEBSITE";
+    private const string DeploymentAs = "WEBSITE";
     [Parameter]
     public EventCallback<(SortOrder, string)> OnResortedListSelected { get; set; }
-    private SortOrder SortOrderSelected { get; set; }
     
     [Parameter]
     public EventCallback<FrameSelectionOption> OnSelected { get; set; }

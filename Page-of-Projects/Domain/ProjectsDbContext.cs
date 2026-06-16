@@ -1,6 +1,5 @@
 ﻿// --Copyright (c) 2026 Robert A. Howell
 
-using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 
 namespace ProjectsPage.Domain;
@@ -47,7 +46,8 @@ public class ProjectsDbContext : DbContext
 #if DEBUG || LOOPBACK
         //Create a context for this backend request to use
         var iConfig =
- new ConfigurationBuilder().AddEnvironmentVariables().AddUserSecrets(Assembly.GetExecutingAssembly()).Build();
+ new ConfigurationBuilder().AddEnvironmentVariables().AddUserSecrets
+     (System.Reflection.Assembly.GetExecutingAssembly()).Build();
         string str = iConfig.GetConnectionString("ProjectsDb") ?? string.Empty;
 
 #else
