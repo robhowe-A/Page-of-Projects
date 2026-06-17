@@ -2,7 +2,7 @@
 
 namespace ProjectsPage.Domain;
 
-public static class EntityModels
+internal static class EntityModels
 {
     public static ProjectsDbContext CreateProjectsDbContext()
     {

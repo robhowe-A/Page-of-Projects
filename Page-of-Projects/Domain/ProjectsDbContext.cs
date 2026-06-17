@@ -4,9 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ProjectsPage.Domain;
 
-public class ProjectsDbContext : DbContext
+internal sealed class ProjectsDbContext : DbContext
 {
     public DbSet<ProjectPage> projects { get; set; }
+    public DbSet<Heartbeat> Heartbeat { get; set; }
 
     private readonly string? _connectionString;
 
