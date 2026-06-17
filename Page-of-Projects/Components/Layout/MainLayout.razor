@@ -1,21 +1,14 @@
 ﻿<!-- --Copyright (c) 2026 Robert A. Howell -->
 
-@namespace ProjectsPage.Components.Layout
+@using ProjectsPage.Components.Subcomponents
 @using ProjectsPages.Components.Primary
+@namespace ProjectsPage.Components.Layout
 @inherits LayoutComponentBase
 
 <div id="main">
     <div class="nav">
         <FrameSelection/>
-        <footer class="border-top footer text-muted">
-            <p class="developer-attr">Developed by Robert Howell</p>
-            <div class="container">
-                @{
-                    var currentYear = DateTime.Now.Year;
-                }
-                &copy; @currentYear - Robert Howell
-            </div>
-        </footer>
+        <NavFooter/>
     </div>
     <main role="main" class="page-view">
         @Body

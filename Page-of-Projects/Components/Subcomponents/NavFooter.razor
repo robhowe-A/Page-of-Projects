@@ -1,0 +1,24 @@
+﻿<!-- --Copyright (c) 2026 Robert A. Howell -->
+
+<footer class="border-top footer text-muted">
+    <p class="developer-attr">Developed by Robert Howell</p>
+    <div class="container">
+        <p>
+            <span>
+                @if (_currentYear.CompareTo(StartYear) == 0)
+                {
+                    @:&copy;@StartYear
+                }
+                else
+                {
+                    @:&copy;@StartYear&ndash;@_currentYear
+                }
+            </span>&nbsp;Robert Howell
+        </p>
+    </div>
+</footer>
+
+@code {
+    private const int StartYear = 2026;
+    private readonly int _currentYear = DateTime.Now.Year;
+}
