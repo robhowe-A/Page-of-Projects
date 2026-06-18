@@ -6,14 +6,10 @@ namespace ProjectsPage.Domain;
 
 internal sealed class ProjectsDbContext : DbContext
 {
-    public DbSet<ProjectPage> projects { get; set; }
-    public DbSet<Heartbeat> Heartbeat { get; set; }
-
     private readonly string? _connectionString;
 
     public ProjectsDbContext()
     {
-
     }
 
     public ProjectsDbContext(string connectionString)
@@ -26,15 +22,16 @@ internal sealed class ProjectsDbContext : DbContext
         _connectionString = connectionString;
     }
 
+    public DbSet<ProjectPage> projects { get; set; }
+    public DbSet<Heartbeat> Heartbeat { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
-        {
             optionsBuilder.UseMySQL(_connectionString ??
                                     throw new ArgumentNullException(nameof(_connectionString)));
-        }
     }
-    
+
     public ProjectsDbContext GetContext()
     {
         //LOGLEAF
@@ -43,13 +40,13 @@ internal sealed class ProjectsDbContext : DbContext
 
     private ProjectsDbContext CreateContext()
     {
-
 #if DEBUG || LOOPBACK
+
         //Create a context for this backend request to use
         var iConfig =
- new ConfigurationBuilder().AddEnvironmentVariables().AddUserSecrets
-     (System.Reflection.Assembly.GetExecutingAssembly()).Build();
-        string str = iConfig.GetConnectionString("ProjectsDb") ?? string.Empty;
+                new ConfigurationBuilder().AddEnvironmentVariables().AddUserSecrets
+                        (System.Reflection.Assembly.GetExecutingAssembly()).Build();
+        var str = iConfig.GetConnectionString("ProjectsDb") ?? string.Empty;
 
 #else
         //Create a context for this backend request to use

@@ -5,7 +5,7 @@
 @using ProjectsPage.Domain
 @namespace ProjectsPage.Components.Pages.Websites
 
-<PageFrame 
+<PageFrame
     Url="https://www.randomwebbits.com/"
     Title="Random Web Bits"
     IsWebsite="true"
@@ -17,15 +17,18 @@
 }
 
 @code {
-    
+
     [Parameter] public required FrameSelectionOption SelectedWebsite { get; set; }
     private static bool PageViewingSelected { get; set; }
+
     private void OnSelectedWebsiteChanged(FrameSelectionOption? selectedWebsite)
     {
         SelectedWebsite = selectedWebsite ?? throw new ApplicationException("No website details");
         PageViewingSelected = true;
+
         WriteLine($"Page loaded project data: " +
                   $"{selectedWebsite.Title} (selectedWebsite = " +
                   $"{selectedWebsite.DocHrefTitles})");
     }
+
 }

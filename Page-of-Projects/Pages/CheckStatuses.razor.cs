@@ -2,7 +2,6 @@
 
 using System.Text.Json;
 using Microsoft.AspNetCore.Components;
-using ProjectsPage.Domain;
 
 namespace ProjectsPage.Components.Primary;
 
@@ -25,7 +24,8 @@ public partial class CheckStatuses : ComponentBase
     private static List<DomainOption> DomainOptionsData()
     {
         return JsonSerializer.Deserialize<List<DomainOption>>(@"{}",
-                   new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ??
-               throw new ApplicationException("DomainOptions is null");
+                                                              new JsonSerializerOptions
+                                                              { PropertyNameCaseInsensitive = true }) ??
+                throw new ApplicationException("DomainOptions is null");
     }
 };

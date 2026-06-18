@@ -1,0 +1,192 @@
+﻿<!-- --Copyright (c) 2026 Robert A. Howell -->
+
+@using ProjectsPage.Components.Secondary
+@using ProjectsPage.Domain
+@using ProjectsPage.Services
+@rendermode InteractiveServer
+@inject NavigationManager Nav
+@namespace ProjectsPage.Components.Primary
+@inject IJSRuntime Js
+
+@if (_selectedWebsite != null)
+{
+    <div id="menu-selection">
+        <h1 data-visibility="no-result">@_selectedWebsite.Title</h1>
+        <button @onclick="() => OnDetailsToggleOpen(true)" id="details-panel-toggle">Details</button>
+        <a class="page-view-detail external" href="@_selectedWebsite.ExternalHref" id="Details-Panel-External"
+           referrerpolicy="strict-origin-when-cross-origin"
+           title="@_selectedWebsite.ExternalTitle"
+           target="_blank">Go there</a>
+        <button class="copy-link @(_copied ? "copied" : "")" @onclick="CopyExternalHrefAsync"
+                aria-label="Copy link to clipboard">
+            <svg aria-label="Copy link to clipboard button." xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                 fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                <path
+                    d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
+                <path
+                    d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
+            </svg>
+        </button>
+        <div class="page-frame-toggle">
+            <button id="pill-display" class="pill-toggle" type="button" aria-label="Toggle framed view button"
+                    @onclick="@(e => ToggleFrameView(e, null))"
+                    @onkeydown="@(e => ToggleFrameView(e, null))"
+                    tabindex="0">
+                <div></div>
+            </button>
+            <label id="testing">
+                <input type="checkbox" checked="@(_isAboutMainView ? true : null)">
+                <span id="frameview">Framed</span>
+                <span id="detailview">About</span>
+            </label>
+        </div>
+    </div>
+}
+
+<div id="growing-placeholder"></div>
+<h1><a href="/"
+       rel="opener"
+       title="roberthowell.dev"
+       target="_self">roberthowell.dev</a></h1>
+<HyperTextMarkdownSearch
+    OnReceiveSearchFindingIndexClicked="@SetOtherIndexOpened"
+    OnReceiveSearchFindingNodeClicked="@ChangeSelectedWebsiteDetails"
+    OnCount="@SetCount"
+    Nodes="@_foundElements"/>
+
+<SelectWebsiteDetails
+    SelectedWebsite="@_selectedWebsiteDetails"
+    ShowDetails="@_toggleDetails"
+    OnCloseClicked="OnDetailsToggleOpen"
+    OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="OnAfterNavigateClosePanel"
+    StartingNumber="@OtherIndexOpened"/>
+
+<nav id="menu"
+     class="@_menuOptionSelection.ToLower() @(_selectedWebsite is null ? "no-menu-selection" : "")"
+     tabindex="-1">
+
+    <InputRadioGroup Name="menu" @bind-Value="_menuOptionSelection">
+        <label>All
+            <InputRadio Name="menu" Value="@ProjectsAllMenuOption" Label="All"/>
+        </label>
+        <label>By Type
+            <InputRadio Name="menu" Value="@ProjectsByTypeMenuOption"/>
+        </label>
+        @* <label>Cybersecurity *@
+        @*     <InputRadio Name="menu" Value="@CybersecurityMenuOption" Label="Cybersecurity"/> *@
+        @* </label> *@
+    </InputRadioGroup>
+
+    <div>
+        @switch (_menuOptionSelection)
+        {
+            case ProjectsByTypeMenuOption:
+                //////////TODOS//////////
+                // Sort component? (by date?, framework? secondary language?)
+                //Icons to fill in the cards and highlight the framing functionality limitations
+                //+Warnings
+                //+Errors (expected)
+                <WebsitesFrameSelections
+                    WebsitesSelections="@WebsiteSelections.ToList()"
+                    SelectedFrame="@_selectedWebsite"
+                    OnSelected="@HandleWebsiteSelected"
+                    SetDetail="@_toggleDetailsSet"
+                    OnSelectionChange="@SetOtherIndexOpened"
+                    OnSetAboutView="@SetToggleAboutView"
+                    StartingNumber="0"
+                    OnResortedListSelected="@ResortListSelected"/>
+
+                <DemosFrameSelections
+                    DemosSelections="@DemoSelections"
+                    SelectedFrame="@_selectedWebsite"
+                    OnSelected="@HandleWebsiteSelected"
+                    SetDetail="@_toggleDetailsSet"
+                    OnSelectionChange="@SetOtherIndexOpened"
+                    OnSetAboutView="@SetToggleAboutView"
+                    StartingNumber="6"
+                    OnResortedListSelected="@ResortListSelected"/>
+
+                break;
+            case ProjectsAllMenuOption:
+
+                <FrameSelectionItems
+                    FrameSelections="@AllSelections"
+                    SelectedFrame="@_selectedWebsite"
+                    OnSelected="@HandleWebsiteSelected"
+                    OnSelectionChange="@SetOtherIndexOpened"
+                    OnSetAboutView="@SetToggleAboutView"
+                    OnResortedListSelected="@ResortListSelected"
+                    SetDetail="@_toggleDetailsSet"
+                    StartingNumber="0"
+                    DeploymentAs="@DeploymentAs"/>
+
+                break;
+            case ProjectsCyberMenuOption:
+                //////////TODOS//////////
+                // Full Projects+Demos List
+                //+Error statuses
+                //+HEAD request listed or itemized
+                //+Tech specs (OS, server type, kernel base, CPU?, Memory reading?)
+                //+Product support and versioning
+                <ul>
+
+                    <li>6</li>
+                    <li>7</li>
+                </ul>
+
+                break;
+            //////////TODOS//////////
+            //Extra category to site descriptions?::
+            //-Caability
+            //-Scalability
+            //-Support staff
+            //-Project timeline estimate
+        }
+    </div>
+    <a href="/status"
+       data-enhance-nav="false"
+       rel="opener"
+       title="roberthowell.dev"
+       target="_self">Status</a>
+    <ReferenceTray/>
+</nav>
+
+@code {
+    private bool _isAboutMainView;
+
+    private List<FrameSelectionOption> AllSelections { get; set; } = [];
+
+    private const string DeploymentAs = "ALL";
+    private const string ProjectsAllMenuOption = "ALL";
+    private const string ProjectsByTypeMenuOption = "PROFICIENCIES";
+    private const string ProjectsCyberMenuOption = "CYBERSECURITY";
+    private string _menuOptionSelection = ProjectsAllMenuOption;
+
+    [Parameter] public int StartingNumber { get; set; }
+
+    private FrameSelectionOption? _selectedWebsite;
+    private FrameSelectionOption? _selectedWebsiteDetails;
+
+    private int Found { get; set; }
+
+    private readonly List<object> _foundElements = [];
+
+    public required List<FrameSelectionOption> WebsiteSelections = FrameSelectionData.WebsiteSelections;
+
+    public required List<FrameSelectionOption> DemoSelections = FrameSelectionData.DemoSelections;
+
+    private bool _toggleDetails;
+    private readonly bool? _toggleDetailsSet = null;
+    private bool _copied;
+
+    [Inject] private ClipboardService Clipboard { get; set; } = default!;
+
+    private int OtherIndexOpened { get; set; } = -1;
+
+    private async Task CopyExternalHrefAsync()
+    {
+        await Clipboard.CopyTextAsync(_selectedWebsite?.ExternalHref);
+        _copied = true;
+    }
+
+}

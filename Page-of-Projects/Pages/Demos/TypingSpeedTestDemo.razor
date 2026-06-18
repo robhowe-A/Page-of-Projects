@@ -5,7 +5,7 @@
 @using ProjectsPage.Domain
 @namespace ProjectsPage.Components.Pages.Demos
 
-<PageFrame 
+<PageFrame
     Url="https://typingspeedtest-demo.rhdeveloping.com/"
     Title="Typing Speed Test"
     IsWebsite="false"
@@ -17,15 +17,18 @@
 }
 
 @code {
-    
+
     [Parameter] public required FrameSelectionOption SelectedWebsite { get; set; }
     private static bool PageViewingSelected { get; set; }
+
     private void OnSelectedWebsiteChanged(FrameSelectionOption? selectedWebsite)
     {
         SelectedWebsite = selectedWebsite ?? throw new ApplicationException("No website details");
         PageViewingSelected = true;
+
         WriteLine($"Page loaded project data: " +
                   $"{selectedWebsite.Title} (selectedWebsite = " +
                   $"{selectedWebsite.DocHrefTitles})");
     }
+
 }

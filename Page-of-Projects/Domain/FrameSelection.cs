@@ -1,7 +1,9 @@
 // --Copyright (c) 2026 Robert A. Howell
 
+using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 
 namespace ProjectsPage.Domain;
 
@@ -11,14 +13,19 @@ public enum SortOrder
     OLDEST,
     AZ,
     ZA
-};
+}
 
 public class FrameSelectionOption
 {
+    private static readonly ConcurrentDictionary<string, string> DocHrefTitleCache = new();
+
+    public readonly Dictionary<string, string> DocHrefTitles = [];
+
     [JsonConstructor]
     internal FrameSelectionOption(string href, string title, string innerText, string externalHref,
-        string externalTitle, string imageUrl, string imageAltText, List<string>? referenceHrefs,
-        SelectionDetails selectionDetails, bool isSelected, Networking networking)
+                                  string externalTitle, string imageUrl, string imageAltText,
+                                  List<string>? referenceHrefs,
+                                  SelectionDetails selectionDetails, bool isSelected, Networking networking)
     {
         Href = href ?? throw new ArgumentNullException(nameof(href));
         Title = title ?? throw new ArgumentNullException(nameof(title));
@@ -30,9 +37,11 @@ public class FrameSelectionOption
         ReferenceHrefs = referenceHrefs;
         SelectionDetails = selectionDetails ?? throw new ArgumentNullException(nameof(selectionDetails));
         IsSelected = isSelected;
-        if(ReferenceHrefs != null)
-            //DocHrefTitles = this.GetDocsHrefTitleAsync(ReferenceHrefs).GetAwaiter().GetResult();
-            DocHrefTitles = this.GetDocsHrefTitleAsync(ReferenceHrefs);
+
+        if (ReferenceHrefs != null)
+
+                //DocHrefTitles = this.GetDocsHrefTitleAsync(ReferenceHrefs).GetAwaiter().GetResult();
+            DocHrefTitles = GetDocsHrefTitleAsync(ReferenceHrefs);
         Networking = networking ?? throw new ArgumentNullException(nameof(networking));
     }
 
@@ -46,38 +55,42 @@ public class FrameSelectionOption
     public List<string>? ReferenceHrefs { get; init; }
     public required SelectionDetails SelectionDetails { get; init; }
     public bool IsSelected { get; init; } //Not in JSON
+
     public required Networking Networking { get; init; }
-    
-    public readonly Dictionary<string, string> DocHrefTitles = [];
-    private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, string> DocHrefTitleCache = new();
+
     //private async Task<Dictionary<string, string>> GetDocsHrefTitleAsync(List<string> docsHref)
     private Dictionary<string, string> GetDocsHrefTitleAsync(List<string> docsHref)
     {
         Dictionary<string, string> hrefs = [];
         using var client = new HttpClient();
 
-        if (this.ReferenceHrefs != null && this.DocHrefTitles.Count == ReferenceHrefs.Count) return this.DocHrefTitles;
+        if (ReferenceHrefs != null && DocHrefTitles.Count == ReferenceHrefs.Count) return DocHrefTitles;
+
         foreach (var href in docsHref)
         {
             var hrefColl = href.Split("|");
+
             if (DocHrefTitleCache.TryGetValue(href, out var cachedTitle))
             {
-                
                 hrefs.Add(hrefColl[0], cachedTitle);
+
                 continue;
             }
+
             var requestUri = new Uri(hrefColl[0], UriKind.Absolute);
 #if LOOPBACK
             continue;
 #endif
             var responseResult = client.GetAsync(requestUri).Result.Content.ReadAsStringAsync().Result;
+
             //var response = client.GetAsync(requestUri);
             //var responseResult = response.Content.ReadAsStringAsync().Result;
 
             var link = hrefColl[0];
             string linkTitle;
+
             // href|Code|<manual title>
-            
+
             if (hrefColl.Length != 1 || (hrefColl.Length > 1 && string.Equals(hrefColl[1], @"TitleOverride")))
             {
                 linkTitle = hrefColl[2]; //href is the title
@@ -87,20 +100,23 @@ public class FrameSelectionOption
             {
                 linkTitle = "Missing title";
             }
-            
+
             WriteLine($"DocHrefTitles-{requestUri.AbsoluteUri}-{requestUri.HostNameType}->title");
-            if ((hrefColl.Length == 1 || (hrefColl.Length > 1 && !string.Equals(hrefColl[1], @"TitleOverride"))))
+
+            if (hrefColl.Length == 1 || (hrefColl.Length > 1 && !string.Equals(hrefColl[1], @"TitleOverride")))
             {
                 //read result to show the html response head
                 //filter for <title>
                 // href|TitleOverride|<Manual Title>
-                var titleRegexMatch = System.Text.RegularExpressions.Regex.Match(
-                    responseResult,
-                    "<title>(.+?)</title>",
-                    System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                var titleRegexMatch = Regex.Match(
+                                                  responseResult,
+                                                  "<title>(.+?)</title>",
+                                                  RegexOptions.IgnoreCase);
+
                 if (!titleRegexMatch.Success)
                 {
                     hrefs.Add(link, linkTitle);
+
                     continue;
                 }
 
@@ -110,83 +126,91 @@ public class FrameSelectionOption
                 linkTitle = linkTitle.Replace("&lt;", "<");
                 linkTitle = linkTitle.Replace("&gt;", ">");
             }
+
             DocHrefTitleCache[link] = linkTitle;
             hrefs.Add(link, linkTitle);
         }
+
         return hrefs;
     }
 };
 
 internal sealed class FrameSelectionFetch
 {
-    public string[] GetWebsitesData(string site)
-    {
-        return string.IsNullOrWhiteSpace(site) 
-            ? throw new ArgumentException("Value cannot be null or whitespace.", nameof(site)) 
-            : FetchWebsitesData(site);
-    }
-
-    private string[] FetchWebsitesData(string site)
-    {
-        var context = EntityModels.CreateProjectsDbContext();
-        var docs = (from j in context.projects where j.Site == site select j.Document);
-
-        return docs.ToArray();
-    }
-    
-    private string[] FetchProjectsData(string site, string site2)
-    {
-        var context = EntityModels.CreateProjectsDbContext();
-        var docs = (from j in context.projects where j.Site == site || j.Site == site2 select j.Document);
-
-        return docs.ToArray();
-    }
-    
     public string[] SearchIndexTerms
     {
         get
         {
             var context = EntityModels.CreateProjectsDbContext();
             var searchIndexTermsSite = "ProjectsPageSearchIndexTerms";
-            var docs = (from j in context.projects where j.Site == searchIndexTermsSite select j.Document);
-            
+            var docs = from j in context.projects where j.Site == searchIndexTermsSite select j.Document;
+
             return docs.ToArray();
         }
+    }
+
+    public string[] GetWebsitesData(string site)
+    {
+        return string.IsNullOrWhiteSpace(site)
+                ? throw new ArgumentException("Value cannot be null or whitespace.", nameof(site))
+                : FetchWebsitesData(site);
+    }
+
+    private string[] FetchWebsitesData(string site)
+    {
+        var context = EntityModels.CreateProjectsDbContext();
+        var docs = from j in context.projects where j.Site == site select j.Document;
+
+        return docs.ToArray();
+    }
+
+    private string[] FetchProjectsData(string site, string site2)
+    {
+        var context = EntityModels.CreateProjectsDbContext();
+        var docs = from j in context.projects where j.Site == site || j.Site == site2 select j.Document;
+
+        return docs.ToArray();
     }
 };
 
 internal static class FrameSelectionData
 {
     public static readonly List<FrameSelectionOption> WebsiteSelections = WebsitesOptionsData(Projects.Websites);
-    public static readonly List<FrameSelectionOption> DemoSelections =  WebsitesOptionsData(Projects.Demos);
-    
+    public static readonly List<FrameSelectionOption> DemoSelections = WebsitesOptionsData(Projects.Demos);
+
     private static List<FrameSelectionOption> WebsitesOptionsData(string projectName)
     {
-        WriteLine($"Loading frame selection data for {projectName}");// Temporary log
+        WriteLine($"Loading frame selection data for {projectName}"); // Temporary log
 
-        var websitesDocsArray = new FrameSelectionFetch().GetWebsitesData(projectName );
+        var websitesDocsArray = new FrameSelectionFetch().GetWebsitesData(projectName);
+
         if (websitesDocsArray is null) throw new ArgumentNullException(nameof(websitesDocsArray));
         var websitesData = JDocsDataStringLoop(websitesDocsArray);
 
         return JsonSerializer.Deserialize<List<FrameSelectionOption>>(websitesData,
-                   options: new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ??
-               throw new ApplicationException("WebsitesOptions is null");
+                                                                      new JsonSerializerOptions
+                                                                      { PropertyNameCaseInsensitive = true }) ??
+                throw new ApplicationException("WebsitesOptions is null");
     }
-    
-    private static string JDocsDataStringLoop(string[] docsArr) {
 
+    private static string JDocsDataStringLoop(string[] docsArr)
+    {
         ArgumentNullException.ThrowIfNull(docsArr);
 
         var values = "[";
+
         for (var i = 0; i < docsArr.Length; i++)
         {
             if (i == docsArr.Length - 1)
             {
                 values += docsArr[i];
+
                 break;
             }
+
             values += docsArr[i] + ",";
         }
+
         values += "]";
 
         return values;

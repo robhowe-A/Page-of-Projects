@@ -4,17 +4,17 @@
 @using Microsoft.AspNetCore.Components.Web
 @using ProjectsPage.Domain
 @namespace ProjectsPage.Components.Primary
-@rendermode  Microsoft.AspNetCore.Components.Web.RenderMode.InteractiveServer
+@rendermode RenderMode.InteractiveServer
 
 <PageTitle>roberthowell.dev</PageTitle>
 <article>
     <h2>Status</h2>
     <div>
-        @foreach (var domain in @_domainOptions)
+        @foreach (var domain in _domainOptions)
         {
             <section>
                 <hgroup class="domain">
-                    <h2>@domain.Tld</h2> 
+                    <h2>@domain.Tld</h2>
                 </hgroup>
                 <table class="subdomain">
                     <tbody>
@@ -22,7 +22,8 @@
                     {
                         <tr>
                             <td class="status">@(_statuses.TryGetValue(subdomain.Url, out var status) ? status : "…")</td>
-                            <td><a href="@subdomain.Url" rel="noopener" title="@subdomain.Name" target="_blank">@subdomain.Name</a></td>
+                            <td><a href="@subdomain.Url" rel="noopener" title="@subdomain.Name"
+                                   target="_blank">@subdomain.Name</a></td>
                         </tr>
                     }
                     </tbody>
@@ -46,10 +47,10 @@
     {
         // Start checks after first render so the page can show placeholders immediately.
         _statuses = await _healthCheck.RunChecksAsync(async (url, status) =>
-        {
-            _statuses[url] = status;
-            await InvokeAsync(StateHasChanged);
-        }, UrlsToCheck);
+                                                      {
+                                                          _statuses[url] = status;
+                                                          await InvokeAsync(StateHasChanged);
+                                                      }, UrlsToCheck);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -59,12 +60,10 @@
 
         //DoBackgroundWorkAsync().GetAwaiter();
         await DoBackgroundWorkAsync();
-        
-        
+
+
         // Trigger a re-render as each result arrives
         // ADD TRIGGER BTN
-        
-
-        return;
     }
+
 }
