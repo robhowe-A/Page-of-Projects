@@ -34,7 +34,7 @@ internal sealed class ProjectsDbContext : DbContext
                                     throw new ArgumentNullException(nameof(_connectionString)));
         }
     }
-
+    
     public ProjectsDbContext GetContext()
     {
         //LOGLEAF

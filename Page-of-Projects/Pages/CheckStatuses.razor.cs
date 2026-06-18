@@ -20,60 +20,7 @@ public class SiteOption
 
 public partial class CheckStatuses : ComponentBase
 {
-    private const string Ok = "OK";
-    private const string Down = "DOWN";
-
-    private readonly List<DomainOption> _domainOptions = FrameSelection.DomainOptionsData(Projects.Domains);
     private List<string> UrlsToCheck { get; set; } = new();
-
-    private Task? _backgroundWork;
-
-    private async Task RunChecksAsync()
-    {
-        // Optional: limit concurrency so you don’t hammer the server/network
-        using var throttler = new SemaphoreSlim(initialCount: 6);
-
-        var tasks = UrlsToCheck.Select(async url =>
-        {
-            await throttler.WaitAsync();
-            try
-            {
-                var status = await CheckSiteStatus(url);
-                _statuses[url] = status;
-
-                // Trigger a re-render as each result arrives
-                await InvokeAsync(StateHasChanged);
-            }
-            finally
-            {
-                throttler.Release();
-            }
-        });
-
-        await Task.WhenAll(tasks);
-    }
-
-    public async Task<string> CheckSiteStatus(string url)
-    {
-        if (string.IsNullOrWhiteSpace(url)) throw new ArgumentNullException(nameof(url));
-
-        return await IsSiteUp(url) ? Ok : Down;
-    }
-
-    [Inject] private HttpClient Http { get; set; } = default!;
-
-    private async Task<bool> IsSiteUp(string url)
-    {
-        try
-        {
-            using var response = await Http.GetAsync(url);
-            return response.IsSuccessStatusCode;
-        }
-        catch (HttpRequestException)
-        {
-            return false;
-        }
-    }
 
     private static List<DomainOption> DomainOptionsData()
     {

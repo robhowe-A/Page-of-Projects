@@ -2,6 +2,7 @@
 
 @page "/status"
 @using Microsoft.AspNetCore.Components.Web
+@using ProjectsPage.Domain
 @namespace ProjectsPage.Components.Primary
 @rendermode  Microsoft.AspNetCore.Components.Web.RenderMode.InteractiveServer
 
@@ -12,44 +13,58 @@
         @foreach (var domain in @_domainOptions)
         {
             <section>
-            <hgroup class="domain">
-                 <h2>@domain.Tld</h2> 
-            </hgroup>
-            <table class="subdomain">
-                <tbody>
+                <hgroup class="domain">
+                    <h2>@domain.Tld</h2> 
+                </hgroup>
+                <table class="subdomain">
+                    <tbody>
                     @foreach (var subdomain in domain.Sites)
                     {
-                    <tr>
-                        <td class="status">@(_statuses.TryGetValue(subdomain.Url, out var status) ? status : "…")</td>
-                        <td><a href="@subdomain.Url" rel="noopener" title="@subdomain.Name" target="_blank">@subdomain.Name</a></td>
-                    </tr>
+                        <tr>
+                            <td class="status">@(_statuses.TryGetValue(subdomain.Url, out var status) ? status : "…")</td>
+                            <td><a href="@subdomain.Url" rel="noopener" title="@subdomain.Name" target="_blank">@subdomain.Name</a></td>
+                        </tr>
                     }
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
             </section>
         }
     </div>
 </article>
+
 @code {
-    private readonly Dictionary<string, string> _statuses = new();
+    private Dictionary<string, string> _statuses = new();
+    private readonly HealthCheck _healthCheck = new();
+    private static readonly List<DomainOption> _domainOptions = FrameSelection.DomainOptionsData(Projects.Domains);
 
     protected override void OnInitialized()
     {
-        UrlsToCheck = _domainOptions
-            .SelectMany(d => d.Sites)
-            .Select(s => s.Url)
-            .Where(u => !string.IsNullOrWhiteSpace(u))
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToList();
+        UrlsToCheck = _healthCheck.GetUrlsToCheck();
     }
 
-    protected override Task OnAfterRenderAsync(bool firstRender)
+    private async Task DoBackgroundWorkAsync()
     {
-        if (!firstRender || _backgroundWork is not null)
-            return Task.CompletedTask;
-
         // Start checks after first render so the page can show placeholders immediately.
-        _backgroundWork = RunChecksAsync();
-        return Task.CompletedTask;
+        _statuses = await _healthCheck.RunChecksAsync(async (url, status) =>
+        {
+            _statuses[url] = status;
+            await InvokeAsync(StateHasChanged);
+        }, UrlsToCheck);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+
+        //DoBackgroundWorkAsync().GetAwaiter();
+        await DoBackgroundWorkAsync();
+        
+        
+        // Trigger a re-render as each result arrives
+        // ADD TRIGGER BTN
+        
+
+        return;
     }
 }

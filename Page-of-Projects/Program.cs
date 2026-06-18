@@ -44,8 +44,8 @@ var conString = builder.Configuration.GetConnectionString("ProjectsDb") ??
      throw new InvalidOperationException("Connection string 'ProjectsDb' not found.");
 
 builder.Services.AddProjectsContext(conString);
+builder.Services.StartAgentHeartbeat();
 builder.Services.AddResponseCompression(options => options.EnableForHttps = true);
-//builder.WebHost.UseKestrel(options => options.AddServerHeader = false);
 
 var app = builder.Build();
 
@@ -68,5 +68,4 @@ app.MapStaticAssets();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode(defaults => defaults.ContentSecurityFrameAncestorsPolicy = null);
-
 app.Run();

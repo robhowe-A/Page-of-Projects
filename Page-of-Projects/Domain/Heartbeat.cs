@@ -42,9 +42,9 @@ internal sealed class Heartbeat
     [MaxLength(32)]
     public required string ResponseStatus { get; init; }
 
-    [Column("Created_Date")]
-    public DateTime CreatedDate { get; init; }
+    //[Column("Created_Date")]
+    //public DateTime CreatedDate { get; init; }
 
-    [Column("Last_Modified")]
-    public DateTime LastModified { get; init; }
+    //[Column("Last_Modified")]
+    //public DateTime LastModified { get; init; }
 };
