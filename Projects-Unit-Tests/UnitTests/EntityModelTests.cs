@@ -1,6 +1,7 @@
 ﻿// --Copyright (c) 2026 Robert A. Howell
 
 using ProjectsPage.Domain;
+using ProjectsPage.Infrastructure;
 using System.Text.Json;
 
 namespace UnitTests

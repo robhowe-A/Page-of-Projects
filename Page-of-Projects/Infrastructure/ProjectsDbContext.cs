@@ -1,8 +1,9 @@
 ﻿// --Copyright (c) 2026 Robert A. Howell
 
 using Microsoft.EntityFrameworkCore;
+using ProjectsPage.Domain;
 
-namespace ProjectsPage.Domain;
+namespace ProjectsPage.Infrastructure;
 
 internal sealed class ProjectsDbContext : DbContext
 {

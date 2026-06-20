@@ -1,5 +1,6 @@
 // --Copyright (c) 2026 Robert A. Howell
 
+using ProjectsPage.Infrastructure;
 using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -40,7 +41,6 @@ public class FrameSelectionOption
 
         if (ReferenceHrefs != null)
 
-                //DocHrefTitles = this.GetDocsHrefTitleAsync(ReferenceHrefs).GetAwaiter().GetResult();
             DocHrefTitles = GetDocsHrefTitleAsync(ReferenceHrefs);
         Networking = networking ?? throw new ArgumentNullException(nameof(networking));
     }
@@ -135,46 +135,25 @@ public class FrameSelectionOption
     }
 };
 
-internal sealed class FrameSelectionFetch
-{
-    public string[] SearchIndexTerms
-    {
-        get
-        {
-            var context = EntityModels.CreateProjectsDbContext();
-            var searchIndexTermsSite = "ProjectsPageSearchIndexTerms";
-            var docs = from j in context.projects where j.Site == searchIndexTermsSite select j.Document;
-
-            return docs.ToArray();
-        }
-    }
-
-    public string[] GetWebsitesData(string site)
-    {
-        return string.IsNullOrWhiteSpace(site)
-                ? throw new ArgumentException("Value cannot be null or whitespace.", nameof(site))
-                : FetchWebsitesData(site);
-    }
-
-    private string[] FetchWebsitesData(string site)
-    {
-        var context = EntityModels.CreateProjectsDbContext();
-        var docs = from j in context.projects where j.Site == site select j.Document;
-
-        return docs.ToArray();
-    }
-
-    private string[] FetchProjectsData(string site, string site2)
-    {
-        var context = EntityModels.CreateProjectsDbContext();
-        var docs = from j in context.projects where j.Site == site || j.Site == site2 select j.Document;
-
-        return docs.ToArray();
-    }
-};
-
 internal static class FrameSelectionData
 {
+    public static int ProjectsHeartbeatSuccessCount()
+    {
+        return new FrameSelectionFetch().FetchProjectsHeartbeatSuccessCount();
+    }
+
+    public static int ProjectsHeartbeatUnsuccessfulCount()
+    {
+        return new FrameSelectionFetch().FetchProjectsHeartbeatUnsuccessfulCount();
+    }
+
+    public static decimal ProjectsHeartbeatSuccessPercentage()
+    {
+        var successes = new FrameSelectionFetch().FetchProjectsHeartbeatSuccessCount();
+        var total = new FrameSelectionFetch().FetchProjectsHeartbeatTotalCount();
+        return (Convert.ToDecimal(successes) / total) * 100;
+    }
+
     public static readonly List<FrameSelectionOption> WebsiteSelections = WebsitesOptionsData(Projects.Websites);
     public static readonly List<FrameSelectionOption> DemoSelections = WebsitesOptionsData(Projects.Demos);
 

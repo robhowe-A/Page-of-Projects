@@ -1,5 +1,7 @@
 ﻿// --Copyright (c) 2026 Robert A. Howell
 
+using ProjectsPage.Infrastructure;
+
 namespace ProjectsPage.Domain;
 
 internal static class EntityModels

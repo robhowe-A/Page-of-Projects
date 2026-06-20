@@ -4,7 +4,7 @@ using ProjectsPage.Domain;
 
 namespace ProjectsPage.Components.Secondary;
 
-public partial class SortSelectionsAZ
+public partial class SortSelectionsAz
 {
     private async Task SortDemosAz()
     {

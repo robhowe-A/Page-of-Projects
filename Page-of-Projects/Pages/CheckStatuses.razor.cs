@@ -28,4 +28,36 @@ public partial class CheckStatuses : ComponentBase
                                                               { PropertyNameCaseInsensitive = true }) ??
                 throw new ApplicationException("DomainOptions is null");
     }
+
+    private async Task CheckDomainSitesRequestHealthAsync()
+    {
+        UrlsToCheck = _healthCheck.GetUrlsToCheck();
+        
+        await RunRequestHealthChecksAsync(UrlsToCheck);
+    }
+
+    private async Task RunRequestHealthChecksAsync(List<string>? urlsToCheck)
+    {
+        if (urlsToCheck != null)
+        {
+            foreach (var url in urlsToCheck)
+                _statuses[url] = "…";
+            await _healthCheck.RunChecksAsync(CheckStatusAsync, urlsToCheck);
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private Func<string, string, Task> CheckStatusAsync
+    {
+        get
+        {
+            return async (url, status) =>
+            {
+                _statuses[url] = status;
+                await InvokeAsync(StateHasChanged);
+            };
+        }
+    }
+
 };
