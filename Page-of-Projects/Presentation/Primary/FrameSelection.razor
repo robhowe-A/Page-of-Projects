@@ -29,8 +29,9 @@
         </button>
         <div class="page-frame-toggle">
             <button id="pill-display" class="pill-toggle" type="button" aria-label="Toggle framed view button"
-                    @onclick="@(e => ToggleFrameView(e, null))"
-                    @onkeydown="@(e => ToggleFrameView(e, null))"
+                    @onclick="@(e => ToggleAboutView(e, null))"
+                    @onkeydown="@(e => ToggleAboutView(e, null))"
+                    @onkeydown:preventDefault="true"
                     tabindex="0">
                 <div></div>
             </button>
@@ -92,7 +93,7 @@
                     OnSelected="@HandleWebsiteSelected"
                     SetDetail="@_toggleDetailsSet"
                     OnSelectionChange="@SetOtherIndexOpened"
-                    OnSetAboutView="@SetToggleAboutView"
+                    OnSetAboutView="@ToggleAboutView"
                     StartingNumber="0"
                     OnResortedListSelected="@ResortListSelected"/>
 
@@ -102,7 +103,7 @@
                     OnSelected="@HandleWebsiteSelected"
                     SetDetail="@_toggleDetailsSet"
                     OnSelectionChange="@SetOtherIndexOpened"
-                    OnSetAboutView="@SetToggleAboutView"
+                    OnSetAboutView="@ToggleAboutView"
                     StartingNumber="6"
                     OnResortedListSelected="@ResortListSelected"/>
 
@@ -114,7 +115,7 @@
                     SelectedFrame="@_selectedWebsite"
                     OnSelected="@HandleWebsiteSelected"
                     OnSelectionChange="@SetOtherIndexOpened"
-                    OnSetAboutView="@SetToggleAboutView"
+                    OnSetAboutView="@ToggleAboutView"
                     OnResortedListSelected="@ResortListSelected"
                     SetDetail="@_toggleDetailsSet"
                     StartingNumber="0"

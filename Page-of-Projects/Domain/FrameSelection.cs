@@ -137,20 +137,22 @@ public class FrameSelectionOption
 
 internal static class FrameSelectionData
 {
+    private static readonly FrameSelectionFetch FsFetch = new ();
+
     public static int ProjectsHeartbeatSuccessCount()
     {
-        return new FrameSelectionFetch().FetchProjectsHeartbeatSuccessCount();
+        return FsFetch.FetchProjectsHeartbeatSuccessCount();
     }
 
     public static int ProjectsHeartbeatUnsuccessfulCount()
     {
-        return new FrameSelectionFetch().FetchProjectsHeartbeatUnsuccessfulCount();
+        return FsFetch.FetchProjectsHeartbeatUnsuccessfulCount();
     }
 
     public static decimal ProjectsHeartbeatSuccessPercentage()
     {
-        var successes = new FrameSelectionFetch().FetchProjectsHeartbeatSuccessCount();
-        var total = new FrameSelectionFetch().FetchProjectsHeartbeatTotalCount();
+        var successes = FsFetch.FetchProjectsHeartbeatSuccessCount();
+        var total = FsFetch.FetchProjectsHeartbeatTotalCount();
         return (Convert.ToDecimal(successes) / total) * 100;
     }
 
@@ -161,7 +163,7 @@ internal static class FrameSelectionData
     {
         WriteLine($"Loading frame selection data for {projectName}"); // Temporary log
 
-        var websitesDocsArray = new FrameSelectionFetch().GetWebsitesData(projectName);
+        var websitesDocsArray = FsFetch.GetWebsitesData(projectName);
 
         if (websitesDocsArray is null) throw new ArgumentNullException(nameof(websitesDocsArray));
         var websitesData = JDocsDataStringLoop(websitesDocsArray);

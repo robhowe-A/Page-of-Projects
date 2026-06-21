@@ -1,22 +1,17 @@
 ﻿<!-- --Copyright (c) 2026 Robert A. Howell -->
 
-@using ProjectsPage.Domain
 @namespace ProjectsPage.Components.Secondary
+@inherits ProjectsPage.Components.Secondary.SortSelectionsBase
 
-@if (!_isSortedNewest)
+@if (_isSortedNewest)
 {
-    <button class="details-panel-sort" @onclick="SortAllDateEnd">Newest</button>
+    <button class="details-panel-sort" @onclick="SortAllDateEnd">Oldest</button>
 }
 else
 {
-    <button class="details-panel-sort" @onclick="SortAllDateStart">Oldest</button>
+    <button class="details-panel-sort" @onclick="SortAllDateStart">Newest</button>
 }
 
 @code {
     private bool _isSortedNewest = true; //sort order starts as NEWEST
-    private SortOrder SortOrderSelected { get; set; }
-
-    [Parameter] public required string DeploymentAs { get; set; }
-
-    [Parameter] public EventCallback<(SortOrder, string)> OnResortedListSelected { get; set; }
 }

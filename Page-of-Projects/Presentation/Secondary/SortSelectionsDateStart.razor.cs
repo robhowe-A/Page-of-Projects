@@ -4,19 +4,17 @@ using ProjectsPage.Domain;
 
 namespace ProjectsPage.Components.Secondary;
 
-public partial class SortSelectionsDateStart
+public partial class SortSelectionsDateStart : SortSelectionsBase
 {
     private async Task SortAllDateStart()
     {
-        SortOrderSelected = SortOrder.OLDEST;
-        _isSortedNewest = false;
-        await OnResortedListSelected.InvokeAsync((SortOrderSelected, DeploymentAs));
+        await InvokeSortAsync(SortOrder.NEWEST);
+        _isSortedNewest = true;
     }
 
     private async Task SortAllDateEnd()
     {
-        SortOrderSelected = SortOrder.NEWEST;
-        _isSortedNewest = true;
-        await OnResortedListSelected.InvokeAsync((SortOrderSelected, DeploymentAs));
+        await InvokeSortAsync(SortOrder.OLDEST);
+        _isSortedNewest = false;
     }
 };

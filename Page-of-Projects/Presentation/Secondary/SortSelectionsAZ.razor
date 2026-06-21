@@ -1,22 +1,17 @@
 ﻿<!-- --Copyright (c) 2026 Robert A. Howell -->
 
-@using ProjectsPage.Domain
 @namespace ProjectsPage.Components.Secondary
+@inherits ProjectsPage.Components.Secondary.SortSelectionsBase
 
-@if (!_isSortedAz)
+@if (_isSortedAz)
 {
-    <button class="details-panel-sort" @onclick="SortDemosAz">A-Z</button>
+    <button class="details-panel-sort" @onclick="SortDemosZa">Z-A</button>
 }
 else
 {
-    <button class="details-panel-sort" @onclick="SortDemosZa">Z-A</button>
+    <button class="details-panel-sort" @onclick="SortDemosAz">A-Z</button>
 }
 
 @code {
     private bool _isSortedAz;
-    private SortOrder SortOrderSelected { get; set; }
-
-    [Parameter] public required string DeploymentAs { get; set; }
-
-    [Parameter] public EventCallback<(SortOrder, string)> OnResortedListSelected { get; set; }
 }
