@@ -153,7 +153,27 @@ internal static class FrameSelectionData
     {
         var successes = FsFetch.FetchProjectsHeartbeatSuccessCount();
         var total = FsFetch.FetchProjectsHeartbeatTotalCount();
+
+        if(total == 0)
+            return 0;
+
         return (Convert.ToDecimal(successes) / total) * 100;
+    }
+
+    public static decimal ProjectsHeartbeatCloudSuccessPercentage()
+    {
+        var successes = FsFetch.FetchProjectsHeartbeatCloudSuccessCount();
+        var total = FsFetch.FetchProjectsHeartbeatCloudTotalCount();
+
+        return total == 0 ? 0 : (Convert.ToDecimal(successes) / total) * 100;
+    }
+
+    public static decimal ProjectsHeartbeatOnPremSuccessPercentage()
+    {
+        var successes = FsFetch.FetchProjectsHeartbeatOnPremSuccessCount();
+        var total = FsFetch.FetchProjectsHeartbeatOnPremTotalCount();
+
+        return total == 0 ? 0 : (Convert.ToDecimal(successes) / total) * 100;
     }
 
     public static readonly List<FrameSelectionOption> WebsiteSelections = WebsitesOptionsData(Projects.Websites);

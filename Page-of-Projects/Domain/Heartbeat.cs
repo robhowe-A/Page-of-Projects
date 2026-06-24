@@ -34,7 +34,6 @@ internal sealed class Heartbeat
     [Column("Url_Rel")]
     [MinLength(1)]
     [MaxLength(512)]
-    [Url]
     public required string UrlRel { get; init; }
 
     [Column("Response_Status")]

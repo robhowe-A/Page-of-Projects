@@ -20,7 +20,7 @@
                 <hgroup class="domain">
                     <h2>@domain.Tld</h2>
                 </hgroup>
-                <button @onclick="()=>RunRequestHealthChecksAsync(domain.Sites.Select(s => s.Url).ToList())" type="button">TEST</button>
+                <button @onclick="()=>RunRequestHealthChecksAsync([..domain.Sites.Select(s => s.Url)])" type="button">TEST</button>
                 <table class="subdomain">
                     <tbody>
                     @foreach (var subdomain in domain.Sites)
@@ -41,21 +41,29 @@
         }
     </div>
     <hr/>
+    <div>
     <p>A background service checks the status of each site every 10 minutes.</p>
     <p>Successes count: <span>@_successCount</span>
         <br/>
         Failures count: <span>@_failureCount</span>
         <br/>
-        Success rate: <span>@_successPercentage%</span></p>
+        Success rate: <span>@_successPercentage.ToString("N3")%</span></p>
+    <hr/>
+    <p>Cloud success: <span>@_cloudSuccessPercentage%</span>
+        <br/>
+        On-prem success: <span>@_onPremSuccessPercentage.ToString("N3")%</span></p>
+    </div>
 </article>
 
 @code {
     private Dictionary<string, string> _statuses = new();
-    
+
     private readonly HealthCheck _healthCheck = new();
     private static readonly List<DomainOption> DomainOptions = FrameSelection.DomainOptionsData(Projects.Domains);
 
     private readonly int _successCount = FrameSelectionData.ProjectsHeartbeatSuccessCount();
     private readonly int _failureCount = FrameSelectionData.ProjectsHeartbeatUnsuccessfulCount();
     private readonly decimal _successPercentage = FrameSelectionData.ProjectsHeartbeatSuccessPercentage();
+    private readonly decimal _cloudSuccessPercentage = FrameSelectionData.ProjectsHeartbeatCloudSuccessPercentage();
+    private readonly decimal _onPremSuccessPercentage = FrameSelectionData.ProjectsHeartbeatOnPremSuccessPercentage();
 }
