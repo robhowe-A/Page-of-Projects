@@ -13,7 +13,7 @@
             ShowDetails="ShowDetails"
             DialogIndex="@StartingNumber"
             OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateToDocsFrameCloseSelectionDetailPanel"/>
-        <button @onclick="() => OnCloseClicked.InvokeAsync(false)" class="mb1 details-panel-toggle disabled secondary">
+        <button @onclick="() => OnCloseClicked.InvokeAsync(false)" class="mb1 details-panel-toggle disabled secondary" aria-hidden="@(ShowDetails ? null : "true")">
             Close
         </button>
     </aside>
