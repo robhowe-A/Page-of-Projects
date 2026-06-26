@@ -4,10 +4,9 @@
 
 @namespace ProjectsPage.Components.Secondary
 
-@if (SelectedWebsite != null && ShowDetails)
-{
+
     <aside class="page-view-detail
-        @(ShowDetails ? "show-details" : "")" data-panel-index="0">
+    @((ShowDetails && SelectedWebsite != null) ? "show-details" : "")" data-panel-index="0">
         <SelectedWebsiteDetails
             SelectedWebsite="@SelectedWebsite"
             ShowDetails="ShowDetails"
@@ -17,7 +16,7 @@
             Close
         </button>
     </aside>
-}
+
 
 @code {
     [Parameter] public required FrameSelectionOption? SelectedWebsite { get; set; }
