@@ -4,22 +4,36 @@
 
 @namespace ProjectsPage.Components.Secondary
 
-
-    <aside class="page-view-detail
-    @((ShowDetails && SelectedWebsite != null) ? "show-details" : "")" data-panel-index="0">
+    <aside class="page-view-detail @(SelectedWebsiteMatchesOtherSelectionDetails ? "" : "unmatched")
+    @(ShowDetails && SelectedWebsite != null ? "show-details" : "")" data-panel-index="0">
         <SelectedWebsiteDetails
             SelectedWebsite="@SelectedWebsite"
             ShowDetails="ShowDetails"
             DialogIndex="@StartingNumber"
-            OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateToDocsFrameCloseSelectionDetailPanel"/>
+            OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateToDocsFrameCloseSelectionDetailPanel"
+            MatchingSelectionDetails="@SelectedWebsiteMatchesOtherSelectionDetails"
+            OnSelected="@OnSelected"/>
         <button @onclick="() => OnCloseClicked.InvokeAsync(false)" class="mb1 details-panel-toggle disabled secondary" aria-hidden="@(ShowDetails ? null : "true")">
             Close
         </button>
     </aside>
 
-
 @code {
+    [Parameter] public EventCallback<FrameSelectionOption> OnSelected { get; set; }
+
     [Parameter] public required FrameSelectionOption? SelectedWebsite { get; set; }
+
+    [Parameter] public required FrameSelectionOption? OtherSelectedWebsiteDetails { get;
+        set
+        {
+            if (OtherSelectedWebsiteDetails is not null)
+                SelectedWebsiteMatchesOtherSelectionDetails = SelectedWebsite == OtherSelectedWebsiteDetails;
+            else SelectedWebsiteMatchesOtherSelectionDetails = true;
+            field = value;
+        }
+    }
+
+    private bool SelectedWebsiteMatchesOtherSelectionDetails { get; set; }
 
     [Parameter] public bool ShowDetails { get; set; }
 

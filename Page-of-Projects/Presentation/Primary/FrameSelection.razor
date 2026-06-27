@@ -8,6 +8,7 @@
 @namespace ProjectsPage.Components.Primary
 @inject IJSRuntime Js
 
+<div class="nav">
 @if (_selectedWebsite != null)
 {
     <div id="menu-selection">
@@ -38,7 +39,7 @@
             <label id="testing">
                 <input type="checkbox" checked="@(_isAboutMainView ? true : null)">
                 <span id="frameview">Framed</span>
-                <span id="detailview">About</span>
+                <span id="detailview">Details</span>
             </label>
         </div>
     </div>
@@ -56,12 +57,7 @@
     OnCount="@SetCount"
     Nodes="@_foundElements"/>
 
-<SelectWebsiteDetails
-    SelectedWebsite="@_selectedWebsiteDetails"
-    ShowDetails="@_toggleDetails"
-    OnCloseClicked="OnDetailsToggleOpen"
-    OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="OnAfterNavigateClosePanel"
-    StartingNumber="@OtherIndexOpened"/>
+
 
 <nav id="menu"
      class="@_menuOptionSelection.ToLower() @(_selectedWebsite is null ? "no-menu-selection" : "")"
@@ -151,7 +147,18 @@
        title="roberthowell.dev"
        target="_self">Status</a>
     <ReferenceTray/>
+    <NavFooter/>
 </nav>
+</div>
+<SelectWebsiteDetails
+    SelectedWebsite="@_selectedWebsiteDetails"
+    OtherSelectedWebsiteDetails="@_selectedWebsite"
+    ShowDetails="@_toggleDetails"
+    OnCloseClicked="OnDetailsToggleOpen"
+    OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="OnAfterNavigateClosePanel"
+    StartingNumber="@OtherIndexOpened"
+    OnSelected="@HandleWebsiteSelected"/>
+
 
 @code {
     private bool _isAboutMainView;
