@@ -1,50 +1,67 @@
 ﻿// --Copyright (c) 2026 Robert A. Howell
 
+using Microsoft.Playwright;
 using ProjectsPage.Domain;
 using ProjectsPage.Infrastructure;
 using System.Text.Json;
+using Microsoft.Playwright;
+using System.Threading.Tasks;
 
-namespace UnitTests
+
+namespace UnitTests;
+
+public class PlaywrightExample
 {
-    public class EntityModelTests
+    [Fact]
+    public static async Task Main()
     {
-        [Fact]
-        public void JsonDocStoreConnectTest()
-        {
-            using ProjectsDbContext db = EntityModels.CreateProjectsDbContext();
-            Assert.True( db.Database.CanConnect() );
-        }
+        using var playwright = await Playwright.CreateAsync();
+        await using var browser = await playwright.Chromium.LaunchAsync();
+        var page = await browser.NewPageAsync();
 
-        [Fact]
-        public void JsonDocSoreCountConfirmation()
-        {
-            using ProjectsDbContext db = EntityModels.CreateProjectsDbContext();
-            var count = (from project in db.projects where project.Site == "ProjectsPage" select project.Site).Count();
-            count += (from project in db.projects where project.Site == "ProjectsPageDemos" select project.Site).Count();
-            db.Dispose();
+        await page.GotoAsync("https://www.microsoft.com");
+        // other actions...
+    }
+};
 
-            Assert.True( count == 12 );
-        }
+public class EntityModelTests
+{
+    [Fact]
+    public void JsonDocStoreConnectTest()
+    {
+        using ProjectsDbContext db = EntityModels.CreateProjectsDbContext();
+        Assert.True(db.Database.CanConnect());
+    }
 
-        [Fact]
-        public void CheckAgileStockNameMatchInDatase()
-        {
-            using ProjectsDbContext db = EntityModels.CreateProjectsDbContext();
-            
-            //var DocumentTitles = db.projects.FromSqlRaw("""select document->"$.Title" from projects where site='ProjectsPage';"""); //Not an OOM: no array or list method
-            var agileStockDocument = (from project in db.projects where project.Site == "ProjectsPage" && project.Document.Contains("AgileStock Web") select project.Document).ToList();
-            db.Dispose();
+    [Fact]
+    public void JsonDocSoreCountConfirmation()
+    {
+        using ProjectsDbContext db = EntityModels.CreateProjectsDbContext();
+        var count = (from project in db.projects where project.Site == "ProjectsPage" select project.Site).Count();
+        count += (from project in db.projects where project.Site == "ProjectsPageDemos" select project.Site).Count();
+        db.Dispose();
 
-            if (agileStockDocument.Count < 1) throw new NullReferenceException();
+        Assert.True(count == 12);
+    }
 
-            JsonSerializerOptions options = new JsonSerializerOptions(new JsonSerializerDefaults());
-            options.PropertyNameCaseInsensitive = false;
+    [Fact]
+    public void CheckAgileStockNameMatchInDatase()
+    {
+        using ProjectsDbContext db = EntityModels.CreateProjectsDbContext();
 
-            FrameSelectionOption jdocAgileStock = JsonSerializer.Deserialize<FrameSelectionOption>
-                (agileStockDocument.First(), options)
-                ?? throw new InvalidDataException("Encountered a document serialization error.");
+        //var DocumentTitles = db.projects.FromSqlRaw("""select document->"$.Title" from projects where site='ProjectsPage';"""); //Not an OOM: no array or list method
+        var agileStockDocument = (from project in db.projects where project.Site == "ProjectsPage" && project.Document.Contains("AgileStock Web") select project.Document).ToList();
+        db.Dispose();
 
-            Assert.Equal( "AgileStock Web", jdocAgileStock.Title.ToString() );
-        }
+        if (agileStockDocument.Count < 1) throw new NullReferenceException();
+
+        JsonSerializerOptions options = new JsonSerializerOptions(new JsonSerializerDefaults());
+        options.PropertyNameCaseInsensitive = false;
+
+        FrameSelectionOption jdocAgileStock = JsonSerializer.Deserialize<FrameSelectionOption>
+            (agileStockDocument.First(), options)
+            ?? throw new InvalidDataException("Encountered a document serialization error.");
+
+        Assert.Equal("AgileStock Web", jdocAgileStock.Title.ToString());
     }
 };
