@@ -4,28 +4,24 @@ using Microsoft.Playwright;
 using ProjectsPage.Domain;
 using ProjectsPage.Infrastructure;
 using System.Text.Json;
-using Microsoft.Playwright;
-using System.Threading.Tasks;
-
 
 namespace UnitTests;
 
-public class PlaywrightExample
+public class EntityModelTests
 {
     [Fact]
-    public static async Task Main()
+    public async Task LoadHomepageSuccess()
     {
         using var playwright = await Playwright.CreateAsync();
         await using var browser = await playwright.Chromium.LaunchAsync();
         var page = await browser.NewPageAsync();
 
-        await page.GotoAsync("https://www.microsoft.com");
-        // other actions...
-    }
-};
+        var response = await page.GotoAsync("https://localhost:58442/");
 
-public class EntityModelTests
-{
+        Assert.NotNull(response);
+        Assert.True(response.Ok);
+    }
+
     [Fact]
     public void JsonDocStoreConnectTest()
     {

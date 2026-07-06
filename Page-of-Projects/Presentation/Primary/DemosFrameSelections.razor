@@ -23,9 +23,15 @@
     OnSelectionChange="@OnSelectionChange"
     SetDetail="@SetDetail"
     StartingNumber="@StartingNumber"
-    DeploymentAs="@DeploymentAs"/>
+    DeploymentAs="@DeploymentAs"
+    UpdateSelectedDirectExternalUrl="@UpdateSelectedDirectExternalUrl"
+    OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="OnAfterNavigateToDocsFrameCloseSelectionDetailPanel"/>
 
-@code {
+    @code {
+    [Parameter] public EventCallback<bool> OnAfterNavigateToDocsFrameCloseSelectionDetailPanel { get; set; }
+
+    [Parameter] public EventCallback<string> UpdateSelectedDirectExternalUrl { get; set; }
+
     [Parameter] public bool? SetDetail { get; set; }
 
     [Parameter] public EventCallback<(SortOrder, string)> OnResortedListSelected { get; set; }

@@ -23,8 +23,14 @@
     SetDetail="@SetDetail"
     StartingNumber="@StartingNumber"
     DeploymentAs="@DeploymentAs"
-    OnResortedListSelected="@OnResortedListSelected"/>
+    OnResortedListSelected="@OnResortedListSelected"
+    UpdateSelectedDirectExternalUrl="@UpdateSelectedDirectExternalUrl"
+    OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateToDocsFrameCloseSelectionDetailPanel"/>
 
 @code {
+    [Parameter] public EventCallback<bool> OnAfterNavigateToDocsFrameCloseSelectionDetailPanel { get; set; }
+
+    [Parameter] public EventCallback<string> UpdateSelectedDirectExternalUrl { get; set; }
+
     private const string DeploymentAs = "WEBSITE";
 }

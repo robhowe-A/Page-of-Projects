@@ -14,7 +14,7 @@
     <div id="menu-selection">
         <h1 data-visibility="no-result">@_selectedWebsite.Title</h1>
         <button @onclick="() => OnDetailsToggleOpen(true)" id="details-panel-toggle">Details</button>
-        <a class="page-view-detail external" href="@_selectedWebsite.ExternalHref" id="Details-Panel-External"
+        <a class="page-view-detail external" href="@(ExternalHrefOverride != string.Empty ? ExternalHrefOverride : _selectedWebsite.ExternalHref)" id="Details-Panel-External"
            referrerpolicy="strict-origin-when-cross-origin"
            title="@_selectedWebsite.ExternalTitle"
            target="_blank">Go there</a>
@@ -92,7 +92,9 @@
                     OnSelectionChange="@SetOtherIndexOpened"
                     OnSetAboutView="@ToggleAboutView"
                     StartingNumber="0"
-                    OnResortedListSelected="@ResortListSelected"/>
+                    OnResortedListSelected="@ResortListSelected"
+                    UpdateSelectedDirectExternalUrl="@UpdateSelectedDirectExternalUrl"
+                    OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateClosePanel"/>
 
                 <DemosFrameSelections
                     DemosSelections="@DemoSelections"
@@ -102,7 +104,9 @@
                     OnSelectionChange="@SetOtherIndexOpened"
                     OnSetAboutView="@ToggleAboutView"
                     StartingNumber="6"
-                    OnResortedListSelected="@ResortListSelected"/>
+                    OnResortedListSelected="@ResortListSelected"
+                    UpdateSelectedDirectExternalUrl="@UpdateSelectedDirectExternalUrl"
+                    OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateClosePanel"/>
 
                 break;
             case ProjectsAllMenuOption:
@@ -116,7 +120,9 @@
                     OnResortedListSelected="@ResortListSelected"
                     SetDetail="@_toggleDetailsSet"
                     StartingNumber="0"
-                    DeploymentAs="@DeploymentAs"/>
+                    DeploymentAs="@DeploymentAs"
+                    UpdateSelectedDirectExternalUrl="@UpdateSelectedDirectExternalUrl"
+                    OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateClosePanel"/>
 
                 break;
             case ProjectsCyberMenuOption:
@@ -154,13 +160,24 @@
     SelectedWebsite="@_selectedWebsiteDetails"
     OtherSelectedWebsiteDetails="@_selectedWebsite"
     ShowDetails="@_toggleDetails"
-    OnCloseClicked="OnDetailsToggleOpen"
-    OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="OnAfterNavigateClosePanel"
+    OnCloseClicked="@OnDetailsToggleOpen"
+    UpdateSelectedDirectExternalUrl="@UpdateSelectedDirectExternalUrl"
+    OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateClosePanel"
     StartingNumber="@OtherIndexOpened"
     OnSelected="@HandleWebsiteSelected"/>
 
 
 @code {
+    private string ExternalHrefOverride { get; set; } = string.Empty;
+
+    private void UpdateSelectedDirectExternalUrl(string url)
+    {
+        //Only for docs' URL references
+        ExternalHrefOverride = url;
+
+        InvokeAsync(StateHasChanged);
+    }
+
     private bool _isAboutMainView;
 
     private List<FrameSelectionOption> AllSelections { get; set; } = [];

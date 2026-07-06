@@ -8,8 +8,9 @@
     @(ShowDetails && SelectedWebsite != null ? "show-details" : "")" data-panel-index="0">
         <SelectedWebsiteDetails
             SelectedWebsite="@SelectedWebsite"
-            ShowDetails="ShowDetails"
+            ShowDetails="@ShowDetails"
             DialogIndex="@StartingNumber"
+            SetSelectedDocsDirectExternalUrl="@UpdateSelectedDirectExternalUrl"
             OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateToDocsFrameCloseSelectionDetailPanel"
             MatchingSelectionDetails="@SelectedWebsiteMatchesOtherSelectionDetails"
             OnSelected="@OnSelected"/>
@@ -38,6 +39,8 @@
     [Parameter] public bool ShowDetails { get; set; }
 
     [Parameter] public EventCallback<bool> OnCloseClicked { get; set; }
+
+    [Parameter] public EventCallback<string> UpdateSelectedDirectExternalUrl { get; set; }
 
     [Parameter] public EventCallback<bool> OnAfterNavigateToDocsFrameCloseSelectionDetailPanel { get; set; }
 
