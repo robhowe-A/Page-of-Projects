@@ -5,11 +5,11 @@
 
 @if (_isSortedNewest)
 {
-    <button class="details-panel-sort" @onclick="SortAllDateEnd">Oldest</button>
+    <button class="details-panel-sort sortDate" @onclick="SortAllDateEnd">Oldest</button>
 }
 else
 {
-    <button class="details-panel-sort" @onclick="SortAllDateStart">Newest</button>
+    <button class="details-panel-sort sortDate" @onclick="SortAllDateStart">Newest</button>
 }
 
 @code {

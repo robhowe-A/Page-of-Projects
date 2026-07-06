@@ -13,7 +13,9 @@ public enum SortOrder
     NEWEST,
     OLDEST,
     AZ,
-    ZA
+    ZA,
+    LangAZ,
+    LangZA
 }
 
 public class FrameSelectionOption
