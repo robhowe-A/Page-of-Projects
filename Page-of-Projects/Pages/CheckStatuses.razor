@@ -3,6 +3,7 @@
 @page "/status"
 @using Microsoft.AspNetCore.Components.Web
 @using ProjectsPage.Domain
+@using ProjectsPage.Infrastructure
 @namespace ProjectsPage.Components.Primary
 @rendermode RenderMode.InteractiveServer
 
@@ -66,9 +67,9 @@
     private readonly HealthCheck _healthCheck = new();
     private static readonly List<DomainOption> DomainOptions = FrameSelection.DomainOptionsData(Projects.Domains);
 
-    private readonly int _successCount = FrameSelectionData.ProjectsHeartbeatSuccessCount();
-    private readonly int _failureCount = FrameSelectionData.ProjectsHeartbeatUnsuccessfulCount();
-    private readonly decimal _successPercentage = FrameSelectionData.ProjectsHeartbeatSuccessPercentage();
-    private readonly decimal _cloudSuccessPercentage = FrameSelectionData.ProjectsHeartbeatCloudSuccessPercentage();
-    private readonly decimal _onPremSuccessPercentage = FrameSelectionData.ProjectsHeartbeatOnPremSuccessPercentage();
+    private readonly int _successCount = new ProjectsHeartbeatFetch().ProjectsHeartbeatSuccessCount();
+    private readonly int _failureCount = new ProjectsHeartbeatFetch().ProjectsHeartbeatUnsuccessfulCount();
+    private readonly decimal _successPercentage = new ProjectsHeartbeatFetch().ProjectsHeartbeatSuccessPercentage();
+    private readonly decimal _cloudSuccessPercentage = new ProjectsHeartbeatFetch().ProjectsHeartbeatCloudSuccessPercentage();
+    private readonly decimal _onPremSuccessPercentage = new ProjectsHeartbeatFetch().ProjectsHeartbeatOnPremSuccessPercentage();
 }

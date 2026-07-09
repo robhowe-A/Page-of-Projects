@@ -15,7 +15,7 @@
         <h1 data-visibility="no-result">@_selectedWebsite.Title</h1>
         <button @onclick="() => OnDetailsToggleOpen(true)" id="details-panel-toggle">Details</button>
         <a class="page-view-detail external"
-           href="@(ExternalHrefOverride != string.Empty ? ExternalHrefOverride : _selectedWebsite.ExternalHref)"
+           href="@(_isProjectDocsPage ? HrefOverrideValue : _selectedWebsite.ExternalHref)"
            id="Details-Panel-External"
            referrerpolicy="strict-origin-when-cross-origin"
            title="@_selectedWebsite.ExternalTitle"
@@ -177,15 +177,6 @@ zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1
 
 
 @code {
-    private string ExternalHrefOverride { get; set; } = string.Empty;
-
-    private void UpdateSelectedDirectExternalUrl(string url)
-    {
-        //Only for docs' URL references
-        ExternalHrefOverride = url;
-
-        InvokeAsync(StateHasChanged);
-    }
 
     private bool _isAboutMainView;
 
@@ -209,6 +200,8 @@ zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1
     public required List<FrameSelectionOption> WebsiteSelections = FrameSelectionData.WebsiteSelections;
 
     public required List<FrameSelectionOption> DemoSelections = FrameSelectionData.DemoSelections;
+    
+    public Dictionary<string, string> ProjectsPagesAllText = FrameSelectionData.ProjectsDataSearchCorpusPlainText;
 
     private bool _toggleDetails;
     private readonly bool? _toggleDetailsSet = null;

@@ -2,6 +2,7 @@
 
 using System.Data;
 using System.Text.Json;
+using Microsoft.AspNetCore.Components;
 using ProjectsPage.Domain;
 using ProjectsPage.Infrastructure;
 
@@ -23,6 +24,13 @@ public partial class FrameSelection
         Nav.LocationChanged += HandleLocationChanged;
 
         SyncSelectionWithCurrentUrl(Nav.Uri);
+
+        //Safety net for full page reloads
+        if (_selectedWebsite?.Title != "Project Docs")
+        {
+            HrefOverrideValue = string.Empty;
+            _isProjectDocsPage = false;
+        }
     }
 
     public static List<DomainOption> DomainOptionsData(string projectName)
