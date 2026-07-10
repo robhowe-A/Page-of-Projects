@@ -89,11 +89,14 @@ public class FrameSelectionOption
             //var responseResult = response.Content.ReadAsStringAsync().Result;
 
             var link = hrefColl[0];
-            string linkTitle;
+            string linkTitle = string.Empty;
 
             // href|Code|<manual title>
 
-            if (hrefColl.Length != 1 || (hrefColl.Length > 1 && string.Equals(hrefColl[1], @"TitleOverride")))
+            if (hrefColl.Length == 3 || 
+                (hrefColl.Length > 1 && 
+                        (hrefColl[1].Contains(@"TitleOverride") || hrefColl[1].Contains(@"Code")
+                )))
             {
                 linkTitle = hrefColl[2]; //href is the title
                 DocHrefTitleCache[link] = linkTitle;
@@ -105,7 +108,7 @@ public class FrameSelectionOption
 
             WriteLine($"DocHrefTitles-{requestUri.AbsoluteUri}-{requestUri.HostNameType}->title");
 
-            if (hrefColl.Length == 1 || (hrefColl.Length > 1 && !string.Equals(hrefColl[1], @"TitleOverride")))
+            if (hrefColl.Length == 1)
             {
                 //read result to show the html response head
                 //filter for <title>
@@ -122,11 +125,7 @@ public class FrameSelectionOption
                     continue;
                 }
 
-                //extract title value and return
-                linkTitle = titleRegexMatch.Groups[1].Value;
-                linkTitle = linkTitle.Replace("&#8212;", "-");
-                linkTitle = linkTitle.Replace("&lt;", "<");
-                linkTitle = linkTitle.Replace("&gt;", ">");
+                linkTitle = ParseTitle(titleRegexMatch.Groups[1].Value);
             }
 
             DocHrefTitleCache[link] = linkTitle;
@@ -134,6 +133,16 @@ public class FrameSelectionOption
         }
 
         return hrefs;
+
+        static string ParseTitle(string linkTitle)
+        {
+            //extract title value and return
+            linkTitle = linkTitle.Replace("&#8212;", "-");
+            linkTitle = linkTitle.Replace("&lt;", "<");
+            linkTitle = linkTitle.Replace("&gt;", ">");
+
+            return linkTitle;
+        }
     }
 };
 
@@ -212,13 +221,13 @@ internal static class FrameSelectionData
                                                           key.Name == "Networking" ||
                                                           key.Name == "ImageAltText")
                                                       {
-                                                          return new string[] { };
+                                                          return [];
                                                       }
                                                       else if (key.Name == "HasDatabase" ||
                                                                key.Name == "IsRelationalDb" ||
                                                                key.Name == "IsCloud")
                                                       {
-                                                          return new string[] { key.Name.ToString() };
+                                                          return [key.Name.ToString()];
                                                       }
                                                       else
                                                       {
