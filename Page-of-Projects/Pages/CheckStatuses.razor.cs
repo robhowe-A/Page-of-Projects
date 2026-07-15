@@ -54,8 +54,11 @@ public partial class CheckStatuses : ComponentBase
         {
             return async (url, status) =>
             {
-                _statuses[url] = status;
-                await InvokeAsync(StateHasChanged);
+               if (status != "OK")
+                   _statuses[url] = "DOWN";
+               else 
+                   _statuses[url] = status;
+               await InvokeAsync(StateHasChanged);
             };
         }
     }

@@ -5,6 +5,9 @@ namespace ProjectsPage.Infrastructure;
 
 internal static class BackgroundHttpRequest
 {
+    private const string Ok = "OK";
+    private const string Down = "DOWN";
+
     internal static async Task LimitConcurrencyAndCheckUrls(Func<string, string, Task>? onResultAsync, List<string> urlsToCheck, Dictionary<string, string> statuses)
     {
         // Optional: limit concurrency so you don’t hammer the server/network
@@ -30,7 +33,7 @@ internal static class BackgroundHttpRequest
         await Task.WhenAll(tasks);
     }
 
-    internal static async Task<bool> SendHttpGetRequest(string url, string userAgent)
+    internal static async Task<string> SendHttpGetRequest(string url, string userAgent)
     {
         try
         {
@@ -40,11 +43,12 @@ internal static class BackgroundHttpRequest
 
             using var response = await http.GetAsync(url);
 
-            return response.IsSuccessStatusCode;
+            return response.ReasonPhrase ?? Down;
         }
-        catch (HttpRequestException)
+        catch (HttpRequestException e)
         {
-            return false;
+            WriteLine($"Error: {e.Message}\n{e.StackTrace}");
+            return Down;
         }
     }
 };
