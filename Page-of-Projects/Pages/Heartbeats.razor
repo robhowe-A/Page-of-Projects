@@ -1,23 +1,26 @@
 ﻿@* --Copyright (c) 2026 Robert A. Howell *@
 
-@page "/heartbeats"
+@page "/heartbeat-all"
 @using ProjectsPage.Components.Secondary
 @using ProjectsPage.Domain
 @using ProjectsPage.Infrastructure
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+
+@rendermode InteractiveServer
 
 <article id="Heartbeats-Page">
-    <h3>Heartbeats' Requests</h3>
+    <h3>Heartbeat Requests</h3>
 
     <HeartbeatTable Heartbeats="@(
         HeartbeatsAll.ConvertAll(i => new HeartbeatData
         {
-              Id = i.Id,
-              Timestamp = i.RecordTimestamp,
-              Agent = i.Agent,
-              Project = i.ProjectName,
-              Domain = i.Domain,
-              RelativeUrl = i.UrlRel,
-              ResponseCode = i.ResponseStatus
+             Id = i.Id,
+             Timestamp = i.RecordTimestamp,
+             Agent = i.Agent,
+             Project = i.ProjectName,
+             Domain = i.Domain,
+             RelativeUrl = i.UrlRel,
+             ResponseCode = i.ResponseStatus
         }))" />
 </article>
 
