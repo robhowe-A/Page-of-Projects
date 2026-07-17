@@ -13,12 +13,12 @@ internal sealed class ProjectsDbContext : DbContext
     {
     }
 
-    public ProjectsDbContext(string connectionString)
+    private ProjectsDbContext(string connectionString)
     {
         _connectionString = connectionString;
     }
 
-    public ProjectsDbContext(DbContextOptions<ProjectsDbContext> options, string connectionString) : base(options)
+    private ProjectsDbContext(DbContextOptions<ProjectsDbContext> options, string connectionString) : base(options)
     {
         _connectionString = connectionString;
     }
@@ -33,13 +33,20 @@ internal sealed class ProjectsDbContext : DbContext
                                     throw new ArgumentNullException(nameof(_connectionString)));
     }
 
-    public ProjectsDbContext GetContext()
+    public ProjectsDbContext GetContext(string connectionString)
     {
         //LOGLEAF
-        return CreateContext();
+        return CreateContext(connectionString);
     }
 
-    private ProjectsDbContext CreateContext()
+    private static ProjectsDbContext CreateContext(string connectionString) => new (
+                                            DbConnectionString.GetDbConnectionString(connectionString)
+                                                ?? throw new ArgumentNullException(nameof(connectionString)));
+};
+
+internal sealed class DbConnectionString
+{
+    public static string GetDbConnectionString(string connectionString)
     {
 #if DEBUG || LOOPBACK
 
@@ -47,15 +54,14 @@ internal sealed class ProjectsDbContext : DbContext
         var iConfig =
                 new ConfigurationBuilder().AddEnvironmentVariables().AddUserSecrets
                         (System.Reflection.Assembly.GetExecutingAssembly()).Build();
-        var str = iConfig.GetConnectionString("ProjectsDb") ?? string.Empty;
+        var str = iConfig.GetConnectionString(connectionString) ?? string.Empty;
 
 #else
         //Create a context for this backend request to use
         var iConfig = new ConfigurationBuilder().AddEnvironmentVariables().Build();
-        string str = System.Environment.GetEnvironmentVariable("ProjectsDb", EnvironmentVariableTarget.Machine) ??
+        string str = System.Environment.GetEnvironmentVariable(connectionString, EnvironmentVariableTarget.Machine) ??
                      string.Empty;
 #endif
-
-        return new ProjectsDbContext(str);
+        return str ?? throw new NullReferenceException("Connection string is empty.");
     }
 };

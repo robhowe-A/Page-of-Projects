@@ -6,6 +6,8 @@ namespace ProjectsPage.Infrastructure;
 
 internal sealed class ProjectsHeartbeatFetch
 {
+    private readonly ProjectsDbContext _db = EntityModels.CreateProjectsDbContext();
+
     public int ProjectsHeartbeatSuccessCount()
     {
         return FetchProjectsHeartbeatSuccessCount();
@@ -43,57 +45,70 @@ internal sealed class ProjectsHeartbeatFetch
         return total == 0 ? 0 : (Convert.ToDecimal(successes) / total) * 100;
     }
 
+    public List<Heartbeat> ProjectsHeartbeatFailures()
+    {
+        return FetchProjectsHeartbeatFailures();
+    }
+
+    public List<Heartbeat> ProjectsHeartbeats()
+    {
+        return FetchProjectsHeartbeats();
+    }
+
+    private List<Heartbeat> FetchProjectsHeartbeats()
+    {
+        return _db.Heartbeat.Where(p => !p.UrlRel.Contains(@"TEST-RECORD-ONLY:") && !p.UrlRel.Contains(@"TEST:"))
+                  .OrderByDescending(p => p.RecordTimestamp)
+                  .ThenByDescending(p => p.Id)
+                  .ToList();
+    }
+
+    private List<Heartbeat> FetchProjectsHeartbeatFailures()
+    {
+        return _db.Heartbeat.Where(p => p.ResponseStatus != "OK")
+                  .Where(p => !p.UrlRel.Contains(@"TEST-RECORD-ONLY:") && !p.UrlRel.Contains(@"TEST:"))
+                  .OrderByDescending(p => p.RecordTimestamp)
+                  .ThenByDescending(p => p.Id)
+                  .ToList();
+    }
+
     private int FetchProjectsHeartbeatCloudSuccessCount()
     {
-        using ProjectsDbContext db = EntityModels.CreateProjectsDbContext();
-
-        return db.Heartbeat.Count(p => !p.ProjectName.Contains("TEST-RECORD-ONLY:") && p.ProjectName.Contains("CLOUD|")
+        return _db.Heartbeat.Count(p => !p.ProjectName.Contains("TEST-RECORD-ONLY:") && p.ProjectName.Contains("CLOUD|")
                                        && p.ResponseStatus.Contains("OK"));
     }
 
     private int FetchProjectsHeartbeatCloudTotalCount()
     {
-        using ProjectsDbContext db = EntityModels.CreateProjectsDbContext();
-
-        return db.Heartbeat.Count(p => !p.ProjectName.Contains("TEST-RECORD-ONLY:") &&
-                                          p.ProjectName.Contains("CLOUD|"));
+        return _db.Heartbeat.Count(p => !p.ProjectName.Contains("TEST-RECORD-ONLY:") &&
+                                           p.ProjectName.Contains("CLOUD|"));
     }
 
     private int FetchProjectsHeartbeatOnPremSuccessCount()
     {
-        using ProjectsDbContext db = EntityModels.CreateProjectsDbContext();
-
-        return db.Heartbeat.Count(p => !p.ProjectName.Contains("TEST-RECORD-ONLY:") && !p.ProjectName.Contains("CLOUD|")
-                                       && p.ResponseStatus.Contains("OK"));
+        return _db.Heartbeat.Count(p => !p.ProjectName.Contains("TEST-RECORD-ONLY:") && !p.ProjectName.Contains("CLOUD|")
+                                        && p.ResponseStatus.Contains("OK"));
     }
 
     private int FetchProjectsHeartbeatOnPremTotalCount()
     {
-        using ProjectsDbContext db = EntityModels.CreateProjectsDbContext();
-
-        return db.Heartbeat.Count(p => !p.ProjectName.Contains("TEST-RECORD-ONLY:") &&
-                                          !p.ProjectName.Contains("CLOUD|"));
+        return _db.Heartbeat.Count(p => !p.ProjectName.Contains("TEST-RECORD-ONLY:") &&
+                                           !p.ProjectName.Contains("CLOUD|"));
     }
 
     private int FetchProjectsHeartbeatSuccessCount()
     {
-        using ProjectsDbContext db = EntityModels.CreateProjectsDbContext();
-
-        return db.Heartbeat.Count(p => !p.ProjectName.Contains("TEST-RECORD-ONLY:") && p.ResponseStatus.Contains("OK"));
+        return _db.Heartbeat.Count(p => !p.ProjectName.Contains("TEST-RECORD-ONLY:") && p.ResponseStatus.Contains("OK"));
     }
 
     private int FetchProjectsHeartbeatUnsuccessfulCount()
     {
-        using ProjectsDbContext db = EntityModels.CreateProjectsDbContext();
-
-        return db.Heartbeat.Count(p => !p.ProjectName.Contains("TEST-RECORD-ONLY:") &&
-                                          !p.ResponseStatus.Contains("OK"));
+        return _db.Heartbeat.Count(p => !p.ProjectName.Contains("TEST-RECORD-ONLY:") &&
+                                           !p.ResponseStatus.Contains("OK"));
     }
 
     private int FetchProjectsHeartbeatTotalCount()
     {
-        using ProjectsDbContext db = EntityModels.CreateProjectsDbContext();
-
-        return db.Heartbeat.Count(p => !p.ProjectName.Contains("TEST-RECORD-ONLY:"));
+        return _db.Heartbeat.Count(p => !p.ProjectName.Contains("TEST-RECORD-ONLY:"));
     }
 };

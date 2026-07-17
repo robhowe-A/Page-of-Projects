@@ -1,0 +1,35 @@
+﻿@* --Copyright (c) 2026 Robert A. Howell *@
+
+@using ProjectsPage.Domain
+@namespace ProjectsPage.Components.Secondary
+
+<table>
+    <tr>
+        <th>id</th>
+        <th>Timestamp</th>
+        <th>Agent</th>
+        <th>Project Name</th>
+        <th>Domain</th>
+        <th>Relative URL</th>
+        <th>Response Code</th>
+    </tr>
+    <tbody>
+    @foreach (var beat in Heartbeats)
+    {
+        <tr>
+            <td>@beat.Id</td>
+            <td>@beat.Timestamp</td>
+            <td>@beat.Agent</td>
+            <td>@beat.Project</td>
+            <td>@beat.Domain</td>
+            <td>@beat.RelativeUrl</td>
+            <td>@beat.ResponseCode</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public required IEnumerable<HeartbeatData> Heartbeats { get; set; }
+}

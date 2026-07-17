@@ -6,13 +6,14 @@ namespace ProjectsPage.Infrastructure;
 
 internal sealed class FrameSelectionFetch
 {
+    private readonly ProjectsDbContext _context = EntityModels.CreateProjectsDbContext();
+
     public string[] SearchIndexTerms
     {
         get
         {
-            using var context = EntityModels.CreateProjectsDbContext();
             var searchIndexTermsSite = "ProjectsPageSearchIndexTerms";
-            var docs = from j in context.projects where j.Site == searchIndexTermsSite select j.Document;
+            var docs = from j in _context.projects where j.Site == searchIndexTermsSite select j.Document;
 
             return docs.ToArray();
         }
@@ -27,16 +28,14 @@ internal sealed class FrameSelectionFetch
 
     private string[] FetchWebsitesData(string site)
     {
-        using var context = EntityModels.CreateProjectsDbContext();
-        var docs = from j in context.projects where j.Site == site select j.Document;
+        var docs = from j in _context.projects where j.Site == site select j.Document;
 
         return docs.ToArray();
     }
 
     private string[] FetchProjectsData(string site, string site2)
     {
-        using var context = EntityModels.CreateProjectsDbContext();
-        var docs = from j in context.projects where j.Site == site || j.Site == site2 select j.Document;
+        var docs = from j in _context.projects where j.Site == site || j.Site == site2 select j.Document;
 
         return docs.ToArray();
     }
@@ -51,11 +50,9 @@ internal sealed class FrameSelectionFetch
 
     private List<ProjectPage> FetchProjectsFullText()
     {
-        using ProjectsDbContext db = EntityModels.CreateProjectsDbContext() ;
-
-        return db.projects
-                 .Where(
-                        project => project.Site == Projects.Websites || project.Site == Projects.Demos)
-                 .ToList();
+        return _context.projects
+                   .Where(
+                          project => project.Site == Projects.Websites || project.Site == Projects.Demos)
+                   .ToList();
     }
 };

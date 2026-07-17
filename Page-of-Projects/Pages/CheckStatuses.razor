@@ -49,15 +49,25 @@
     <hr/>
     <div>
     <p>A background service checks the status of each site every 10 minutes.</p>
-    <p>Successes count: <span>@_successCount</span>
+    <p>Successes count: <a href="/heartbeats"
+                           data-enhance-nav="false"
+                           rel="opener"
+                           title="Heartbeat failures"
+                           target="_self"><span>@SuccessCount</span>
+        </a>
         <br/>
-        Failures count: <span>@_failureCount</span>
+        Failures count: <a href="/heartbeatfailures"
+                            data-enhance-nav="false"
+                            rel="opener"
+                            title="Heartbeat failures"
+                            target="_self"><span>@FailureCount</span>
+        </a>
         <br/>
-        Success rate: <span>@_successPercentage.ToString("N3")%</span></p>
+        Success rate: <span>@SuccessPercentage.ToString("N3")%</span></p>
     <hr/>
-    <p>Cloud success: <span>@_cloudSuccessPercentage.ToString("N3")%</span>
+    <p>Cloud success: <span>@CloudSuccessPercentage.ToString("N3")%</span>
         <br/>
-        On-prem success: <span>@_onPremSuccessPercentage.ToString("N3")%</span></p>
+        On-prem success: <span>@OnPremSuccessPercentage.ToString("N3")%</span></p>
     </div>
 </article>
 
@@ -67,9 +77,11 @@
     private readonly HealthCheck _healthCheck = new();
     private static readonly List<DomainOption> DomainOptions = FrameSelection.DomainOptionsData(Projects.Domains);
 
-    private readonly int _successCount = new ProjectsHeartbeatFetch().ProjectsHeartbeatSuccessCount();
-    private readonly int _failureCount = new ProjectsHeartbeatFetch().ProjectsHeartbeatUnsuccessfulCount();
-    private readonly decimal _successPercentage = new ProjectsHeartbeatFetch().ProjectsHeartbeatSuccessPercentage();
-    private readonly decimal _cloudSuccessPercentage = new ProjectsHeartbeatFetch().ProjectsHeartbeatCloudSuccessPercentage();
-    private readonly decimal _onPremSuccessPercentage = new ProjectsHeartbeatFetch().ProjectsHeartbeatOnPremSuccessPercentage();
+    private readonly ProjectsHeartbeatFetch _projectsHeartbeatFetch = new();
+
+    private int SuccessCount => _projectsHeartbeatFetch.ProjectsHeartbeatSuccessCount();
+    private int FailureCount => _projectsHeartbeatFetch.ProjectsHeartbeatUnsuccessfulCount();
+    private decimal SuccessPercentage => _projectsHeartbeatFetch.ProjectsHeartbeatSuccessPercentage();
+    private decimal CloudSuccessPercentage => _projectsHeartbeatFetch.ProjectsHeartbeatCloudSuccessPercentage();
+    private decimal OnPremSuccessPercentage => _projectsHeartbeatFetch.ProjectsHeartbeatOnPremSuccessPercentage();
 }

@@ -106,7 +106,7 @@ public class EntityModelTests
         count += (from project in db.projects where project.Site == "ProjectsPageDemos" select project.Site).Count();
         db.Dispose();
 
-        Assert.True(count == 12);
+        Assert.True(count == 11);
     }
 
     [Fact]

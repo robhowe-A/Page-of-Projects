@@ -5,6 +5,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProjectsPage.Domain;
 
+public class HeartbeatData
+{
+    public long Id { get; set; } = default;
+    public DateTime Timestamp { get; set; }
+    public string Agent { get; set; } = default!;
+    public string Project { get; set; } = default!;
+    public string Domain { get; set; } = default!;
+    public string RelativeUrl { get; set; } = default!;
+    public string ResponseCode { get; set; } = default!;
+}
+
 [Table("Heartbeat")]
 internal sealed class Heartbeat
 {
@@ -40,10 +51,4 @@ internal sealed class Heartbeat
     [MinLength(1)]
     [MaxLength(32)]
     public required string ResponseStatus { get; init; }
-
-    //[Column("Created_Date")]
-    //public DateTime CreatedDate { get; init; }
-
-    //[Column("Last_Modified")]
-    //public DateTime LastModified { get; init; }
 };
