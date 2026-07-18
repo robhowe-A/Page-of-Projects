@@ -6,18 +6,20 @@ Created_Date: July 2026
 Edited: 2026-07-17
 -->
 
-Description: This document is a design diagram for the table component's data organization flow. The designed structure provides an extensive data architecture aligning targeted data structures to represent entry division by year, month, and day time ranges. Simply, the diagram shows the data structure and how information moves through it.
+# Heartbeat Table Design Markup  
+Description: This document is a design diagram for the table component's data organization flow. The designed structure provides an extensive data architecture aligning targeted data structures to represent entry division by year, month, and day time ranges. Simply, the diagram shows the data structure and how information moves through it.  
+
 Restrictions: You may not use this code in commercial applications, production environments, or for unauthorized purposes without explicit permission from the author.
-Author: see document metadata
+Author: see document metadata  
 
-
+## Heartbeat Table Design
 ~~~ text
 :DATA IS SORTEDSET
 :LIST[YEARS][MONTHS][DATE]
 :TABLE HEAD
 :TABLE BODY
 
-    //DO
+    DO
     |:YEAR = DATE(CURRENT YEAR)
     |:YEARSET SORTEDSET<DATA(DATE=:YEAR)> = SUBSET SELECT LIST.TOSET()
     |
