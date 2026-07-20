@@ -50,10 +50,11 @@ zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1
 }
 
 <div id="growing-placeholder"></div>
-<h1><a href="/"
+<h1><a class="app-internal-link" href="/"
        rel="opener"
-       title="roberthowell.dev"
-       target="_self">roberthowell.dev</a></h1>
+       title="Projects Hub | roberthowell.dev"
+       target="_self">Projects Hub</a></h1>
+<IndexNav />
 <HyperTextMarkdownSearch
     OnReceiveSearchFindingIndexClicked="@SetOtherIndexOpened"
     OnReceiveSearchFindingNodeClicked="@ChangeSelectedWebsiteDetails"
@@ -151,19 +152,9 @@ zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1
             //-Project timeline estimate
         }
     </div>
-    <a href="/status"
-       data-enhance-nav="false"
-       rel="opener"
-       title="Status | roberthowell.dev"
-       target="_self">Status</a>
-    <a href="/sources/source"
-       data-enhance-nav="false"
-       rel="opener"
-       title="Src-Private | roberthowell.dev"
-       target="_self">Src-Private</a>
-    <ReferenceTray/>
-    <NavFooter/>
 </nav>
+<ReferenceTray/>
+<NavFooter/>
 </div>
 <SelectWebsiteDetails
     SelectedWebsite="@_selectedWebsiteDetails"

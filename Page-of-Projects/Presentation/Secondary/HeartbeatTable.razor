@@ -6,7 +6,7 @@
 
 <div>
     <button @onclick="@(()=>ToggleViewSummary())">Table</button>
-    <button @onclick="ToggleViewSummary">Summary</button>
+    <button @onclick="ToggleViewSummary">Daily</button>
 </div>
 
 <table>
@@ -118,8 +118,17 @@
                         <tr>
                             <td>
                                 <button @onclick="() => Toggle(dayKey)">@(IsExpanded(dayKey) ? "−" : "+")</button>
-                                Id
+                                @string.Format("{0,12:d, ddd}", dateCursor)
                             </td>
+                            <td></td>
+                            <td></td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Id</td>
                             <td>Timestamp</td>
                             <td>Agent</td>
                             <td>Project</td>
@@ -183,35 +192,3 @@ else {
     </tbody>
 }
 </table>
-
-@code {
-    [Parameter]
-    public required IEnumerable<HeartbeatData> Heartbeats { get; set; }
-
-    private bool IsViewSummary { get; set; } = true;
-
-    private readonly HashSet<string> _expanded = new();
-
-    private bool IsExpanded(string key) => _expanded.Contains(key);
-
-    private void Toggle(string key)
-    {
-        if (!_expanded.Remove(key))
-        {
-            _expanded.Add(key);
-        }
-    }
-    private void ToggleViewSummary()
-    {
-        IsViewSummary = !IsViewSummary;
-    }
-
-    protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
-
-        _expanded.Add(DateTime.Now.Year.ToString());
-        _expanded.Add(DateTime.Now.Year + "-" + DateTime.Now.Month);
-        _expanded.Add(DateTime.Now.Year + "-" + DateTime.Now.Month + "-" +DateTime.Now.Day);
-    }
-}

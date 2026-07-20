@@ -2,7 +2,6 @@
 
 using System.Data;
 using System.Text.Json;
-using Microsoft.AspNetCore.Components;
 using ProjectsPage.Domain;
 using ProjectsPage.Infrastructure;
 

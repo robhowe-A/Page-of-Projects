@@ -2,6 +2,7 @@
 
 @page "/status"
 @using Microsoft.AspNetCore.Components.Web
+@using ProjectsPage.Components.Secondary
 @using ProjectsPage.Domain
 @using ProjectsPage.Infrastructure
 @namespace ProjectsPage.Components.Primary
@@ -9,10 +10,11 @@
 
 <PageTitle>roberthowell.dev</PageTitle>
 <article id="Status-Page">
+    <HeartbeatNav />
     <hgroup>
         <h2>Status</h2>
     </hgroup>
-        <button @onclick="CheckDomainSitesRequestHealthAsync" type="button">TEST</button>
+    <button @onclick="CheckDomainSitesRequestHealthAsync" type="button">TEST</button>
     <div>
         @foreach (var domain in DomainOptions)
         {
@@ -48,26 +50,28 @@
     </div>
     <hr/>
     <div>
-    <p>A background service checks the status of each site every 10 minutes.</p>
-    <p>Successes count: <a href="/heartbeat-all"
-                           data-enhance-nav="false"
-                           rel="opener"
-                           title="Heartbeat all"
-                           target="_self"><span>@SuccessCount</span>
-        </a>
-        <br/>
-        Failures count: <a href="/heartbeat-failures"
-                            data-enhance-nav="false"
-                            rel="opener"
-                            title="Heartbeat failures"
-                            target="_self"><span>@FailureCount</span>
-        </a>
-        <br/>
-        Success rate: <span>@SuccessPercentage.ToString("N3")%</span></p>
-    <hr/>
-    <p>Cloud success: <span>@CloudSuccessPercentage.ToString("N3")%</span>
-        <br/>
-        On-prem success: <span>@OnPremSuccessPercentage.ToString("N3")%</span></p>
+        <p>A background service checks the status of each site every 10 minutes.</p>
+        <p>Successes count:
+            <a href="/heartbeat-all"
+               data-enhance-nav="false"
+               rel="opener"
+               title="Heartbeat all"
+               target="_self"><span>@SuccessCount</span>
+            </a>
+            <br/>
+            Failures count:
+            <a href="/heartbeat-failures"
+               data-enhance-nav="false"
+               rel="opener"
+               title="Heartbeat failures"
+               target="_self"><span>@FailureCount</span>
+            </a>
+            <br/>
+            Success rate: <span>@SuccessPercentage.ToString("N3")%</span></p>
+        <hr/>
+        <p>Cloud success: <span>@CloudSuccessPercentage.ToString("N3")%</span>
+            <br/>
+            On-prem success: <span>@OnPremSuccessPercentage.ToString("N3")%</span></p>
     </div>
 </article>
 
