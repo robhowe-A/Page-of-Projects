@@ -2,8 +2,12 @@
 
 @page "/websites/spaceflight-news-app"
 @using ProjectsPage.Components.Primary
+@using ProjectsPage.Components.Secondary
 @using ProjectsPage.Domain
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
 @namespace ProjectsPage.Components.Pages.Websites
+
+@rendermode InteractiveServer
 
 <PageFrame
     Url="https://spaceflight-web.rhdeveloping.com/"
@@ -14,6 +18,11 @@
 @if (PageViewingSelected)
 {
     <PageViewing PageViewSelection="SelectedWebsite"/>
+    <h2>Articles Data</h2>
+    <SpaceflightArticleTable Articles="@_articlesDbContext.Article.Where(x => x.ArticleNum >= 1).ToList()"/>
+
+    <h2>APOD Data</h2>
+    <SpaceflightApodTable Apods="@_articlesDbContext.APOD.Where(x => x.Id >= 1).ToList()"/>
 }
 
 @code {
@@ -30,5 +39,4 @@
                   $"{selectedWebsite.Title} (selectedWebsite = " +
                   $"{selectedWebsite.DocHrefTitles})");
     }
-
 }

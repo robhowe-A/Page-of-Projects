@@ -11,8 +11,13 @@ internal static class EntityModels
         return new ProjectsDbContext().GetContext("ProjectsDb");
     }
 
-    public static UsageDbContext CreatUsageDbContext()
+    public static ProjectsDbContext CreatUsageDbContext()
     {
-        return new UsageDbContext().GetContext("UsageDb");
+        return new ProjectsDbContext().GetContext("UsageDb");
+    }
+
+    public static SpaceflightDbContext CreateArticlesDbContext()
+    {
+        return new SpaceflightDbContext().GetContext("SpaceflightDb");
     }
 };

@@ -2,6 +2,7 @@
 
 using System.Text.Json;
 using Microsoft.AspNetCore.Components;
+using ProjectsPage.Infrastructure;
 
 namespace ProjectsPage.Components.Primary;
 
@@ -62,5 +63,6 @@ public partial class CheckStatuses : ComponentBase
             };
         }
     }
+    private readonly ProjectsHeartbeatFetch _projectsHeartbeatFetch = new();
 
 };

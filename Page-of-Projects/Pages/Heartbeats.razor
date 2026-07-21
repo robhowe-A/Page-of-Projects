@@ -4,8 +4,8 @@
 @using Microsoft.AspNetCore.Components.Web
 @using ProjectsPage.Components.Secondary
 @using ProjectsPage.Domain
-@using ProjectsPage.Infrastructure
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
+@namespace ProjectsPage.Components.Pages
 
 @rendermode InteractiveServer
 
@@ -26,9 +26,3 @@
                                                                       ResponseCode = i.ResponseStatus
                                                               }))"/>
 </article>
-
-@code {
-    private readonly ProjectsHeartbeatFetch _projectsHeartbeatFetch = new();
-
-    private List<Heartbeat> HeartbeatsAll => _projectsHeartbeatFetch.ProjectsHeartbeats();
-}

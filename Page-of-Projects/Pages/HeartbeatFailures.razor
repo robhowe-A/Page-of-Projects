@@ -4,8 +4,8 @@
 @using Microsoft.AspNetCore.Components.Web
 @using ProjectsPage.Components.Secondary
 @using ProjectsPage.Domain
-@using ProjectsPage.Infrastructure
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
+@namespace ProjectsPage.Components.Pages
 
 @rendermode InteractiveServer
 
@@ -24,11 +24,7 @@
                                                                    Domain = i.Domain,
                                                                    RelativeUrl = i.UrlRel,
                                                                    ResponseCode = i.ResponseStatus
-                                                           }))"/>
+                                                           }))"
+                    GetLoopDataSet="@_getLoopDataSet"
+                    RecordComparison="@(Comparer<HeartbeatData>.Create((x, y) => y.Id.CompareTo(x.Id)))"/>
 </article>
-
-@code {
-    private readonly ProjectsHeartbeatFetch _projectsHeartbeatFetch = new();
-
-    private List<Heartbeat> Heartbeats => _projectsHeartbeatFetch.ProjectsHeartbeatFailures();
-}

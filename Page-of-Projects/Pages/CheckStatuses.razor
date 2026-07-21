@@ -4,7 +4,6 @@
 @using Microsoft.AspNetCore.Components.Web
 @using ProjectsPage.Components.Secondary
 @using ProjectsPage.Domain
-@using ProjectsPage.Infrastructure
 @namespace ProjectsPage.Components.Primary
 @rendermode RenderMode.InteractiveServer
 
@@ -80,8 +79,6 @@
 
     private readonly HealthCheck _healthCheck = new();
     private static readonly List<DomainOption> DomainOptions = FrameSelection.DomainOptionsData(Projects.Domains);
-
-    private readonly ProjectsHeartbeatFetch _projectsHeartbeatFetch = new();
 
     private int SuccessCount => _projectsHeartbeatFetch.ProjectsHeartbeatSuccessCount();
     private int FailureCount => _projectsHeartbeatFetch.ProjectsHeartbeatUnsuccessfulCount();
