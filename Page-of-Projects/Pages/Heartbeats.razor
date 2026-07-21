@@ -6,6 +6,7 @@
 @using ProjectsPage.Domain
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
 @namespace ProjectsPage.Components.Pages
+@inherits HeartbeatsTableBase
 
 @rendermode InteractiveServer
 
@@ -24,5 +25,8 @@
                                                                       Domain = i.Domain,
                                                                       RelativeUrl = i.UrlRel,
                                                                       ResponseCode = i.ResponseStatus
-                                                              }))"/>
+                                                              }))"
+                    
+                    GetLoopDataSet="@GetLoopDataSet"
+                    RecordComparison="@HeartbeatComparer"/>
 </article>
