@@ -47,7 +47,7 @@ var conString = builder.Configuration.GetConnectionString("ProjectsDb") ??
 builder.Services.AddProjectsContext(conString);
 builder.Services.StartAgentHeartbeat();
 builder.Services.AddResponseCompression(options => options.EnableForHttps = true);
-
+builder.Services.AddControllers(options => { options.EnableEndpointRouting = true; });
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -63,7 +63,7 @@ app.UseSession();
 app.UseAntiforgery();
 app.UseResponseCompression();
 app.MapStaticAssets();
-
 app.MapRazorComponents<App>()
    .AddInteractiveServerRenderMode(defaults => defaults.ContentSecurityFrameAncestorsPolicy = null);
+app.MapControllers();
 app.Run();
