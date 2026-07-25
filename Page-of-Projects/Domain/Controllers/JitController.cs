@@ -9,7 +9,8 @@ public class JitController : Controller
 {
     [HttpPost("/api/jit")]
     [AutoValidateAntiforgeryToken]
-    public async Task<IActionResult> Jit([FromForm] string? username, [FromForm] string? repositoryName)
+    public async Task<IActionResult> Jit([FromForm] string? username, [FromForm] string? repositoryName,
+                                         [FromForm] string? repositoryNumber)
     {
         if (
             string.IsNullOrWhiteSpace(username) ||
@@ -17,50 +18,46 @@ public class JitController : Controller
             !GitHubApi.Collaborator.CheckUsernameIsValid(username)
             )
         {
-            TempData["JitResult"] = "Not Implemented";
+            TempData[$"JitResult-{repositoryNumber}"] = "Not Implemented";
             return LocalRedirect("/jit");
         }
 
         GitHubApi.Collaborator collaborator = new(repositoryName, username);
 
-        GitHubApi gitHubApi = new();
-
-        //Ensuring the client username is added to the Key Vaule
-        switch (gitHubApi.GetKeyVaultSecret(collaborator.ClientUsernameKeyVaultKey))
-        {
-            case { HasValue: false }:
-                gitHubApi.AddKeyVaultSecret(collaborator.ClientUsernameKeyVaultKey, collaborator.ClientUsernameValue);
-                break;
-            case { HasValue: true }:
-                WriteLine("INFO: Client key already exists in Key Vault.");
-                break;
-            case null:
-                gitHubApi.AddKeyVaultSecret(collaborator.ClientUsernameKeyVaultKey, collaborator.ClientUsernameValue);
-                break;
-        }
-
-        var webclient = new HttpClient();
-        webclient.BaseAddress = gitHubApi.CollaboratorAdditionEndpointUrl(collaborator);
-
-        var collaboratorAdditionRequestMessage = gitHubApi.CollaboratorAdditionCreateRequest();
-
 #if LOOPBACK
-        TempData["JitResult"] = "Check Loopback";
+        TempData[$"JitResult"] = "Check Loopback";
         return LocalRedirect("/jit");
 #endif
-        var response = await webclient.SendAsync(collaboratorAdditionRequestMessage);
+
+        GitHubApi gitHubApi = new();
+        gitHubApi.EnsureClientUsernameKeyVaultAddition(gitHubApi, collaborator);
+
+        var response = await GitHubApiCollaboratorAdditionHttpRequest(gitHubApi, collaborator);
 
         var responseContent = response.Content.ReadAsStringAsync();
 
         if (response.IsSuccessStatusCode)
         {
-            TempData["JitResult"] = response.StatusCode.ToString();
+            TempData[$"JitResult-{repositoryNumber}"] = (int)response.StatusCode;
+            //TempData[$"JitResult-{repositoryNumber}-response"] = response;
         }
         else
         {
-            TempData["JitResult"] = "Not Implemented";
+            TempData[$"JitResult-{repositoryNumber}"] = "Not Implemented";
         }
 
         return LocalRedirect("/jit");
+    }
+
+    private async Task<HttpResponseMessage> GitHubApiCollaboratorAdditionHttpRequest(GitHubApi gitHubApi, GitHubApi.Collaborator collaborator)
+    {
+        var webclient = new HttpClient();
+        webclient.BaseAddress = gitHubApi.CollaboratorAdditionEndpointUrl(collaborator);
+
+        var collaboratorAdditionRequestMessage = gitHubApi.CollaboratorAdditionCreateRequest();
+
+        var response = await webclient.SendAsync(collaboratorAdditionRequestMessage);
+
+        return response;
     }
 };

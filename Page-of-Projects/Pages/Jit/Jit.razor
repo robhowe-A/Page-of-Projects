@@ -16,57 +16,109 @@
             This page allows you to request access to private GitHub repositories.
             With a valid GitHub username, approval is passed by filling and submitting the form.
         </p>
-        <div class="access-request-tile">
-            @if (!string.IsNullOrEmpty(_jitResult))
-            {
+        @foreach (var repo in jitAccessRepositories)
+        {
+            <div class="access-request-tile" >
+                <h2>@repo.Key</h2>
+                @if (!string.IsNullOrEmpty(_jitResult))
+                {
                 <p>Result: @_jitResult</p>
-            }
-            else
-            {
-                <button type="button"
-                        commandfor="view-jit-access"
-                        command="show-modal">Request Access</button>
-            }
-        </div>
+                }
+                @if ( _jitAccessRepositories.ContainsKey(repo.Value)
+                      && !string.IsNullOrEmpty(_jitAccessRepositories[repo.Value]))
+                {
+                    <p>StatusCode: @_jitAccessRepositories[repo.Value]</p>
+                }
+                else
+                {
+                    <button type="button"
+                            commandfor="view-jit-access-@(repo.Value)"
+                            command="show-modal">Request Access</button>
+                }
+            </div>
+        }
     </div>
 
 </article>
-<dialog id="view-jit-access">
-    <div class="wrapper">
-        <h2>Access request form: <span>RWB-TypeScript</span></h2>
-        <p>Submitting this form requests the provided username access to RWB-TypeScript repository.</p>
-        <form method="post" name="jit-form"
-              action="/api/jit"
-              autocomplete="off">
-            <AntiforgeryToken/>
-            <label>Username:
-                <input name="username" type="text" autofocus
-                       maxlength="39"
-                       validationmessage="Username is too long (maximum is 39 characters)." required/></label>
-            <input type="hidden" name="repositoryName" value="RWB-TypeScript"/>
-            <button type="submit">Submit</button>
-        </form>
-        <button
-            commandfor="view-jit-access"
-            command="request-close">Close</button>
-    </div>
-</dialog>
+@foreach (var repo in jitAccessRepositories)
+{
+    <dialog id="view-jit-access-@(repo.Value)">
+        <div class="wrapper">
+            <h2>Access request form: <span>@repo.Key</span></h2>
+            <p>Submitting this form requests the provided username access to @repo.Key repository.</p>
+            <form method="post" name="jit-form"
+                  action="/api/jit"
+                  autocomplete="off">
+                <AntiforgeryToken/>
+                <label>Username:
+                    <input name="username" type="text" autofocus
+                           maxlength="39"
+                           validationmessage="Username is too long (maximum is 39 characters)." required/></label>
+                <input type="hidden" name="repositoryName" value="@repo.Key"/>
+                <input type="hidden" name="repositoryNumber" value="@repo.Value"/>
+                <button type="submit">Submit</button>
+            </form>
+            <button
+                commandfor="view-jit-access-@(repo.Value)"
+                command="request-close">Close</button>
+        </div>
+    </dialog>
+}
 
 @code {
     [CascadingParameter]
     private HttpContext? HttpContext { get; set; }
 
     private string? _jitResult;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if (firstRender)
+        {
+            TempData?.Clear();
+        }
+    }
+
+    private ITempDataDictionary? TempData { get; set; }
+
     protected override void OnInitialized()
     {
         if (HttpContext == null) return;
 
-        var tempData = TempDataFactory.GetTempData(HttpContext);
-        _jitResult = tempData["JitResult"] as string;
+        TempData = TempDataFactory.GetTempData(HttpContext);
 
-        // Force it to persist the cleared state back as a cookie
-        tempData.Remove("JitResult");
-        tempData.Save();
+        foreach (var (temps,value) in TempData)
+        {
+            if (string.Equals(temps, "JitResult") & !temps.Contains("-"))
+            {
+                _jitResult = (string?)value;
+                continue;
+            }
+            var tempNumber = Convert.ToInt16(temps.Split("-")[1]);
+            _jitAccessRepositories[tempNumber] = value as string ?? "Error: Repository name missing";
+        }
+
+        int repositoryCount = 0;
+
+        foreach (var repository in _repositories)
+        {
+            jitAccessRepositories.TryAdd(repository, repositoryCount);
+            repositoryCount++;
+
+        // Force clear the temp data dictionary
+        if(TempData.Count > 0 & TempData.ContainsKey($"JitResult-{repositoryCount}"))
+            TempData.Remove($"JitResult-{repositoryCount}"); //Any repository controller return
+        if(TempData.Count > 0 & TempData.ContainsKey("JitResult"))
+            TempData.Remove("JitResult"); //No repository controller return
+        TempData.Save();
+        }
     }
 
+    private Dictionary<string, int> jitAccessRepositories = new();
+    private Dictionary<int, string> _jitAccessRepositories = new();
+
+    private List<string> _repositories = ["RWB-TypeScript", "Sln-SpaceFlight_News_App",
+    "Sln-QuizzesApp", "Sln-Page-Of-Projects"];
 }

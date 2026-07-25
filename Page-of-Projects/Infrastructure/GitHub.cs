@@ -10,77 +10,21 @@ namespace ProjectsPage.Infrastructure;
 
 public class GitHubApi
 {
-    private const string KeyVaultOwnerKey = @"GitHub-All-collaborator-owner";
-    private const string KeyVaultCollaboratorTokenKey = @"GitHub-All-collaborator-token";
-    private KeyVaultSecret KeyVaultOwnerSecret { get; init; }
-    private KeyVaultSecret KeyVaultCollaboratorTokenSecret { get; init; }
-
-    private const string KeyVaultVaultUri = @"https://keyvaultpremiumonly.vault.azure.net/";
-
-    private SecretClient SecretClient { get; init; } 
-
-    public KeyVaultSecret GetKeyVaultOwnerSecret() => KeyVaultOwnerSecret;
-    public KeyVaultSecret GetKeyVaultCollaboratorTokenSecret() => KeyVaultCollaboratorTokenSecret;
-
-    public record Collaborator
+    public void EnsureClientUsernameKeyVaultAddition(GitHubApi gitHubApi, Collaborator collaborator)
     {
-        public string RepositoryName { get; init; }
-        public string ClientUsernameKeyVaultKey { get; init; }
-        public string ClientUsernameValue { get; init; }
-        private string ClientUsernameIdentifier { get; set; }
-        private bool IsValidUsername { get; set; }
-
-        public Collaborator(string repositoryName, string clientUsername)
+        //Ensuring the client username is added to the Key Vaule
+        switch (gitHubApi.GetKeyVaultSecret(collaborator.ClientUsernameKeyVaultKey))
         {
-            if (string.IsNullOrWhiteSpace(repositoryName))
-                throw new ArgumentException("Missing a required argument.", nameof(repositoryName));
-
-            if (string.IsNullOrWhiteSpace(clientUsername))
-                throw new ArgumentException("Missing a required argument.", nameof(clientUsername));
-
-            ReaffirmUsernameIsValid(clientUsername);
-            ClientUsernameIdentifier = NewUsernameIdentifier(clientUsername);
-
-            RepositoryName = repositoryName;
-
-            ClientUsernameKeyVaultKey = $"GitHub-{repositoryName}-collaborator-{ClientUsernameIdentifier}";
-            ClientUsernameValue = clientUsername;
+            case { HasValue: false }:
+                gitHubApi.AddKeyVaultSecret(collaborator.ClientUsernameKeyVaultKey, collaborator.ClientUsernameValue);
+                break;
+            case { HasValue: true }:
+                WriteLine("INFO: Client key already exists in Key Vault.");
+                break;
+            case null:
+                gitHubApi.AddKeyVaultSecret(collaborator.ClientUsernameKeyVaultKey, collaborator.ClientUsernameValue);
+                break;
         }
-
-        private string NewUsernameIdentifier(string username)
-        {
-            var today = DateTime.Now;
-
-            var clientUsernameFirstThree = username.Length >= 3 ? username[..3] : username;
-
-            return $"{clientUsernameFirstThree}{today:yyMMdd}";
-        }
-
-        public static bool CheckUsernameIsValid(string clientUsernameValue)
-        {
-            //GitHub usernames can only contain alphanumeric characters or single
-            //hyphens, and cannot begin or end with a hyphen.
-            var usernameRegex = new Regex(@"^([A-Za-z0-9]{1}[A-Za-z0-9-]*[A-Za-z0-9]{1})$");
-
-            return usernameRegex.IsMatch(clientUsernameValue);
-        }
-
-        private void ReaffirmUsernameIsValid(string clientUsernameValue)
-        {
-            IsValidUsername = CheckUsernameIsValid(clientUsernameValue);
-        }
-    }
-
-    public GitHubApi()
-    {
-        SecretClient = new SecretClient(vaultUri: new Uri(KeyVaultVaultUri), credential: new DefaultAzureCredential());
-        KeyVaultOwnerSecret = (
-                GetVaultSecret(KeyVaultOwnerKey) ?? throw new NullReferenceException("ERROR: Missing collaborator key in Key Vault..")
-        ).Value;
-
-        KeyVaultCollaboratorTokenSecret = (
-                GetVaultSecret(KeyVaultCollaboratorTokenKey) ?? throw new NullReferenceException("ERROR: Missing token key in Key Vault.")
-        ).Value;
     }
 
     public Uri CollaboratorAdditionEndpointUrl(Collaborator collaborator)
@@ -102,8 +46,86 @@ public class GitHubApi
         return request;
     }
 
-    public Response<KeyVaultSecret>? GetKeyVaultSecret(string secretKey) => GetVaultSecret(secretKey);
-    public void AddKeyVaultSecret(string secretKey, string secretValue) => SetKeyVaultValue(secretKey, secretValue);
+    private Response<KeyVaultSecret>? GetKeyVaultSecret(string secretKey) => GetVaultSecret(secretKey);
+    private void AddKeyVaultSecret(string secretKey, string secretValue) => SetKeyVaultValue(secretKey, secretValue);
+
+    private const string KeyVaultOwnerKey = @"GitHub-All-collaborator-owner";
+    private const string KeyVaultCollaboratorTokenKey = @"GitHub-All-collaborator-token";
+    private KeyVaultSecret KeyVaultOwnerSecret { get; init; }
+    private KeyVaultSecret KeyVaultCollaboratorTokenSecret { get; init; }
+
+    private const string KeyVaultVaultUri = @"https://keyvaultpremiumonly.vault.azure.net/";
+
+    private SecretClient SecretClient { get; init; } 
+
+    public record Collaborator
+    {
+        public string RepositoryName { get; init; }
+        public string ClientUsernameKeyVaultKey { get; init; }
+        public string ClientUsernameValue { get; init; }
+        private string ClientUsernameIdentifier { get; set; }
+        private bool IsValidUsername { get; set; }
+
+        public Collaborator(string repositoryName, string clientUsername)
+        {
+            if (string.IsNullOrWhiteSpace(repositoryName))
+                throw new ArgumentException("Missing a required argument.", nameof(repositoryName));
+
+            if (string.IsNullOrWhiteSpace(clientUsername))
+                throw new ArgumentException("Missing a required argument.", nameof(clientUsername));
+
+            ReaffirmUsernameIsValid(clientUsername);
+            ClientUsernameIdentifier = NewUsernameIdentifier(clientUsername);
+
+            var sanitizedRepositoryName = SanitizeRepositoryName(repositoryName);
+            RepositoryName = repositoryName;
+
+            ClientUsernameKeyVaultKey = $"GitHub-{sanitizedRepositoryName}-collaborator-{ClientUsernameIdentifier}";
+            ClientUsernameValue = clientUsername;
+        }
+
+        private string NewUsernameIdentifier(string username)
+        {
+            var today = DateTime.Now;
+
+            var clientUsernameFirstThree = username.Length >= 3 ? username[..3] : username;
+
+            return $"{clientUsernameFirstThree}{today:yyMMdd}";
+        }
+
+        public static bool CheckUsernameIsValid(string clientUsernameValue)
+        {
+            //GitHub usernames can only contain alphanumeric characters or single
+            //hyphens, and cannot begin or end with a hyphen.
+            var usernameRegex = new Regex(@"^([A-Za-z0-9]{1}[A-Za-z0-9-]*[A-Za-z0-9]{1})$");
+
+            return usernameRegex.IsMatch(clientUsernameValue);
+        }
+
+        private static string SanitizeRepositoryName(string repositoryName)
+        {
+            //Key vault names cannot contain '_' characters
+            return repositoryName.Replace("_", "--");
+        }
+
+        private void ReaffirmUsernameIsValid(string clientUsernameValue)
+        {
+            IsValidUsername = CheckUsernameIsValid(clientUsernameValue);
+        }
+    }
+
+    public GitHubApi()
+    {
+        SecretClient = new SecretClient(vaultUri: new Uri(KeyVaultVaultUri), credential: new DefaultAzureCredential());
+        KeyVaultOwnerSecret = (
+                GetVaultSecret(KeyVaultOwnerKey) ?? throw new NullReferenceException("ERROR: Missing collaborator key in Key Vault..")
+        ).Value;
+
+        KeyVaultCollaboratorTokenSecret = (
+                GetVaultSecret(KeyVaultCollaboratorTokenKey) ?? throw new NullReferenceException("ERROR: Missing token key in Key Vault.")
+        ).Value;
+    }
+
     private Response<KeyVaultSecret>? GetVaultSecret(string secretKey)
     {
         try
