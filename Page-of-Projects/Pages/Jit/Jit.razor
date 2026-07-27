@@ -13,13 +13,19 @@
     <h3>Jit Access Requests</h3>
     <div>
         <p>
-            This page allows you to request access to private GitHub repositories.
-            With a valid GitHub username, approval is passed by filling and submitting the form.
+            This page provides granting access to private GitHub repositories, each given a tile below. Use a valid GitHub username in the form and submit; approval is granted automatically. After the processing completes, check your GitHub inbox for the repository invitation.
         </p>
+        <h2>Private Repository Access Request</h2>
+        <div class="access-request-tiles">
         @foreach (var repo in jitAccessRepositories)
         {
-            <div class="access-request-tile" >
-                <h2>@repo.Key</h2>
+            var data = _repositories.FirstOrDefault(r => r[0] == repo.Key);
+            <div class="access-request-tile">
+                <ul>
+                    <li><a href="@data?[3]"><span>@repo.Key.ToUpper()</span></a></li>
+                    <li>Name: <span>@data?[0]</span></li>
+                    <li>Parent: <span>@data?[2]</span></li>
+                </ul>
                 @if (!string.IsNullOrEmpty(_jitResult))
                 {
                 <p>Result: @_jitResult</p>
@@ -37,6 +43,7 @@
                 }
             </div>
         }
+        </div>
     </div>
 
 </article>
@@ -104,7 +111,7 @@
 
         foreach (var repository in _repositories)
         {
-            jitAccessRepositories.TryAdd(repository, repositoryCount);
+            jitAccessRepositories.TryAdd(repository[0], repositoryCount);
             repositoryCount++;
 
         // Force clear the temp data dictionary
@@ -119,6 +126,14 @@
     private Dictionary<string, int> jitAccessRepositories = new();
     private Dictionary<int, string> _jitAccessRepositories = new();
 
-    private List<string> _repositories = ["RWB-TypeScript", "Sln-SpaceFlight_News_App",
-    "Sln-QuizzesApp", "Sln-Page-Of-Projects"];
+    private List<List<string>> _repositories = [
+            ["RWB-TypeScript", "/websites/randomwebbits", "Random Web Bits", "https://github.com/robhowe-A/RWB-TypeScript"],
+            ["Sln-SpaceFlight_News_App", "/websites/spaceflight-news-app", "SpaceFlight News App", "https://github.com/robhowe-A/Sln-SpaceFlight_News_App"],
+            ["Sln-QuizzesApp", "/websites/quizzes-app", "Quizzes App", "https://github.com/robhowe-A/Sln-QuizzesApp"],
+            ["Sln-Page-Of-Projects", "/", "Projects Hub", "https://github.com/robhowe-A/Sln-Page-Of-Projects"],
+            ["easybank-website", "/demos/easybank", " Easybank", "https://github.com/robhowe-A/easybank-website"],
+            ["Creative-Single-Page", "/demos/creativesinglepage", "Creative Single Page", "https://github.com/robhowe-A/Creative-Single-Page"],
+            ["AgileStock", "/websites/agilestock-web", "AgileStock Web", "https://github.com/robhowe-A/AgileStock"],
+            ["Password-Generator", "/demos/passwordgenerator", " Password Generator", "https://github.com/robhowe-A/Password-Generator"]
+    ];
 }

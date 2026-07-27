@@ -1,6 +1,8 @@
 ﻿// --Copyright (c) 2026 Robert A. Howell
 
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using ProjectsPage.Domain;
 using ProjectsPage.Infrastructure;
 
 namespace ProjectsPage.Jit;
@@ -34,12 +36,22 @@ public class JitController : Controller
 
         var response = await GitHubApiCollaboratorAdditionHttpRequest(gitHubApi, collaborator);
 
-        var responseContent = response.Content.ReadAsStringAsync();
+        var responseModeled = JsonSerializer.Deserialize<GitHubCollaborator>(
+            await response.Content.ReadAsStringAsync(),
+            new JsonSerializerOptions
+              {
+                      AllowOutOfOrderMetadataProperties = true,
+                      PropertyNameCaseInsensitive = true,
+                      IncludeFields = true
+              });
+        if (responseModeled == null)
+        {
+            throw new NotImplementedException();
+        }
 
         if (response.IsSuccessStatusCode)
         {
             TempData[$"JitResult-{repositoryNumber}"] = (int)response.StatusCode;
-            //TempData[$"JitResult-{repositoryNumber}-response"] = response;
         }
         else
         {
