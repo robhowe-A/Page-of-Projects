@@ -1,5 +1,6 @@
 ﻿// --Copyright (c) 2026 Robert A. Howell
 
+using System.Net;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using ProjectsPage.Domain;
@@ -20,7 +21,7 @@ public class JitController : Controller
             !GitHubApi.Collaborator.CheckUsernameIsValid(username)
             )
         {
-            TempData[$"JitResult-{repositoryNumber}"] = "Not Implemented";
+            TempData[$"JitResult-{repositoryNumber}"] = "Invalid username";
             return LocalRedirect("/jit");
         }
 
@@ -35,27 +36,35 @@ public class JitController : Controller
         gitHubApi.EnsureClientUsernameKeyVaultAddition(gitHubApi, collaborator);
 
         var response = await GitHubApiCollaboratorAdditionHttpRequest(gitHubApi, collaborator);
-
-        var responseModeled = JsonSerializer.Deserialize<GitHubCollaborator>(
-            await response.Content.ReadAsStringAsync(),
-            new JsonSerializerOptions
-              {
-                      AllowOutOfOrderMetadataProperties = true,
-                      PropertyNameCaseInsensitive = true,
-                      IncludeFields = true
-              });
-        if (responseModeled == null)
-        {
-            throw new NotImplementedException();
-        }
+        var responseString = await response.Content.ReadAsStringAsync();
+        GitHubCollaborator? responseModeled = null;
+        if(!string.IsNullOrWhiteSpace(responseString))
+            responseModeled = JsonSerializer.Deserialize<GitHubCollaborator>(
+                responseString,
+                new JsonSerializerOptions
+                  {
+                          AllowOutOfOrderMetadataProperties = true,
+                          PropertyNameCaseInsensitive = true,
+                          IncludeFields = true
+                  });
 
         if (response.IsSuccessStatusCode)
         {
-            TempData[$"JitResult-{repositoryNumber}"] = (int)response.StatusCode;
+            TempData[$"JitResult-{repositoryNumber}"] = response.StatusCode switch
+            {
+                    HttpStatusCode.Created => "201 Created",
+                    HttpStatusCode.NoContent => "204 No Content",
+                    _ => "Not Implemented"
+            };
         }
         else
         {
-            TempData[$"JitResult-{repositoryNumber}"] = "Not Implemented";
+            TempData[$"JitResult-{repositoryNumber}"] = response.StatusCode switch
+            {
+                    HttpStatusCode.NotFound => "404 User Not Found",
+                    HttpStatusCode.UnprocessableContent => "422 Unprocessable",
+                    _ => "Not Implemented"
+            };
         }
 
         return LocalRedirect("/jit");

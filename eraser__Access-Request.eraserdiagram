@@ -1,0 +1,73 @@
+sequence-diagram
+styleMode plain
+typeface mono
+colorMode mono
+
+Client [icon: monitor, color: gray]
+GitHub [icon: github, color: purple]
+Server [icon: server, color: blue]
+Service [icon: azure-key-vaults, color: green]
+
+activate Client
+Client > Server: Access request
+activate Server
+if [label: invalid username, color: red] {
+  Server --> Client: "Invalid username"
+}
+Server > Service: Get username
+activate Service
+
+if [label: Secret Not Found, color: orange] {
+  Server < Service: Request Failed Exception
+}
+else [label: , color: green] {
+  Server > Service: Set username
+}
+
+Server < Service: Success res
+deactivate Service
+
+Server > GitHub: Add collaborator
+
+activate GitHub
+if [label: success, color: orange]{
+    Server < GitHub: 201 Created
+}
+else [label: existing, color: orange]{
+    Server < GitHub: 204 No Content
+}
+else [label: forbidden, color: orange]{
+    Server < GitHub: 403 Forbidden
+}
+else [label: not a user, color: orange]{
+  Server < GitHub: 404 Not Found
+}
+else [label: , color: orange]{
+    Server < GitHub: 422 Unprocessable
+}
+Server < GitHub: Collaborators res
+deactivate GitHub
+
+Server > Client: Complete access request
+
+if [label: no content, color: green]{
+  Server > Client: "204 No Content"
+}
+else [label: not found, color: green]{
+  Server > Client: "404 User Not Found"
+}
+else [label: , color: green]{
+  Server > Client: "422 Unprocessable"
+}
+else [label: not success, color: green]{
+  Server > Client: "Not Implemented"
+}
+deactivate Server
+
+Server > Client: "201 Created"
+
+deactivate Client
+
+loop [label: GitHub Inbox, color: grey] {
+  Client > Client: accept or decline
+}

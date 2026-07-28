@@ -104,7 +104,7 @@
                 continue;
             }
             var tempNumber = Convert.ToInt16(temps.Split("-")[1]);
-            _jitAccessRepositories[tempNumber] = value as string ?? "Error: Repository name missing";
+            _jitAccessRepositories[tempNumber] = value?.ToString() ?? "Error: Repository name missing";
         }
 
         int repositoryCount = 0;
