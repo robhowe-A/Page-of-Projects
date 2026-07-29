@@ -12,10 +12,12 @@
     DocsPathUri="@DocsPathUri"
     SelectedWebsiteChanged="OnSelectedWebsiteChanged"/>
 
-@if (PageViewingSelected)
-{
-    <PageViewing PageViewSelection="SelectedWebsite"/>
-}
+<div class="content">
+    @if (PageViewingSelected)
+    {
+        <PageViewing PageViewSelection="SelectedWebsite"/>
+    }
+</div>
 
 @code {
 
