@@ -43,8 +43,10 @@ builder.Services.AddMvc(options => { options.EnableEndpointRouting = false; });
 
 var conString = builder.Configuration.GetConnectionString("ProjectsDb") ??
         throw new InvalidOperationException("Connection string 'ProjectsDb' not found.");
+var gitHubCollaboratorConString = builder.Configuration.GetConnectionString("GitHubCollaboratorDb") ??
+        throw new InvalidOperationException("Connection string 'ProjectsDb' not found.");
 
-builder.Services.AddProjectsContext(conString);
+builder.Services.AddProjectsContext(gitHubCollaboratorConString, conString);
 builder.Services.StartAgentHeartbeat();
 builder.Services.AddResponseCompression(options => options.EnableForHttps = true);
 builder.Services.AddControllers(options => { options.EnableEndpointRouting = true; });

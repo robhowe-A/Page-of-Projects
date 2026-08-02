@@ -10,7 +10,20 @@ namespace ProjectsPage.Jit;
 
 public class JitController : Controller
 {
-    [HttpPost("/api/jit")]
+    private readonly GitHubCollaboratorDbContext _collaboratorContext;
+
+    public JitController(GitHubCollaboratorDbContext collaboratorContext)
+    {
+        _collaboratorContext = collaboratorContext;
+    }
+
+    [HttpGet("/repository-access/invalid-user")]
+    public IActionResult JitNotValid()
+    {
+        return RedirectPermanent("/jit");
+    }
+
+    [HttpPost("/repository-access/jit")]
     [AutoValidateAntiforgeryToken]
     public async Task<IActionResult> Jit([FromForm] string? username, [FromForm] string? repositoryName,
                                          [FromForm] string? repositoryNumber)
@@ -22,7 +35,8 @@ public class JitController : Controller
             )
         {
             TempData[$"JitResult-{repositoryNumber}"] = "Invalid username";
-            return LocalRedirect("/jit");
+
+            return RedirectToAction("JitNotValid");
         }
 
         GitHubApi.Collaborator collaborator = new(repositoryName, username);
@@ -48,6 +62,11 @@ public class JitController : Controller
                           IncludeFields = true
                   });
 
+        if (response.IsSuccessStatusCode && responseModeled != null)
+        {
+            await InsertGitHubCollaboratorResponse(responseModeled);
+        }
+
         if (response.IsSuccessStatusCode)
         {
             TempData[$"JitResult-{repositoryNumber}"] = response.StatusCode switch
@@ -68,6 +87,166 @@ public class JitController : Controller
         }
 
         return LocalRedirect("/jit");
+    }
+
+    private async Task InsertGitHubCollaboratorResponse(GitHubCollaborator responseModeled)
+    {
+        if (responseModeled.Repository == null ||
+            responseModeled.Invitee == null ||
+            responseModeled.Inviter == null)
+        {
+            return;
+        }
+        var collaboratorUsers = new[]
+                                {
+                                        responseModeled.Invitee,
+                                        responseModeled.Inviter,
+                                        responseModeled.Repository.Owner
+                                }
+                               .Where(user => user != null)
+                               .GroupBy(user => user.Id)
+                               .Select(group => group.First());
+
+        foreach (var user in collaboratorUsers)
+        {
+            var existing = await _collaboratorContext.Collaborators
+                                                   .FindAsync(user.Id);
+
+            if (existing == null)
+            {
+                _collaboratorContext.Collaborators.Add(ToCollaboratorEntity(user));
+            }
+            else
+            {
+                _collaboratorContext.Entry(existing).CurrentValues.SetValues(user);
+            }
+        }
+
+        var existingRepository = await _collaboratorContext.Repositories
+                                                         .FindAsync(responseModeled.Repository.Id);
+
+        if (existingRepository == null)
+        {
+            _collaboratorContext.Repositories.Add(ToRepositoryEntity(responseModeled.Repository));
+        }
+        else
+        {
+            _collaboratorContext.Entry(existingRepository)
+                              .CurrentValues
+                              .SetValues(ToRepositoryEntity(responseModeled.Repository));
+        }
+
+        var existingRepositoryInvitiation = await _collaboratorContext.RepositoryInvitations
+                                                                    .FindAsync(responseModeled.Id);
+
+        if (existingRepositoryInvitiation == null)
+        {
+            _collaboratorContext.RepositoryInvitations.Add(ToRepositoryInvitationEntity(responseModeled));
+        }
+        else
+        {
+            _collaboratorContext.Entry(existingRepositoryInvitiation)
+                              .CurrentValues
+                              .SetValues(ToRepositoryInvitationEntity(responseModeled));
+        }
+
+        var existingRepositoryInviteeLinks = await _collaboratorContext.RepositoryInviteeLinks
+                                                                     .FindAsync(responseModeled.Id);
+
+        if (existingRepositoryInvitiation == null)
+        {
+            _collaboratorContext.RepositoryInviteeLinks.Add(ToRepositoryInviteeLinkEntity(responseModeled));
+        }
+        else
+        {
+            _collaboratorContext.Entry(existingRepositoryInviteeLinks)
+                              .CurrentValues
+                              .SetValues(ToRepositoryInviteeLinkEntity(responseModeled));
+        }
+
+        if (responseModeled.Repository.Owner != null)
+        {
+            var existingRepositoryOwnerLinks = await _collaboratorContext.RepositoryOwnerLinks
+                                                                   .FindAsync(responseModeled.Repository.Id, responseModeled.Repository.Owner.Id);
+
+            if (existingRepositoryOwnerLinks == null)
+            {
+                _collaboratorContext.RepositoryOwnerLinks.Add(ToRepositoryOwnerLinkEntity(responseModeled.Repository));
+            }
+            else
+            {
+                _collaboratorContext.Entry(existingRepositoryOwnerLinks)
+                                  .CurrentValues
+                                  .SetValues(ToRepositoryOwnerLinkEntity(responseModeled.Repository));
+            }
+        }
+
+        await _collaboratorContext.SaveChangesAsync();
+    }
+
+    private static RepositoryEntity ToRepositoryEntity(Repository repository)
+    {
+        return new RepositoryEntity
+               {
+                       RepositoryId = repository.Id,
+                       NodeId = repository.NodeId,
+                       Name = repository.Name,
+                       FullName = repository.FullName,
+                       IsPrivate = repository.Private,
+                       HtmlUrl = repository.HtmlUrl,
+                       ApiUrl = repository.Url,
+                       Description = repository.Description
+               };
+    }
+
+    private static RepositoryInvitationEntity ToRepositoryInvitationEntity(GitHubCollaborator collaborator)
+    {
+        return new RepositoryInvitationEntity
+               {
+                       InvitationId = collaborator.Id,
+                       NodeId = collaborator.NodeId,
+                       RepositoryId = collaborator.Repository.Id,
+                       InviteeId = collaborator.Invitee.Id,
+                       InviterId = collaborator.Inviter.Id,
+                       Permissions = collaborator.Permissions,
+                       CreatedAt = collaborator.CreatedAt.DateTime,
+                       ApiUrl = collaborator.Url,
+                       HtmlUrl = collaborator.HtmlUrl
+               };
+    }
+
+    private static RepositoryInviteeLinkEntity ToRepositoryInviteeLinkEntity(GitHubCollaborator collaborator)
+    {
+        return new RepositoryInviteeLinkEntity
+               {
+                       InvitationId = collaborator.Id,
+                       InviteeId = collaborator.Invitee.Id,
+                       InviterId = collaborator.Inviter.Id
+               };
+    }
+
+    private static RepositoryOwnerLinkEntity ToRepositoryOwnerLinkEntity(Repository repository)
+    {
+        return new RepositoryOwnerLinkEntity
+               {
+                       RepositoryId = repository.Id,
+                       OwnerId = repository.Owner.Id
+               };
+    }
+
+    private static CollaboratorEntity ToCollaboratorEntity(GitHubUser user)
+    {
+        return new CollaboratorEntity
+               {
+                       UserId = user.Id,
+                       Login = user.Login,
+                       NodeId = user.NodeId,
+                       AvatarUrl = user.AvatarUrl,
+                       HtmlUrl = user.HtmlUrl,
+                       ApiUrl = user.Url,
+                       Type = user.Type,
+                       SiteAdmin = user.SiteAdmin
+               };
     }
 
     private async Task<HttpResponseMessage> GitHubApiCollaboratorAdditionHttpRequest(GitHubApi gitHubApi, GitHubApi.Collaborator collaborator)

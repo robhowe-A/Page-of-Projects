@@ -1,4 +1,4 @@
-﻿<!-- --Copyright (c) 2026 Robert A. Howell -->
+<!-- --Copyright (c) 2026 Robert A. Howell -->
 
 @page "/jit"
 @using Microsoft.AspNetCore.Components.Forms
@@ -93,7 +93,7 @@
             <h2>Access request form: <span>@repo.Key</span></h2>
             <p>Submitting this form requests the provided username access to @(repo.Key) repository.</p>
             <form method="post" name="jit-form"
-                  action="/api/jit"
+                  action="/repository-access/jit"
                   autocomplete="off">
                 <AntiforgeryToken/>
                 <label>Username:
@@ -171,7 +171,6 @@
             ["Sln-QuizzesApp", "/websites/quizzes-app", "Quizzes App", "https://github.com/robhowe-A/Sln-QuizzesApp"],
             ["Sln-Page-Of-Projects", "/", "Projects Hub", "https://github.com/robhowe-A/Sln-Page-Of-Projects"],
             ["easybank-website", "/demos/easybank", " Easybank", "https://github.com/robhowe-A/easybank-website"],
-            ["Creative-Single-Page", "/demos/creativesinglepage", "Creative Single Page", "https://github.com/robhowe-A/Creative-Single-Page"],
             ["AgileStock", "/websites/agilestock-web", "AgileStock Web", "https://github.com/robhowe-A/AgileStock"],
             ["Password-Generator", "/demos/passwordgenerator", " Password Generator", "https://github.com/robhowe-A/Password-Generator"]
     ];
