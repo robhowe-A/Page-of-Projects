@@ -3,11 +3,11 @@ Copyright (c) 2026 Robert A. Howell
 Author: Robert A. Howell
 Description: This project was created as an addition/wrapper/showcase for my portfolio projects and is written in C#. The repository code is live deployed at www.roberthowell.dev.
 Created_Date: May 2026
-Edited: 2026-07-28
+Edited: 2026-08-03
 -->
 
 
-# Page of Projects  
+# Page of Projects (a.k.a. Projects Hub)  
 This project was created as an addition/wrapper/showcase for my portfolio projects and is written in C#. It is live deployed at [www.roberthowell.dev](https://www.roberthowell.dev).  
 Restrictions: You may not use this code in commercial applications, production environments, or for unauthorized purposes without explicit permission from the author.  
 Author: *see document metadata in code or raw view*    
@@ -16,7 +16,7 @@ Author: *see document metadata in code or raw view*
 ## Architecture  
 This project is a multi-project, in-process hosted, asynchronous .NET application implementing continuously integrated source control on GitHub. Continuous deployment is not in use, however, project tooling extensions provide little impedance to rapid iteration deployment. All source code is available to read; partial source code is open-sourced and the remaining is kept under private repository control to prevent project copies reaching the open source community.  
 
-Viewing the private repository code is available as a [repository explorer](https://www.roberthowell.dev/sources/source), a read-only development page.  
+Viewing the private repository code is available as a [repository explorer](https://www.roberthowell.dev/sources/source), a read-only development page, or request for read access as a collaborator, from here: [Access Requests](https://www.roberthowell.dev/private-repository-access-request).  
 
 -----
 

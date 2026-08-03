@@ -6,26 +6,26 @@ using Microsoft.AspNetCore.Mvc;
 using ProjectsPage.Domain;
 using ProjectsPage.Infrastructure;
 
-namespace ProjectsPage.Jit;
+namespace ProjectsPage.Access;
 
-public class JitController : Controller
+public class AccessController : Controller
 {
     private readonly GitHubCollaboratorDbContext _collaboratorContext;
 
-    public JitController(GitHubCollaboratorDbContext collaboratorContext)
+    public AccessController(GitHubCollaboratorDbContext collaboratorContext)
     {
         _collaboratorContext = collaboratorContext;
     }
 
     [HttpGet("/repository-access/invalid-user")]
-    public IActionResult JitNotValid()
+    public IActionResult RequestNotValid()
     {
-        return RedirectPermanent("/jit");
+        return RedirectPermanent("/private-repository-access-request");
     }
 
-    [HttpPost("/repository-access/jit")]
+    [HttpPost("/repository-access/collaborator")]
     [AutoValidateAntiforgeryToken]
-    public async Task<IActionResult> Jit([FromForm] string? username, [FromForm] string? repositoryName,
+    public async Task<IActionResult> Collaborator([FromForm] string? username, [FromForm] string? repositoryName,
                                          [FromForm] string? repositoryNumber)
     {
         if (
@@ -34,16 +34,16 @@ public class JitController : Controller
             !GitHubApi.Collaborator.CheckUsernameIsValid(username)
             )
         {
-            TempData[$"JitResult-{repositoryNumber}"] = "Invalid username";
+            TempData[$"AccessResult-{repositoryNumber}"] = "Invalid username";
 
-            return RedirectToAction("JitNotValid");
+            return RedirectToAction("RequestNotValid");
         }
 
         GitHubApi.Collaborator collaborator = new(repositoryName, username);
 
 #if LOOPBACK
-        TempData[$"JitResult"] = "Check Loopback";
-        return LocalRedirect("/jit");
+        TempData[$"AccessResult"] = "Check Loopback";
+        return LocalRedirect("/private-repository-access-request");
 #endif
 
         GitHubApi gitHubApi = new();
@@ -69,7 +69,7 @@ public class JitController : Controller
 
         if (response.IsSuccessStatusCode)
         {
-            TempData[$"JitResult-{repositoryNumber}"] = response.StatusCode switch
+            TempData[$"AccessResult-{repositoryNumber}"] = response.StatusCode switch
             {
                     HttpStatusCode.Created => "201 Created",
                     HttpStatusCode.NoContent => "204 No Content",
@@ -78,7 +78,7 @@ public class JitController : Controller
         }
         else
         {
-            TempData[$"JitResult-{repositoryNumber}"] = response.StatusCode switch
+            TempData[$"AccessResult-{repositoryNumber}"] = response.StatusCode switch
             {
                     HttpStatusCode.NotFound => "404 User Not Found",
                     HttpStatusCode.UnprocessableContent => "422 Unprocessable",
@@ -86,7 +86,7 @@ public class JitController : Controller
             };
         }
 
-        return LocalRedirect("/jit");
+        return LocalRedirect("/private-repository-access-request");
     }
 
     private async Task InsertGitHubCollaboratorResponse(GitHubCollaborator responseModeled)

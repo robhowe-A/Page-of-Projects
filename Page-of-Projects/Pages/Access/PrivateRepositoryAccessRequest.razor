@@ -1,17 +1,17 @@
 <!-- --Copyright (c) 2026 Robert A. Howell -->
 
-@page "/jit"
+@page "/private-repository-access-request"
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Mvc.ViewFeatures
 @inject ITempDataDictionaryFactory TempDataFactory
 @namespace ProjectsPage.Components.Primary
 
-<PageTitle>Jit</PageTitle>
+<PageTitle>Private Repository Access Request</PageTitle>
 
-<article id="Jit">
-    <header class="jit-header">
-        <h3>JIT Access Requests</h3>
+<article id="Access">
+    <header class="access-request-header">
+        <h3>Access Requests</h3>
         <p>
             Request temporary access to private GitHub repositories. Submit a valid GitHub username,
             and after processing completes, check your GitHub inbox for the repository invitation.
@@ -29,7 +29,7 @@
         </div>
 
         <div class="access-request-list" role="list">
-            @foreach (var repo in jitAccessRepositories)
+            @foreach (var repo in privateAccessRepositories)
             {
                 var data = _repositories.FirstOrDefault(r => r[0] == repo.Key);
 
@@ -51,16 +51,16 @@
                     </div>
 
                     <div class="access-request-status">
-                        @if (!string.IsNullOrEmpty(_jitResult))
+                        @if (!string.IsNullOrEmpty(_accessResult))
                         {
-                            <span class="status-pill status-info">Result: @_jitResult</span>
+                            <span class="status-pill status-info">Result: @_accessResult</span>
                         }
 
-                        @if (_jitAccessRepositories.ContainsKey(repo.Value)
-                             && !string.IsNullOrEmpty(_jitAccessRepositories[repo.Value]))
+                        @if (_privateAccessRepositories.ContainsKey(repo.Value)
+                             && !string.IsNullOrEmpty(_privateAccessRepositories[repo.Value]))
                         {
                             <span class="status-pill status-complete">
-                                StatusCode: @_jitAccessRepositories[repo.Value]
+                                StatusCode: @_privateAccessRepositories[repo.Value]
                             </span>
                         }
                         @if(_statusCheck)
@@ -70,12 +70,12 @@
                     </div>
 
                     <div class="access-request-actions">
-                        @if (!_jitAccessRepositories.ContainsKey(repo.Value)
-                             || string.IsNullOrEmpty(_jitAccessRepositories[repo.Value]))
+                        @if (!_privateAccessRepositories.ContainsKey(repo.Value)
+                             || string.IsNullOrEmpty(_privateAccessRepositories[repo.Value]))
                         {
                             <button type="button"
                                     class="primary-action"
-                                    commandfor="view-jit-access-@(repo.Value)"
+                                    commandfor="view-private-access-@(repo.Value)"
                                     command="show-modal">
                                 Request Access
                             </button>
@@ -86,14 +86,14 @@
         </div>
     </section>
 </article>
-@foreach (var repo in jitAccessRepositories)
+@foreach (var repo in privateAccessRepositories)
 {
-    <dialog id="view-jit-access-@(repo.Value)">
+    <dialog id="view-private-access-@(repo.Value)">
         <div class="wrapper">
             <h2>Access request form: <span>@repo.Key</span></h2>
             <p>Submitting this form requests the provided username access to @(repo.Key) repository.</p>
-            <form method="post" name="jit-form"
-                  action="/repository-access/jit"
+            <form method="post" name="access-request-form"
+                  action="/repository-access/collaborator"
                   autocomplete="off">
                 <AntiforgeryToken/>
                 <label>Username:
@@ -105,7 +105,7 @@
                 <button type="submit">Submit</button>
             </form>
             <button
-                commandfor="view-jit-access-@(repo.Value)"
+                commandfor="view-private-access-@(repo.Value)"
                 command="request-close">Close</button>
         </div>
     </dialog>
@@ -115,7 +115,7 @@
     [CascadingParameter]
     private HttpContext? HttpContext { get; set; }
 
-    private string? _jitResult;
+    private string? _accessResult;
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -137,33 +137,33 @@
 
         foreach (var (temps,value) in TempData)
         {
-            if (string.Equals(temps, "JitResult") & !temps.Contains("-"))
+            if (string.Equals(temps, "AccessResult") & !temps.Contains("-"))
             {
-                _jitResult = (string?)value;
+                _accessResult = (string?)value;
                 continue;
             }
             var tempNumber = Convert.ToInt16(temps.Split("-")[1]);
-            _jitAccessRepositories[tempNumber] = value?.ToString() ?? "Error: Repository name missing";
+            _privateAccessRepositories[tempNumber] = value?.ToString() ?? "Error: Repository name missing";
         }
 
         int repositoryCount = 0;
 
         foreach (var repository in _repositories)
         {
-            jitAccessRepositories.TryAdd(repository[0], repositoryCount);
+            privateAccessRepositories.TryAdd(repository[0], repositoryCount);
             repositoryCount++;
 
         // Force clear the temp data dictionary
-        if(TempData.Count > 0 & TempData.ContainsKey($"JitResult-{repositoryCount}"))
-            TempData.Remove($"JitResult-{repositoryCount}"); //Any repository controller return
-        if(TempData.Count > 0 & TempData.ContainsKey("JitResult"))
-            TempData.Remove("JitResult"); //No repository controller return
+        if(TempData.Count > 0 & TempData.ContainsKey($"AccessResult-{repositoryCount}"))
+            TempData.Remove($"AccessResult-{repositoryCount}"); //Any repository controller return
+        if(TempData.Count > 0 & TempData.ContainsKey("AccessResult"))
+            TempData.Remove("AccessResult"); //No repository controller return
         TempData.Save();
         }
     }
 
-    private Dictionary<string, int> jitAccessRepositories = new();
-    private Dictionary<int, string> _jitAccessRepositories = new();
+    private Dictionary<string, int> privateAccessRepositories = new();
+    private Dictionary<int, string> _privateAccessRepositories = new();
     private bool _statusCheck = false;
     private List<List<string>> _repositories = [
             ["RWB-TypeScript", "/websites/randomwebbits", "Random Web Bits", "https://github.com/robhowe-A/RWB-TypeScript"],
