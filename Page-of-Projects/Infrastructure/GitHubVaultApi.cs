@@ -8,21 +8,21 @@ using Azure.Security.KeyVault.Secrets;
 
 namespace ProjectsPage.Infrastructure;
 
-public class GitHubApi
+public class GitHubVaultApi
 {
-    public void EnsureClientUsernameKeyVaultAddition(GitHubApi gitHubApi, Collaborator collaborator)
+    public void EnsureClientUsernameKeyVaultAddition(Collaborator collaborator)
     {
         //Ensuring the client username is added to the Key Vaule
-        switch (gitHubApi.GetKeyVaultSecret(collaborator.ClientUsernameKeyVaultKey))
+        switch (GetKeyVaultSecret(collaborator.ClientUsernameKeyVaultKey))
         {
             case { HasValue: false }:
-                gitHubApi.AddKeyVaultSecret(collaborator.ClientUsernameKeyVaultKey, collaborator.ClientUsernameValue);
+                AddKeyVaultSecret(collaborator.ClientUsernameKeyVaultKey, collaborator.ClientUsernameValue);
                 break;
             case { HasValue: true }:
                 WriteLine("INFO: Client key already exists in Key Vault.");
                 break;
             case null:
-                gitHubApi.AddKeyVaultSecret(collaborator.ClientUsernameKeyVaultKey, collaborator.ClientUsernameValue);
+                AddKeyVaultSecret(collaborator.ClientUsernameKeyVaultKey, collaborator.ClientUsernameValue);
                 break;
         }
     }
@@ -38,7 +38,7 @@ public class GitHubApi
         request.Headers.Add("Accept", "application/vnd.github+json");
         request.Headers.Add("Authorization", $"Bearer {KeyVaultCollaboratorTokenSecret.Value}");
         request.Headers.Add("X-GitHub-Api-Version", "2026-03-10");
-        request.Headers.Add("User-Agent", "ProjectsPageApp-JitController|roberthowell.dev|Projects Hub developed by Robert Howell");
+        request.Headers.Add("User-Agent", "ProjectsPageApp-AccessController|roberthowell.dev|Projects Hub|A portfolio development by Robert Howell");
         request.Version = new Version(2, 0);
         request.VersionPolicy = HttpVersionPolicy.RequestVersionOrHigher;
         request.Content = new StringContent("""{"permission":"pull"}""", Encoding.UTF8);
@@ -114,7 +114,7 @@ public class GitHubApi
         }
     }
 
-    public GitHubApi()
+    public GitHubVaultApi()
     {
         SecretClient = new SecretClient(vaultUri: new Uri(KeyVaultVaultUri), credential: new DefaultAzureCredential());
         KeyVaultOwnerSecret = (
