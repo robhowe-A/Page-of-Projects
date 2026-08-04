@@ -114,7 +114,7 @@ public class AccessController : Controller
 
             if (existing == null)
             {
-                _collaboratorContext.Collaborators.Add(ToCollaboratorEntity(user));
+                _collaboratorContext.Collaborators.Add(CollaboratorEntityFactory.CreateCollaborator(user));
             }
             else
             {
@@ -127,13 +127,13 @@ public class AccessController : Controller
 
         if (existingRepository == null)
         {
-            _collaboratorContext.Repositories.Add(ToRepositoryEntity(responseModeled.Repository));
+            _collaboratorContext.Repositories.Add(CollaboratorEntityFactory.CreateRepository(responseModeled.Repository));
         }
         else
         {
             _collaboratorContext.Entry(existingRepository)
                               .CurrentValues
-                              .SetValues(ToRepositoryEntity(responseModeled.Repository));
+                              .SetValues(CollaboratorEntityFactory.CreateRepository(responseModeled.Repository));
         }
 
         var existingRepositoryInvitiation = await _collaboratorContext.RepositoryInvitations
@@ -141,13 +141,13 @@ public class AccessController : Controller
 
         if (existingRepositoryInvitiation == null)
         {
-            _collaboratorContext.RepositoryInvitations.Add(ToRepositoryInvitationEntity(responseModeled));
+            _collaboratorContext.RepositoryInvitations.Add(CollaboratorEntityFactory.CreateInvitation(responseModeled));
         }
         else
         {
             _collaboratorContext.Entry(existingRepositoryInvitiation)
                               .CurrentValues
-                              .SetValues(ToRepositoryInvitationEntity(responseModeled));
+                              .SetValues(CollaboratorEntityFactory.CreateInvitation(responseModeled));
         }
 
         var existingRepositoryInviteeLinks = await _collaboratorContext.RepositoryInviteeLinks
@@ -155,13 +155,13 @@ public class AccessController : Controller
 
         if (existingRepositoryInvitiation == null)
         {
-            _collaboratorContext.RepositoryInviteeLinks.Add(ToRepositoryInviteeLinkEntity(responseModeled));
+            _collaboratorContext.RepositoryInviteeLinks.Add(CollaboratorEntityFactory.CreateInviteeLink(responseModeled));
         }
         else
         {
             _collaboratorContext.Entry(existingRepositoryInviteeLinks)
                               .CurrentValues
-                              .SetValues(ToRepositoryInviteeLinkEntity(responseModeled));
+                              .SetValues(CollaboratorEntityFactory.CreateInviteeLink(responseModeled));
         }
 
         if (responseModeled.Repository.Owner != null)
@@ -171,82 +171,17 @@ public class AccessController : Controller
 
             if (existingRepositoryOwnerLinks == null)
             {
-                _collaboratorContext.RepositoryOwnerLinks.Add(ToRepositoryOwnerLinkEntity(responseModeled.Repository));
+                _collaboratorContext.RepositoryOwnerLinks.Add(CollaboratorEntityFactory.CreateOwnerLink(responseModeled.Repository));
             }
             else
             {
                 _collaboratorContext.Entry(existingRepositoryOwnerLinks)
                                   .CurrentValues
-                                  .SetValues(ToRepositoryOwnerLinkEntity(responseModeled.Repository));
+                                  .SetValues(CollaboratorEntityFactory.CreateOwnerLink(responseModeled.Repository));
             }
         }
 
         await _collaboratorContext.SaveChangesAsync();
-    }
-
-    private static RepositoryEntity ToRepositoryEntity(Repository repository)
-    {
-        return new RepositoryEntity
-               {
-                       RepositoryId = repository.Id,
-                       NodeId = repository.NodeId,
-                       Name = repository.Name,
-                       FullName = repository.FullName,
-                       IsPrivate = repository.Private,
-                       HtmlUrl = repository.HtmlUrl,
-                       ApiUrl = repository.Url,
-                       Description = repository.Description
-               };
-    }
-
-    private static RepositoryInvitationEntity ToRepositoryInvitationEntity(GitHubCollaborator collaborator)
-    {
-        return new RepositoryInvitationEntity
-               {
-                       InvitationId = collaborator.Id,
-                       NodeId = collaborator.NodeId,
-                       RepositoryId = collaborator.Repository.Id,
-                       InviteeId = collaborator.Invitee.Id,
-                       InviterId = collaborator.Inviter.Id,
-                       Permissions = collaborator.Permissions,
-                       CreatedAt = collaborator.CreatedAt.DateTime,
-                       ApiUrl = collaborator.Url,
-                       HtmlUrl = collaborator.HtmlUrl
-               };
-    }
-
-    private static RepositoryInviteeLinkEntity ToRepositoryInviteeLinkEntity(GitHubCollaborator collaborator)
-    {
-        return new RepositoryInviteeLinkEntity
-               {
-                       InvitationId = collaborator.Id,
-                       InviteeId = collaborator.Invitee.Id,
-                       InviterId = collaborator.Inviter.Id
-               };
-    }
-
-    private static RepositoryOwnerLinkEntity ToRepositoryOwnerLinkEntity(Repository repository)
-    {
-        return new RepositoryOwnerLinkEntity
-               {
-                       RepositoryId = repository.Id,
-                       OwnerId = repository.Owner.Id
-               };
-    }
-
-    private static CollaboratorEntity ToCollaboratorEntity(GitHubUser user)
-    {
-        return new CollaboratorEntity
-               {
-                       UserId = user.Id,
-                       Login = user.Login,
-                       NodeId = user.NodeId,
-                       AvatarUrl = user.AvatarUrl,
-                       HtmlUrl = user.HtmlUrl,
-                       ApiUrl = user.Url,
-                       Type = user.Type,
-                       SiteAdmin = user.SiteAdmin
-               };
     }
 
     private async Task<HttpResponseMessage> GitHubApiCollaboratorAdditionHttpRequest(GitHubApi gitHubApi, GitHubApi.Collaborator collaborator)
