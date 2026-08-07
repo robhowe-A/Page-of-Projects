@@ -28,7 +28,7 @@ public class FrameSelectionOption
     internal FrameSelectionOption(string href, string title, string innerText, string externalHref,
                                   string externalTitle, string imageUrl, string imageAltText,
                                   List<string>? referenceHrefs,
-                                  SelectionDetails selectionDetails, bool isSelected, Networking networking)
+                                  SelectionDetails selectionDetails, bool isSelected, string type, Networking networking)
     {
         Href = href ?? throw new ArgumentNullException(nameof(href));
         Title = title ?? throw new ArgumentNullException(nameof(title));
@@ -44,6 +44,7 @@ public class FrameSelectionOption
         if (ReferenceHrefs != null)
 
             DocHrefTitles = GetDocsHrefTitleAsync(ReferenceHrefs);
+        Type = type ?? throw new ArgumentNullException(nameof(type));
         Networking = networking ?? throw new ArgumentNullException(nameof(networking));
     }
 
@@ -57,7 +58,7 @@ public class FrameSelectionOption
     public List<string>? ReferenceHrefs { get; init; }
     public required SelectionDetails SelectionDetails { get; init; }
     public bool IsSelected { get; init; } //Not in JSON
-
+    public required string Type { get; init; }
     public required Networking Networking { get; init; }
 
     //private async Task<Dictionary<string, string>> GetDocsHrefTitleAsync(List<string> docsHref)
@@ -152,12 +153,24 @@ internal static class FrameSelectionData
 
     public static readonly List<FrameSelectionOption> WebsiteSelections = WebsitesOptionsData(Projects.Websites);
     public static readonly List<FrameSelectionOption> DemoSelections = WebsitesOptionsData(Projects.Demos);
+    public static readonly List<FrameSelectionOption> ProjectsSelections = ProjectsOptionsData(Projects.Websites, Projects.Demos);
 
     private static List<FrameSelectionOption> WebsitesOptionsData(string projectName)
     {
         WriteLine($"Loading frame selection data for {projectName}"); // Temporary log
 
         var websitesDocsArray = FsFetch.GetWebsitesData(projectName);
+
+        if (websitesDocsArray is null) throw new ArgumentNullException(nameof(websitesDocsArray));
+        var websitesData = JDocsDataStringLoop(websitesDocsArray);
+
+        return DeserializeProjectJson(websitesData);
+    }
+    private static List<FrameSelectionOption> ProjectsOptionsData(string project1, string project2)
+    {
+        WriteLine($"Loading frame selection data for {project1}"); // Temporary log
+
+        var websitesDocsArray = FsFetch.GetProjectsData(project1, project2);
 
         if (websitesDocsArray is null) throw new ArgumentNullException(nameof(websitesDocsArray));
         var websitesData = JDocsDataStringLoop(websitesDocsArray);

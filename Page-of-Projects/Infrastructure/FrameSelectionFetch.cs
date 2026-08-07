@@ -26,6 +26,14 @@ internal sealed class FrameSelectionFetch
                 : FetchWebsitesData(site);
     }
 
+    public string[] GetProjectsData(string site, string site2)
+    {
+        if (string.IsNullOrWhiteSpace(site) || string.IsNullOrWhiteSpace(site2))
+            throw new ArgumentException("Argument cannot be null or whitespace.");
+
+        return FetchProjectsData(site, site2);
+    }
+
     private string[] FetchWebsitesData(string site)
     {
         var docs = from j in _context.projects where j.Site == site select j.Document;

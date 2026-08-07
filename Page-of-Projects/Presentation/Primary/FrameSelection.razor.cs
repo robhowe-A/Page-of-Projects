@@ -11,10 +11,9 @@ public partial class FrameSelection
 {
     protected override void OnInitialized()
     {
-        AllSelections = WebsiteSelections.Concat(DemoSelections)
-                                         .OrderByDescending(x => x.SelectionDetails.StartDate)
-                                         .ThenBy(x => x.Title)
-                                         .ToList();
+        AllSelections = ProjectsSelections.OrderByDescending(x => x.SelectionDetails.StartDate)
+                                          .ThenBy(x => x.Title)
+                                          .ToList();
 
         WebsiteSelections = FrameSelectionData.WebsiteSelections;
 

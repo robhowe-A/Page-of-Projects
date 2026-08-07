@@ -48,11 +48,17 @@
              tabindex="-1">
 
             <InputRadioGroup Name="menu" @bind-Value="_menuOptionSelection">
+                <label>Featured Work
+                    <InputRadio Name="menu" Value="@ProjectsByFeaturedWork"/>
+                </label>
+                <label>Frontend Projects
+                    <InputRadio Name="menu" Value="@ProjectsByFrontendProjects"/>
+                </label>
+                <label>Tools and Automation
+                    <InputRadio Name="menu" Value="@ProjectsByToolsAndAutomation"/>
+                </label>
                 <label>All
                     <InputRadio Name="menu" Value="@ProjectsAllMenuOption" Label="All"/>
-                </label>
-                <label>By Type
-                    <InputRadio Name="menu" Value="@ProjectsByTypeMenuOption"/>
                 </label>
                 @* <label>Cybersecurity *@
                 @*     <InputRadio Name="menu" Value="@CybersecurityMenuOption" Label="Cybersecurity"/> *@
@@ -62,37 +68,52 @@
             <div>
                 @switch (_menuOptionSelection)
                 {
-                    case ProjectsByTypeMenuOption:
-                        //////////TODOS//////////
-                        // Sort component? (by date?, framework? secondary language?)
-                        //Icons to fill in the cards and highlight the framing functionality limitations
-                        //+Warnings
-                        //+Errors (expected)
-                        <WebsitesFrameSelections
-                            WebsitesSelections="@WebsiteSelections.ToList()"
+                    case ProjectsByFeaturedWork:
+                        <FrameSelectionItems
+                            FrameSelections="@AllSelections.Where(x => x.Type == "featured").ToList()"
                             SelectedFrame="@_selectedWebsite"
                             OnSelected="@HandleWebsiteSelected"
-                            SetDetail="@_toggleDetailsSet"
                             OnSelectionChange="@SetOtherIndexOpened"
                             OnSetAboutView="@ToggleAboutView"
+                            OnResortedListSelected="@ResortListSelected"
+                            SetDetail="@_toggleDetailsSet"
                             StartingNumber="0"
-                            OnResortedListSelected="@ResortListSelected"
-                            UpdateSelectedDirectExternalUrl="@UpdateSelectedDirectExternalUrl"
-                            OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateClosePanel"/>
-
-                        <DemosFrameSelections
-                            DemosSelections="@DemoSelections"
-                            SelectedFrame="@_selectedWebsite"
-                            OnSelected="@HandleWebsiteSelected"
-                            SetDetail="@_toggleDetailsSet"
-                            OnSelectionChange="@SetOtherIndexOpened"
-                            OnSetAboutView="@ToggleAboutView"
-                            StartingNumber="6"
-                            OnResortedListSelected="@ResortListSelected"
+                            DeploymentAs="@DeploymentAs"
                             UpdateSelectedDirectExternalUrl="@UpdateSelectedDirectExternalUrl"
                             OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateClosePanel"/>
 
                         break;
+                    case ProjectsByFrontendProjects:
+                        <FrameSelectionItems
+                            FrameSelections="@AllSelections.Where(x => x.Type == "frontend").ToList()"
+                            SelectedFrame="@_selectedWebsite"
+                            OnSelected="@HandleWebsiteSelected"
+                            OnSelectionChange="@SetOtherIndexOpened"
+                            OnSetAboutView="@ToggleAboutView"
+                            OnResortedListSelected="@ResortListSelected"
+                            SetDetail="@_toggleDetailsSet"
+                            StartingNumber="0"
+                            DeploymentAs="@DeploymentAs"
+                            UpdateSelectedDirectExternalUrl="@UpdateSelectedDirectExternalUrl"
+                            OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateClosePanel"/>
+
+                        break;
+                    case ProjectsByToolsAndAutomation:
+                        <FrameSelectionItems
+                            FrameSelections="@AllSelections.Where(x => x.Type == "tool").ToList()"
+                            SelectedFrame="@_selectedWebsite"
+                            OnSelected="@HandleWebsiteSelected"
+                            OnSelectionChange="@SetOtherIndexOpened"
+                            OnSetAboutView="@ToggleAboutView"
+                            OnResortedListSelected="@ResortListSelected"
+                            SetDetail="@_toggleDetailsSet"
+                            StartingNumber="0"
+                            DeploymentAs="@DeploymentAs"
+                            UpdateSelectedDirectExternalUrl="@UpdateSelectedDirectExternalUrl"
+                            OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateClosePanel"/>
+
+                        break;
+                    
                     case ProjectsAllMenuOption:
 
                         <FrameSelectionItems
@@ -109,26 +130,6 @@
                             OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateClosePanel"/>
 
                         break;
-                    case ProjectsCyberMenuOption:
-                        //////////TODOS//////////
-                        // Full Projects+Demos List
-                        //+Error statuses
-                        //+HEAD request listed or itemized
-                        //+Tech specs (OS, server type, kernel base, CPU?, Memory reading?)
-                        //+Product support and versioning
-                        <ul>
-
-                            <li>6</li>
-                            <li>7</li>
-                        </ul>
-
-                        break;
-                    //////////TODOS//////////
-                    //Extra category to site descriptions?::
-                    //-Caability
-                    //-Scalability
-                    //-Support staff
-                    //-Project timeline estimate
                 }
             </div>
         </nav>
@@ -158,8 +159,9 @@
 
     private const string DeploymentAs = "ALL";
     private const string ProjectsAllMenuOption = "ALL";
-    private const string ProjectsByTypeMenuOption = "PROFICIENCIES";
-    private const string ProjectsCyberMenuOption = "CYBERSECURITY";
+    private const string ProjectsByFeaturedWork = "FEATURED";
+    private const string ProjectsByFrontendProjects = "FRONTEND";
+    private const string ProjectsByToolsAndAutomation = "TOOL";
     private string _menuOptionSelection = ProjectsAllMenuOption;
 
     [Parameter] public int StartingNumber { get; set; }
@@ -172,9 +174,9 @@
     private readonly List<object> _foundElements = [];
 
     public required List<FrameSelectionOption> WebsiteSelections = FrameSelectionData.WebsiteSelections;
-
     public required List<FrameSelectionOption> DemoSelections = FrameSelectionData.DemoSelections;
-    
+    public required List<FrameSelectionOption> ProjectsSelections = FrameSelectionData.ProjectsSelections;
+
     public Dictionary<string, string> ProjectsPagesAllText = FrameSelectionData.ProjectsDataSearchCorpusPlainText;
 
     private bool _toggleDetails;
