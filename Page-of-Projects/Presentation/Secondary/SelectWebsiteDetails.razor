@@ -5,16 +5,16 @@
 @namespace ProjectsPage.Components.Secondary
 
     <aside class="page-view-detail @(SelectedWebsiteMatchesOtherSelectionDetails ? "" : "unmatched")
-    @(ShowDetails && SelectedWebsite != null ? "show-details" : "")" data-panel-index="0">
-        <SelectedWebsiteDetails
+    @(ShowOverview && SelectedWebsite != null ? "show-details" : "")" data-panel-index="0">
+        <SelectedWebsiteOverview
             SelectedWebsite="@SelectedWebsite"
-            ShowDetails="@ShowDetails"
+            ShowOverview="@ShowOverview"
             DialogIndex="@StartingNumber"
             SetSelectedDocsDirectExternalUrl="@UpdateSelectedDirectExternalUrl"
             OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateToDocsFrameCloseSelectionDetailPanel"
             MatchingSelectionDetails="@SelectedWebsiteMatchesOtherSelectionDetails"
             OnSelected="@OnSelected"/>
-        <button @onclick="() => OnCloseClicked.InvokeAsync(false)" class="mb1 details-panel-toggle disabled secondary" aria-hidden="@(ShowDetails ? null : "true")">
+        <button @onclick="() => OnCloseClicked.InvokeAsync(false)" class="mb1 details-panel-toggle disabled secondary" aria-hidden="@(ShowOverview ? null : "true")">
             Close
         </button>
     </aside>
@@ -36,7 +36,7 @@
 
     private bool SelectedWebsiteMatchesOtherSelectionDetails { get; set; }
 
-    [Parameter] public bool ShowDetails { get; set; }
+    [Parameter] public bool ShowOverview { get; set; }
 
     [Parameter] public EventCallback<bool> OnCloseClicked { get; set; }
 
