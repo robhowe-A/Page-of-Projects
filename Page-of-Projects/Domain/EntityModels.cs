@@ -20,4 +20,9 @@ internal static class EntityModels
     {
         return new SpaceflightDbContext().GetContext("SpaceflightDb");
     }
+
+    public static RwbDbContext CreateRwbDbContext()
+    {
+        return new RwbDbContext().GetContext("RwbDbContext");
+    }
 };
