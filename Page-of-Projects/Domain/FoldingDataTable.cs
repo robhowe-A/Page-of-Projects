@@ -6,8 +6,9 @@ namespace ProjectsPage.Domain;
 
 public abstract class FoldingDataTable : ComponentBase
 {
-    protected bool IsViewSummary { get; set; }
-    private HashSet<string> _expanded { get; set; } = new();
+    protected bool IsViewSummary { get; set; } = true;
+
+    protected HashSet<string> _expanded { get; set; } = new();
 
     protected bool IsExpanded(string key) => _expanded.Contains(key);
 
@@ -25,11 +26,5 @@ public abstract class FoldingDataTable : ComponentBase
     }
 
     protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
-
-        _expanded.Add(DateTime.Now.Year.ToString());
-        _expanded.Add(DateTime.Now.Year + "-" + DateTime.Now.Month);
-        _expanded.Add(DateTime.Now.Year + "-" + DateTime.Now.Month + "-" + DateTime.Now.Day);
-    }
+    { }
 };

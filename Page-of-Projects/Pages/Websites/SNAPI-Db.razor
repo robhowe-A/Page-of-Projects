@@ -8,12 +8,15 @@
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
 @rendermode InteractiveServer
 
-<h2>Articles Data</h2>
-<SpaceflightArticleTable Articles="@_articlesDbContext.Article.Where(x => x.ArticleNum >= 1).ToList()"/>
-
-<h2>APOD Data</h2>
-<SpaceflightApodTable Apods="@_articlesDbContext.APOD.Where(x => x.Id >= 1).ToList()"/>
-
+<article>
+    <div>
+        <h2>Articles Data</h2>
+        <SpaceflightArticleTable Articles="@_articlesDbContext.Article.Where(x => x.ArticleNum >= 1).ToList()"/>
+    
+        <h2>APOD Data</h2>
+        <SpaceflightApodTable Apods="@_articlesDbContext.APOD.Where(x => x.Id >= 1).ToList()"/>
+    </div>
+</article>
 @code {
     private SpaceflightDbContext _articlesDbContext = EntityModels.CreateArticlesDbContext();
 }

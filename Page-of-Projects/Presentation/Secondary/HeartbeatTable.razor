@@ -3,6 +3,7 @@
 @using System.Collections.Immutable
 @using ProjectsPage.Domain
 @namespace ProjectsPage.Components.Secondary
+@inherits FoldingDataTable
 
 <div>
     <button @onclick="@(()=>ToggleViewSummary())">Table</button>

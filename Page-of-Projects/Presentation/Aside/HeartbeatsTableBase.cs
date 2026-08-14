@@ -5,7 +5,7 @@ using ProjectsPage.Domain;
 
 namespace ProjectsPage.Components.Pages;
 
-public abstract class HeartbeatsTableBase : ComponentBase
+public abstract class HeartbeatsTableBase : FoldingDataTable
 {
     protected readonly Func<string, IEnumerable<HeartbeatData>,
             DateTime, Comparer<HeartbeatData>, (Predicate<HeartbeatData>, SortedSet<HeartbeatData>)> GetLoopDataSet =
