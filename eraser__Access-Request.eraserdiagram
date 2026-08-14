@@ -7,6 +7,7 @@ Client [icon: monitor, color: gray]
 GitHub [icon: github, color: purple]
 Server [icon: server, color: blue]
 Service [icon: azure-key-vaults, color: green]
+Sql [icon: azure-sql-database, color: green]
 
 activate Client
 Client > Server: Access request
@@ -47,6 +48,18 @@ else [label: , color: orange]{
 }
 Server < GitHub: Collaborators res
 deactivate GitHub
+
+activate Sql
+
+Server > Sql: Synchronize Request Details
+
+if [label: !exists, color: orange]{
+    Sql < Sql: Upsert collaborator
+}
+
+Server < Sql: Synchronization details complete  
+
+deactivate Sql
 
 Server > Client: Complete access request
 

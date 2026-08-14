@@ -41,7 +41,7 @@ Viewing the private repository code is available as a [repository explorer](http
 ## Access Requests  
 A project service has been added to assist in code viewing/reviews. Any GitHub user may request access to my private repositories. The service has added Azure Key Vault as a dependency and uses GitHub's API to make the access requests. At the JIT page, an access request form requires a GitHub username. Then, the request completes [below diagram reference] and the user is informed for collaborator privilege.
 
-![Access Request Sequence Diagram](eraserdiagram-screenshot_7-27-2026.png)
+![Access Request Sequence Diagram](eraserdiagram-screenshot_8-14-2026.png)
 
 ## Feature List  
 - <u>React‑style framework</u> — Component‑driven UI architecture modeled with declarative rendering patterns and modular front‑end logic.
