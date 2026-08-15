@@ -8,136 +8,143 @@
 @namespace ProjectsPage.Components.Primary
 @inject IJSRuntime Js
 
-<div class="nav @(_toggleNavCollapse ? "collapsed" : "")">
-    <div class="nav-collapse">
-        
-        <button id="nav-collapse-btn" @onclick="@ToggleNavCollapse">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-left"><polyline points="11 17 6 12 11 7"></polyline><polyline points="18 17 13 12 18 7"></polyline></svg>
-        </button>
-        <h1 id="main-title">
-            <a class="app-internal-link" href="/"
-               rel="opener"
-               title="Projects Hub | roberthowell.dev"
-               target="_self">Projects Hub</a></h1>
-        <IndexNav/>
-        <HyperTextMarkdownSearch
-            OnReceiveSearchFindingIndexClicked="@SetOtherIndexOpened"
-            OnReceiveSearchFindingNodeClicked="@ChangeSelectedWebsiteDetails"
-            OnReceiveSearchClientQuery="@null"
-            OnCount="@SetCount"
-            Nodes="@_foundElements"/>
-        @if (_selectedWebsite != null)
-        {
-            <div class="page-frame-toggle">
-                <button id="pill-display" class="pill-toggle" type="button" aria-label="Toggle framed view button"
-                        @onclick="@(e => ToggleAboutView(e, null))"
-                        @onkeydown="@(e => ToggleAboutView(e, null))"
-                        @onkeydown:preventDefault="true"
-                        tabindex="0">
-                    <div></div>
-                </button>
-                <label id="testing">
-                    <input type="checkbox" checked="@(_isAboutMainView ? true : null)">
-                    <span id="frameview">Framed</span>
-                    <span id="detailview">Details</span>
-                </label>
-            </div>
-        }
-        <nav id="menu"
-             class="@_menuOptionSelection.ToLower() @(_selectedWebsite is null ? "no-menu-selection" : "")"
-             tabindex="-1">
-
-            <InputRadioGroup Name="menu" @bind-Value="_menuOptionSelection">
-                <label>Featured Work
-                    <InputRadio Name="menu" Value="@ProjectsByFeaturedWork"/>
-                </label>
-                <label>Frontend Projects
-                    <InputRadio Name="menu" Value="@ProjectsByFrontendProjects"/>
-                </label>
-                <label>Tools and Automation
-                    <InputRadio Name="menu" Value="@ProjectsByToolsAndAutomation"/>
-                </label>
-                <label>All
-                    <InputRadio Name="menu" Value="@ProjectsAllMenuOption" Label="All"/>
-                </label>
-                @* <label>Cybersecurity *@
-                @*     <InputRadio Name="menu" Value="@CybersecurityMenuOption" Label="Cybersecurity"/> *@
-                @* </label> *@
-            </InputRadioGroup>
-
-            <div>
-                @switch (_menuOptionSelection)
-                {
-                    case ProjectsByFeaturedWork:
-                        <FrameSelectionItems
-                            FrameSelections="@AllSelections.Where(x => x.Type == "featured").ToList()"
-                            SelectedFrame="@_selectedWebsite"
-                            OnSelected="@HandleWebsiteSelected"
-                            OnSelectionChange="@SetOtherIndexOpened"
-                            OnSetAboutView="@ToggleAboutView"
-                            OnResortedListSelected="@ResortListSelected"
-                            SetOverview="@_toggleOverviewsSet"
-                            StartingNumber="0"
-                            DeploymentAs="@DeploymentAs"
-                            UpdateSelectedDirectExternalUrl="@UpdateSelectedDirectExternalUrl"
-                            OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateClosePanel"/>
-
-                        break;
-                    case ProjectsByFrontendProjects:
-                        <FrameSelectionItems
-                            FrameSelections="@AllSelections.Where(x => x.Type == "frontend").ToList()"
-                            SelectedFrame="@_selectedWebsite"
-                            OnSelected="@HandleWebsiteSelected"
-                            OnSelectionChange="@SetOtherIndexOpened"
-                            OnSetAboutView="@ToggleAboutView"
-                            OnResortedListSelected="@ResortListSelected"
-                            SetOverview="@_toggleOverviewsSet"
-                            StartingNumber="0"
-                            DeploymentAs="@DeploymentAs"
-                            UpdateSelectedDirectExternalUrl="@UpdateSelectedDirectExternalUrl"
-                            OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateClosePanel"/>
-
-                        break;
-                    case ProjectsByToolsAndAutomation:
-                        <FrameSelectionItems
-                            FrameSelections="@AllSelections.Where(x => x.Type == "tool").ToList()"
-                            SelectedFrame="@_selectedWebsite"
-                            OnSelected="@HandleWebsiteSelected"
-                            OnSelectionChange="@SetOtherIndexOpened"
-                            OnSetAboutView="@ToggleAboutView"
-                            OnResortedListSelected="@ResortListSelected"
-                            SetOverview="@_toggleOverviewsSet"
-                            StartingNumber="0"
-                            DeploymentAs="@DeploymentAs"
-                            UpdateSelectedDirectExternalUrl="@UpdateSelectedDirectExternalUrl"
-                            OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateClosePanel"/>
-
-                        break;
-                    
-                    case ProjectsAllMenuOption:
-
-                        <FrameSelectionItems
-                            FrameSelections="@AllSelections"
-                            SelectedFrame="@_selectedWebsite"
-                            OnSelected="@HandleWebsiteSelected"
-                            OnSelectionChange="@SetOtherIndexOpened"
-                            OnSetAboutView="@ToggleAboutView"
-                            OnResortedListSelected="@ResortListSelected"
-                            SetOverview="@_toggleOverviewsSet"
-                            StartingNumber="0"
-                            DeploymentAs="@DeploymentAs"
-                            UpdateSelectedDirectExternalUrl="@UpdateSelectedDirectExternalUrl"
-                            OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateClosePanel"/>
-
-                        break;
-                }
-            </div>
-        </nav>
-        <ReferenceTray/>
-    </div>
-    <button id="nav-expand-btn" @onclick="@ToggleNavCollapse">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-right"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg>
+<div class="nav @(_toggleGlobalNavCollapse ? "collapsed" : "")">
+    <button id="global-nav-collapse-btn" @onclick="@ToggleGlobalNavCollapse" @onclick:stopPropagation="true">
+        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 50 50">
+            <path d="M 0 7.5 L 0 12.5 L 50 12.5 L 50 7.5 L 0 7.5 z M 0 22.5 L 0 27.5 L 50 27.5 L 50 22.5 L 0 22.5 z M 0 37.5 L 0 42.5 L 50 42.5 L 50 37.5 L 0 37.5 z"></path>
+        </svg>
     </button>
+    <div>
+        <button id="nav-collapse-btn" 
+                class="collapse-prevent @(_toggleNavCollapse ? "collapsed" : "")"
+                @onclick="@ToggleNavCollapse">
+            <span>Projects</span>
+            @if (_toggleNavCollapse)
+            {
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-right"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg>
+            }
+            else
+            {
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-left"><polyline points="11 17 6 12 11 7"></polyline><polyline points="18 17 13 12 18 7"></polyline></svg>
+            }
+        </button>
+        <div id="nav-panels">
+            <div id="nav-projects" class="nav-collapse @(_toggleNavCollapse ? "collapsed" : "")">
+                <HyperTextMarkdownSearch
+                    OnReceiveSearchFindingIndexClicked="@SetOtherIndexOpened"
+                    OnReceiveSearchFindingNodeClicked="@ChangeSelectedWebsiteDetails"
+                    OnReceiveSearchClientQuery="@null"
+                    OnCount="@SetCount"
+                    Nodes="@_foundElements"/>
+                @if (_selectedWebsite != null)
+                {
+                    <div class="page-frame-toggle">
+                        <button id="pill-display" class="pill-toggle" type="button" aria-label="Toggle framed view button"
+                                @onclick="@(e => ToggleAboutView(e, null))"
+                                @onkeydown="@(e => ToggleAboutView(e, null))"
+                                @onkeydown:preventDefault="true"
+                                tabindex="0">
+                            <div></div>
+                        </button>
+                        <label id="testing">
+                            <input type="checkbox" checked="@(_isAboutMainView ? true : null)">
+                            <span id="frameview">Framed</span>
+                            <span id="detailview">Details</span>
+                        </label>
+                    </div>
+                }
+                <nav id="menu"
+                     class="@_menuOptionSelection.ToLower() @(_selectedWebsite is null ? "no-menu-selection" : "")"
+                     tabindex="-1">
+
+                    <InputRadioGroup Name="menu" @bind-Value="_menuOptionSelection">
+                        <label>Featured Work
+                            <InputRadio Name="menu" Value="@ProjectsByFeaturedWork"/>
+                        </label>
+                        <label>Frontend Projects
+                            <InputRadio Name="menu" Value="@ProjectsByFrontendProjects"/>
+                        </label>
+                        <label>Tools and Automation
+                            <InputRadio Name="menu" Value="@ProjectsByToolsAndAutomation"/>
+                        </label>
+                        <label>All
+                            <InputRadio Name="menu" Value="@ProjectsAllMenuOption" Label="All"/>
+                        </label>
+                    </InputRadioGroup>
+
+                    <div>
+                        @switch (_menuOptionSelection)
+                        {
+                            case ProjectsByFeaturedWork:
+                                <FrameSelectionItems
+                                    FrameSelections="@AllSelections.Where(x => x.Type == "featured").ToList()"
+                                    SelectedFrame="@_selectedWebsite"
+                                    OnSelected="@HandleWebsiteSelected"
+                                    OnSelectionChange="@SetOtherIndexOpened"
+                                    OnSetAboutView="@ToggleAboutView"
+                                    OnResortedListSelected="@ResortListSelected"
+                                    SetOverview="@_toggleOverviewsSet"
+                                    StartingNumber="0"
+                                    DeploymentAs="@DeploymentAs"
+                                    UpdateSelectedDirectExternalUrl="@UpdateSelectedDirectExternalUrl"
+                                    OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateClosePanel"/>
+
+                                break;
+                            case ProjectsByFrontendProjects:
+                                <FrameSelectionItems
+                                    FrameSelections="@AllSelections.Where(x => x.Type == "frontend").ToList()"
+                                    SelectedFrame="@_selectedWebsite"
+                                    OnSelected="@HandleWebsiteSelected"
+                                    OnSelectionChange="@SetOtherIndexOpened"
+                                    OnSetAboutView="@ToggleAboutView"
+                                    OnResortedListSelected="@ResortListSelected"
+                                    SetOverview="@_toggleOverviewsSet"
+                                    StartingNumber="0"
+                                    DeploymentAs="@DeploymentAs"
+                                    UpdateSelectedDirectExternalUrl="@UpdateSelectedDirectExternalUrl"
+                                    OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateClosePanel"/>
+
+                                break;
+                            case ProjectsByToolsAndAutomation:
+                                <FrameSelectionItems
+                                    FrameSelections="@AllSelections.Where(x => x.Type == "tool").ToList()"
+                                    SelectedFrame="@_selectedWebsite"
+                                    OnSelected="@HandleWebsiteSelected"
+                                    OnSelectionChange="@SetOtherIndexOpened"
+                                    OnSetAboutView="@ToggleAboutView"
+                                    OnResortedListSelected="@ResortListSelected"
+                                    SetOverview="@_toggleOverviewsSet"
+                                    StartingNumber="0"
+                                    DeploymentAs="@DeploymentAs"
+                                    UpdateSelectedDirectExternalUrl="@UpdateSelectedDirectExternalUrl"
+                                    OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateClosePanel"/>
+
+                                break;
+
+                            case ProjectsAllMenuOption:
+
+                                <FrameSelectionItems
+                                    FrameSelections="@AllSelections"
+                                    SelectedFrame="@_selectedWebsite"
+                                    OnSelected="@HandleWebsiteSelected"
+                                    OnSelectionChange="@SetOtherIndexOpened"
+                                    OnSetAboutView="@ToggleAboutView"
+                                    OnResortedListSelected="@ResortListSelected"
+                                    SetOverview="@_toggleOverviewsSet"
+                                    StartingNumber="0"
+                                    DeploymentAs="@DeploymentAs"
+                                    UpdateSelectedDirectExternalUrl="@UpdateSelectedDirectExternalUrl"
+                                    OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateClosePanel"/>
+
+                                break;
+                        }
+                    </div>
+                </nav>
+            </div>
+            <NavGlobal ToggleNavCollapse="@_toggleGlobalNavCollapse"/>
+        </div>
+    </div>
+    <ReferenceTray/>
     <NavFooter/>
 </div>
 <SelectWebsiteDetails
@@ -149,7 +156,6 @@
     OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateClosePanel"
     StartingNumber="@OtherIndexOpened"
     OnSelected="@HandleWebsiteSelected"/>
-
 
 @code {
 
@@ -180,7 +186,8 @@
     public Dictionary<string, string> ProjectsPagesAllText = FrameSelectionData.ProjectsDataSearchCorpusPlainText;
 
     private bool _toggleOverview;
-    private bool _toggleNavCollapse = false;
+    private bool _toggleNavCollapse = true;
+    private bool _toggleGlobalNavCollapse = false;
     private readonly bool? _toggleOverviewsSet = null;
 
 
