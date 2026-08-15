@@ -1,6 +1,6 @@
 ﻿<!-- --Copyright (c) 2026 Robert A. Howell -->
 
-@page "/websites/randomwebbits/database"
+@page "/websites/randomwebbits/database3"
 
 @using Microsoft.AspNetCore.Components.Web
 @using ProjectsPage.Components.Secondary
@@ -9,12 +9,12 @@
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
 @rendermode InteractiveServer
 
-<PageTitle>Database | Random Web Bits</PageTitle>
+<PageTitle>Database3 | Random Web Bits</PageTitle>
 <article>
     <HeartbeatNav/>
     <div>
-        <h2>Accessed By</h2>
-        <RwbAccessedByTable AllAccessedBy="@_rwbDbContext.accessed_by.Where(x => x.AnonymousUserId >= 1).ToList()"/>
+        <h2>User Agent</h2>
+        <RwbUserAgentTable AllUserAgent="@_rwbDbContext.user_agent.Where(x => x.AgentId >= 1).ToList()"/>
     </div>
 </article>
 @code {

@@ -2,17 +2,20 @@
 
 @page "/websites/spaceflight-news-app/database"
 
+@using Microsoft.AspNetCore.Components.Web
 @using ProjectsPage.Components.Secondary
 @using ProjectsPage.Domain
 @using ProjectsPage.Infrastructure
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
 @rendermode InteractiveServer
 
+<PageTitle>Database | SpaceFlight News App</PageTitle>
 <article>
+    <HeartbeatNav/>
     <div>
         <h2>Articles Data</h2>
         <SpaceflightArticleTable Articles="@_articlesDbContext.Article.Where(x => x.ArticleNum >= 1).ToList()"/>
-    
+
         <h2>APOD Data</h2>
         <SpaceflightApodTable Apods="@_articlesDbContext.APOD.Where(x => x.Id >= 1).ToList()"/>
     </div>
