@@ -89,6 +89,7 @@
                                     UpdateSelectedDirectExternalUrl="@UpdateSelectedDirectExternalUrl"
                                     OnAfterNavigateToDocsFrameCloseSelectionDetailPanel="@OnAfterNavigateClosePanel"/>
 
+
                                 break;
                             case ProjectsByFrontendProjects:
                                 <FrameSelectionItems
@@ -141,7 +142,10 @@
                     </div>
                 </nav>
             </div>
-            <NavGlobal ToggleNavCollapse="@_toggleGlobalNavCollapse"/>
+            <NavGlobal
+                FrameSelections="@(AllSelections.Where(x => x.Type == "featured").OrderByDescending(x => x.Title).ToList())"
+                ToggleNavCollapse="@_toggleGlobalNavCollapse"
+                />
         </div>
     </div>
     <ReferenceTray/>

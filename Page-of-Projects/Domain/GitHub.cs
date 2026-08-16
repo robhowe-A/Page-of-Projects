@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace ProjectsPage.Domain;
 
+#pragma warning disable CS8618
 public class GitHubCollaborator
 {
     [JsonPropertyName("id")] public long Id { get; set; }
@@ -122,7 +123,6 @@ public class Repository
 
     [JsonPropertyName("deployments_url")] public string DeploymentsUrl { get; set; }
 };
-
 public class GitHubUser
 {
     [JsonPropertyName("login")] public string Login { get; set; }
@@ -166,3 +166,5 @@ public class GitHubUser
 
     [JsonPropertyName("site_admin")] public bool SiteAdmin { get; set; }
 };
+
+#pragma warning restore CS8618
