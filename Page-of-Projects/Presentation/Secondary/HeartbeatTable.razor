@@ -2,16 +2,23 @@
 
 @using System.Collections.Immutable
 @using ProjectsPage.Domain
+
 @namespace ProjectsPage.Components.Secondary
 @inherits FoldingDataTable
 
 <div>
-    <button @onclick="@(()=>ToggleViewSummary())">Table</button>
-    <button @onclick="ToggleViewSummary">Daily</button>
+@if (IsFoldingView)
+{
+    <button @onclick="ToggleViewSummary">Table View</button>
+}
+else
+{
+    <button @onclick="ToggleViewSummary">Daily View</button>
+}
 </div>
 
 <table>
-@if (IsViewSummary)
+@if (IsFoldingView)
 {
     var dateCursor = DateTime.Now;
     var allItems = new SortedSet<HeartbeatData>(Heartbeats.ToImmutableList(), RecordComparison);
@@ -100,32 +107,12 @@
                             <td></td>
                             <td>-</td>
                         </tr>
-                        <tr>
-                            <td>Id</td>
-                            <td>Timestamp</td>
-                            <td>Agent</td>
-                            <td>Project</td>
-                            <td>Domain</td>
-                            <td>Relative Url</td>
-                            <td>ResponseCode</td>
-                        </tr>
                     }
                 }
 
                 if (IsExpanded(yearKey) && IsExpanded(monthKey) && IsExpanded(dayKey))
                 {
-                    @foreach (var beat in dayHeartbeats)
-                    {
-                        <tr>
-                            <td><span>@beat.Id</span></td>
-                            <td><span>@beat.Timestamp</span></td>
-                            <td>@beat.Agent</td>
-                            <td>@beat.Project</td>
-                            <td>@beat.Domain</td>
-                            <td>@beat.RelativeUrl</td>
-                            <td>@beat.ResponseCode</td>
-                        </tr>
-                    }
+                    <RowGenerator Items="@dayHeartbeats" />
                 }
 
                 monthHeartbeats.RemoveWhere(daySelection);

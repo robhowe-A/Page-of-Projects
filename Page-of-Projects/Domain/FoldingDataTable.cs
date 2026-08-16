@@ -6,7 +6,7 @@ namespace ProjectsPage.Domain;
 
 public abstract class FoldingDataTable : ComponentBase
 {
-    protected bool IsViewSummary { get; set; } = true;
+    protected bool IsFoldingView { get; set; } = true;
 
     protected HashSet<string> _expanded { get; set; } = new();
 
@@ -22,7 +22,7 @@ public abstract class FoldingDataTable : ComponentBase
 
     protected void ToggleViewSummary()
     {
-        IsViewSummary = !IsViewSummary;
+        IsFoldingView = !IsFoldingView;
     }
 
     protected override void OnParametersSet()
