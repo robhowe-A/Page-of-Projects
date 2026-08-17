@@ -2,11 +2,11 @@
 
 @using ProjectsPage.Components.Secondary
 @using ProjectsPage.Domain
-@using ProjectsPage.Services
 @rendermode InteractiveServer
 @inject NavigationManager Nav
-@namespace ProjectsPage.Components.Primary
 @inject IJSRuntime Js
+
+@namespace ProjectsPage.Components.Primary
 
 <div class="nav @(_toggleGlobalNavCollapse ? "collapsed" : "")">
     <button id="global-nav-collapse-btn" @onclick="@ToggleGlobalNavCollapse" @onclick:stopPropagation="true">
@@ -142,7 +142,7 @@
                     </div>
                 </nav>
             </div>
-            <NavGlobal
+            <GlobalNav
                 FrameSelections="@(AllSelections.Where(x => x.Type == "featured").OrderByDescending(x => x.Title).ToList())"
                 ToggleNavCollapse="@_toggleGlobalNavCollapse"
                 />

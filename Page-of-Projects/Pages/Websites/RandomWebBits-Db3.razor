@@ -8,10 +8,11 @@
 @using ProjectsPage.Infrastructure
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
 @rendermode InteractiveServer
+@inherits ProjectsPage.Presentation.Aside.RandomWebBitsBase;
 
 <PageTitle>Database3 | Random Web Bits</PageTitle>
 <article>
-    <HeartbeatNav/>
+    <DatabaseNav/>
     <div>
         <h2>User Agent</h2>
         <RwbUserAgentTable AllUserAgent="@_rwbDbContext.user_agent.Where(x => x.AgentId >= 1).ToList()"/>

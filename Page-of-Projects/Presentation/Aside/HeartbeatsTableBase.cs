@@ -1,7 +1,7 @@
 ﻿// --Copyright (c) 2026 Robert A. Howell
 
-using Microsoft.AspNetCore.Components;
 using ProjectsPage.Domain;
+using ProjectsPage.Infrastructure;
 
 namespace ProjectsPage.Components.Pages;
 
@@ -36,4 +36,38 @@ public abstract class HeartbeatsTableBase : FoldingDataTable
 
     protected Comparer<HeartbeatData>
             HeartbeatComparer = Comparer<HeartbeatData>.Create((x, y) => y.Id.CompareTo(x.Id));
+
+    public static List<HeartbeatData> FiveHeartbeatsFailures()
+    {
+            return new ProjectsHeartbeatFetch()
+                  .ProjectsHeartbeatFailures()
+                  .OrderByDescending(d => d.RecordTimestamp)
+                  .Take(5).ToList().ConvertAll(i => new HeartbeatData
+                                                    {
+                                                                    Id = i.Id,
+                                                                    Timestamp = i.RecordTimestamp,
+                                                                    Agent = i.Agent,
+                                                                    Project = i.ProjectName,
+                                                                    Domain = i.Domain,
+                                                                    RelativeUrl = i.UrlRel,
+                                                                    ResponseCode = i.ResponseStatus
+                                                    });
+    }
+
+    public static List<HeartbeatData> FiveHeartbeats()
+    {
+            return new ProjectsHeartbeatFetch()
+                  .ProjectsHeartbeats()
+                  .OrderByDescending(d => d.RecordTimestamp)
+                  .Take(5).ToList().ConvertAll(i => new HeartbeatData
+                                                    {
+                                                                    Id = i.Id,
+                                                                    Timestamp = i.RecordTimestamp,
+                                                                    Agent = i.Agent,
+                                                                    Project = i.ProjectName,
+                                                                    Domain = i.Domain,
+                                                                    RelativeUrl = i.UrlRel,
+                                                                    ResponseCode = i.ResponseStatus
+                                                    });
+    }
 };

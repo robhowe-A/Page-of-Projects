@@ -1,8 +1,216 @@
 ﻿<!-- --Copyright (c) 2026 Robert A. Howell -->
 
 @page "/database"
-@using ProjectsPage.Components.Secondary
+@using Microsoft.AspNetCore.Mvc.RazorPages
+@using PageOfProjects.Presentation.Secondary
+@using ProjectsPage.Components.Pages
+@using ProjectsPage.Domain
+@using ProjectsPage.Pages.Websites
+@using ProjectsPage.Presentation.Aside
 
-<article id="Status-Page">
-    <HeartbeatNav />
+@code {
+    public static Queue<DatabaseTableLink> PageLinks = CreateNewLinksStack();
+
+    private static Queue<DatabaseTableLink> CreateNewLinksStack()
+    {
+        Queue<DatabaseTableLink> links = new();
+        links.Enqueue(new DatabaseTableLink
+                      {
+                              Href = "/heartbeat-all",
+                              Title = "Heartbeat All",
+                              TextContent = "Heartbeat All | roberthowell.dev"
+                      });
+        links.Enqueue(new DatabaseTableLink
+                      {
+                              Href = "/heartbeat-failures",
+                              Title = "Heartbeat Failures",
+                              TextContent = "Heartbeat Failures | roberthowell.dev"
+                      });
+        links.Enqueue(new DatabaseTableLink
+                      {
+                              Href = "/websites/spaceflight-news-app/database",
+                              Title = "Database | SpaceFlight News App",
+                              TextContent = "SpaceFlight News App"
+                      });
+        links.Enqueue(new DatabaseTableLink
+                      {
+                              Href = "/websites/randomwebbits/database",
+                              Title = "Database | Random Web Bits",
+                              TextContent = "Random Web Bits - Accessed By"
+                      });
+        links.Enqueue(new DatabaseTableLink
+                      {
+                              Href = "/websites/randomwebbits/database2",
+                              Title = "Database2 | Random Web Bits",
+                              TextContent = "Random Web Bits - Anonymous User"
+                      });
+        links.Enqueue(new DatabaseTableLink
+                      {
+                              Href = "/websites/randomwebbits/database3",
+                              Title = "Database3 | Random Web Bits",
+                              TextContent = "Random Web Bits - User Agent"
+                      });
+        return links;
+    }
+
+    private Queue<DatabaseTableLink> _links = CreateNewLinksStack();
+}
+
+<article id="Status-Page" class="database-card-grid">
+    <div>
+        <AppNavLink Link="@_links.Dequeue()"/>
+        <table>
+            <caption>HeartBeats.All</caption>
+            <RowGenerator Items="@HeartbeatsTableBase.FiveHeartbeats()">
+                <HeaderTemplate>
+                    <tr>
+                        <td>Id</td>
+                        <td>TimeStamp</td>
+                        <td>Domain</td>
+                        <td>ResponseCode</td>
+                    </tr>
+                </HeaderTemplate>
+                <RowTemplate Context="item">
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Timestamp</td>
+                        <td>@item.Domain</td>
+                        <td>@item.ResponseCode</td>
+                    </tr>
+                </RowTemplate>
+            </RowGenerator>
+        </table>
+    </div>
+    <div>
+        <AppNavLink Link="@_links.Dequeue()"/>
+        <table>
+            <caption>HeartBeats.Failures</caption>
+            <RowGenerator Items="@HeartbeatsTableBase.FiveHeartbeatsFailures()">
+                <HeaderTemplate>
+                    <tr>
+                        <td>Id</td>
+                        <td>TimeStamp</td>
+                        <td>Domain</td>
+                        <td>ResponseCode</td>
+                    </tr>
+                </HeaderTemplate>
+                <RowTemplate Context="item">
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Timestamp</td>
+                        <td>@item.Domain</td>
+                        <td>@item.ResponseCode</td>
+                    </tr>
+                </RowTemplate>
+            </RowGenerator>
+        </table>
+    </div>
+    <div>
+        <AppNavLink Link="@_links.Peek()"/>
+        <table>
+            <caption>SpaceFlightNewsApp.Article</caption>
+            <RowGenerator Items="@SNAPI_Db.FiveArticles()">
+                <HeaderTemplate>
+                    <tr>
+                        <td>ArticleNum</td>
+                        <td>Date</td>
+                        <td>Featured</td>
+                        <td>NewsSite</td>
+                    </tr>
+                </HeaderTemplate>
+                <RowTemplate Context="item">
+                    <tr>
+                        <td>@item.ArticleNum</td>
+                        <td>@item.Date</td>
+                        <td>@item.Featured</td>
+                        <td>@item.NewsSite</td>
+                    </tr>
+                </RowTemplate>
+            </RowGenerator>
+        </table>
+    </div>
+    <div>
+        <AppNavLink Link="@_links.Dequeue()"/>
+        <table>
+            <caption>SpaceFlightNewsApp.Apod</caption>
+            <RowGenerator Items="@SNAPI_Db.FiveApods()">
+                <HeaderTemplate>
+                    <tr>
+                        <td>Date</td>
+                        <td>Media</td>
+                        <td>Title</td>
+                    </tr>
+                </HeaderTemplate>
+                <RowTemplate Context="item">
+                    <tr>
+                        <td>@item.Date</td>
+                        <td>@item.Media</td>
+                        <td>@item.ApodTitle</td>
+                    </tr>
+                </RowTemplate>
+            </RowGenerator>
+        </table>
+    </div>
+    <div>
+        <AppNavLink Link="@_links.Dequeue()"/>
+        <table>
+            <caption>RandomWebBits.AccessedBy</caption>
+            <RowGenerator Items="@RandomWebBitsBase.FiveAccessedBy()">
+                <HeaderTemplate>
+                    <tr>
+                        <td>Anonymous User Id</td>
+                        <td>Uri</td>
+                        <td>Last Accessed</td>
+                    </tr>
+                </HeaderTemplate>
+                <RowTemplate Context="item">
+                    <tr>
+                        <td>@item.AnonymousUserId</td>
+                        <td>@item.Uri</td>
+                        <td>@item.LastAccessed</td>
+                    </tr>
+                </RowTemplate>
+            </RowGenerator>
+        </table>
+    </div>
+    <div>
+        <AppNavLink Link="@_links.Dequeue()"/>
+        <table>
+            <caption>RandomWebBits.AnonymousUser</caption>
+            <RowGenerator Items="@RandomWebBitsBase.FiveAnonymousUser()">
+                <HeaderTemplate>
+                    <tr>
+                        <td>Digest</td>
+                        <td>Last Accessed</td>
+                    </tr>
+                </HeaderTemplate>
+                <RowTemplate Context="item">
+                    <tr>
+                        <td>@item.IpAddrHash</td>
+                        <td>@item.LastAccessed</td>
+                    </tr>
+                </RowTemplate>
+            </RowGenerator>
+        </table>
+    </div>
+    <div>
+        <AppNavLink Link="@_links.Dequeue()"/>
+        <table>
+            <caption>RandomWebBits.UserAgent</caption>
+            <RowGenerator Items="@RandomWebBitsBase.FiveUserAgents()">
+                <HeaderTemplate>
+                    <tr>
+                        <td>Digest</td>
+                        <td>Last Accessed</td>
+                    </tr>
+                </HeaderTemplate>
+                <RowTemplate Context="item">
+                    <tr>
+                        <td>@item.AgentId</td>
+                        <td>@item.UserAgentFull</td>
+                    </tr>
+                </RowTemplate>
+            </RowGenerator>
+        </table>
+    </div>
 </article>

@@ -5,14 +5,14 @@
 @using ProjectsPage.Components.Secondary
 @using ProjectsPage.Domain
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
-@namespace ProjectsPage.Components.Pages
 @inherits HeartbeatsTableBase
-
 @rendermode InteractiveServer
+
+@namespace ProjectsPage.Components.Pages
 
 <PageTitle>Heartbeats | roberthowell.dev</PageTitle>
 <article id="Heartbeats-Page">
-    <HeartbeatNav/>
+    <DatabaseNav/>
     <h3>Heartbeat Requests</h3>
 
     <HeartbeatTable Heartbeats="@(

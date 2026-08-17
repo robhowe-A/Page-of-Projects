@@ -11,7 +11,7 @@
 
 <PageTitle>Database | SpaceFlight News App</PageTitle>
 <article>
-    <HeartbeatNav/>
+    <DatabaseNav/>
     <div>
         <h2>Articles Data</h2>
         <SpaceflightArticleTable Articles="@_articlesDbContext.Article.Where(x => x.ArticleNum >= 1).ToList()"/>
@@ -22,4 +22,20 @@
 </article>
 @code {
     private SpaceflightDbContext _articlesDbContext = EntityModels.CreateArticlesDbContext();
+
+    public static List<SpaceflightArticle> FiveArticles()
+    {
+        return EntityModels.CreateArticlesDbContext()
+                           .Article
+                           .OrderByDescending(a => a.Date)
+                           .Take(5).ToList();
+    }
+
+    public static List<SpaceflightApod> FiveApods()
+    {
+        return EntityModels.CreateArticlesDbContext()
+                           .APOD
+                           .OrderByDescending(a => a.Date)
+                           .Take(5).ToList();
+    }
 }
