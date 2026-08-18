@@ -2,31 +2,84 @@
 
 @page "/intro"
 @using Microsoft.AspNetCore.Components.Web
+@using ProjectsPage.Components.Secondary
+@using ProjectsPage.Domain
 @namespace ProjectsPage.Pages
 
-<PageTitle>roberthowell.dev</PageTitle>
+<PageTitle>roberthowell.dev | Projects Hub</PageTitle>
+
 <article class="centered">
-    <div class="content">
-        <hgroup>
-            <h1>Projects Hub</h1>
-            <p>Developer: Robert Howell</p></hgroup>
-        <p>
-            Welcome to my portfolio repository. This site serves as a centralized navigation hub for my projects. Navigation links on the left pointing to various websites, applications, and programs I've developed. Each features detailed information about the project, including a description of the technologies used.
+    <div class="content intro">
+        <header class="intro__hero">
+            <div class="intro__hero-text">
+                <hgroup>
+                    <h1>Welcome to My Projects Hub</h1>
+                    <p class="intro__lead">A guided tour of my work, built for easy browsing.</p>
+                </hgroup>
+                <p class="intro__attr">Developer: Robert Howell</p>
+            </div>
+        </header>
+
+        <section class="intro__summary">
+            <p>
+                Thank you for stopping by. This page is designed to give recruiters and hiring teams a clear, comfortable way to explore my work &mdash; no technical background needed. Everything is grouped into a few simple sections. You can start anywhere, take your time, and view live examples of the things I've built. Use the cards below as your map.
+            </p>
+        </section>
+
+        <h2 class="intro__section-title">Explore the Sections</h2>
+        <p class="intro__section-note">
+            Each card explains what you'll find inside. Pick whatever looks most interesting to you.
         </p>
-        <p>
-            Here, you can explore my web work of live projects I host online; each selection opens an embedded view allowing the display and navigation of the website contents. The options further enable selective viewing, direct navigation, and panel controls.
+
+        <section class="intro__cards" aria-label="Project section navigation">
+            <NavCard Icon="🗄️"
+                     Title="Behind the Scenes: Data"
+                     Href="/database"
+                     Description="A friendly peek at how information is stored and organized to keep these projects running smoothly. Explained in plain terms, no database knowledge required." />
+
+            <NavCard Icon="✅"
+                     Title="Live Status & Reliability"
+                     Href="/status"
+                     Description="A simple health check showing which projects are up and running right now. It reflects the care I put into keeping things stable and dependable." />
+
+            <NavCard Icon="🔐"
+                     Title="Private Project Access"
+                     Href="/sources/source"
+                     Description="Some work lives in private repositories. This section explains how to request access if you'd like a closer look at the source behind these projects." />
+        </section>
+
+        <section class="intro__note" aria-label="Helpful viewing tip">
+            <h2>A Quick Tip on Viewing Projects</h2>
+            <p>
+                Many projects open right inside this site so you can preview them without leaving. In a few cases, certain features behave differently when shown this way &mdash; especially anything that involves signing in or saving information.
+            </p>
+            <p>
+                For the best experience, feel free to open any project in a new browser tab. That shows each project exactly as it works on its own.
+            </p>
+        </section>
+
+        <h2 class="intro__section-title">Browse the Projects</h2>
+        <p class="intro__section-note">
+            Each project can be previewed right here in the Projects Hub, or opened as a live site in a new tab.
         </p>
-        <p>
-            The panel's selections contain key data into the design, topography, and security. Selection can be cross-searched for related keys; the embedded viewing panel can be toggled off to provide a look into the details page.
-        </p>
-        <img src="images/hallway_AI2.webp" alt="" width="250">
-        <h3 class="toupper">Consider Security</h3>
-        <p>
-            While it's enjoyable browsing and interacting with the embedded content here, please note that not all features work as you may expect due to the remote embedding. Feature dependencies may be limited or unavailable in this nested context for local storage, caching, or authentication. For the best experience, I recommend copying the link and opening it in a new tab.
-        </p>
+
+        <section class="intro__projects" aria-label="Project cards">
+            @foreach (var project in FrameSelectionData.ProjectsSelections)
+            {
+                <ProjectCard Project="@project"/>
+            }
+        </section>
+
+        <figure class="intro__closing">
+            <img class="intro__image"
+                 src="images/hallway_AI2.webp"
+                 alt="A welcoming hallway representing the start of the project tour"
+                 width="560" height="560"
+                 loading="lazy" decoding="async"
+                 sizes="(max-width: 640px) 100vw, 480px" />
+            <figcaption class="intro__closing-caption">
+                Thanks for exploring &mdash; feel free to reach out anytime.
+            </figcaption>
+        </figure>
     </div>
 </article>
-
-@code {
-
-}
