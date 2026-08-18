@@ -1,9 +1,8 @@
 ﻿<!-- --Copyright (c) 2026 Robert A. Howell -->
 
 @page "/database"
-@using Microsoft.AspNetCore.Mvc.RazorPages
-@using PageOfProjects.Presentation.Secondary
 @using ProjectsPage.Components.Pages
+@using ProjectsPage.Components.Secondary
 @using ProjectsPage.Domain
 @using ProjectsPage.Pages.Websites
 @using ProjectsPage.Presentation.Aside
@@ -54,11 +53,16 @@
     }
 
     private Queue<DatabaseTableLink> _links = CreateNewLinksStack();
+
 }
 
 <article id="Status-Page" class="database-card-grid">
     <div>
-        <AppNavLink Link="@_links.Dequeue()"/>
+        <div>
+            <AppNavLink Link="@_links.Dequeue()"/>
+            <CopyJsonToClipboard
+                Items="@HeartbeatsTableBase.FiveHeartbeats()"/>
+        </div>
         <table>
             <caption>HeartBeats.All</caption>
             <RowGenerator Items="@HeartbeatsTableBase.FiveHeartbeats()">
@@ -82,7 +86,11 @@
         </table>
     </div>
     <div>
-        <AppNavLink Link="@_links.Dequeue()"/>
+        <div>
+            <AppNavLink Link="@_links.Dequeue()"/>
+            <CopyJsonToClipboard
+                Items="@HeartbeatsTableBase.FiveHeartbeatsFailures()"/>
+        </div>
         <table>
             <caption>HeartBeats.Failures</caption>
             <RowGenerator Items="@HeartbeatsTableBase.FiveHeartbeatsFailures()">
@@ -106,7 +114,11 @@
         </table>
     </div>
     <div>
-        <AppNavLink Link="@_links.Peek()"/>
+        <div>
+            <AppNavLink Link="@_links.Peek()"/>
+            <CopyJsonToClipboard
+                Items="@SNAPI_Db.FiveArticles()"/>
+        </div>
         <table>
             <caption>SpaceFlightNewsApp.Article</caption>
             <RowGenerator Items="@SNAPI_Db.FiveArticles()">
@@ -130,7 +142,11 @@
         </table>
     </div>
     <div>
-        <AppNavLink Link="@_links.Dequeue()"/>
+        <div>
+            <AppNavLink Link="@_links.Dequeue()"/>
+            <CopyJsonToClipboard
+                Items="@SNAPI_Db.FiveApods()"/>
+        </div>
         <table>
             <caption>SpaceFlightNewsApp.Apod</caption>
             <RowGenerator Items="@SNAPI_Db.FiveApods()">
@@ -152,7 +168,11 @@
         </table>
     </div>
     <div>
-        <AppNavLink Link="@_links.Dequeue()"/>
+        <div>
+            <AppNavLink Link="@_links.Dequeue()"/>
+            <CopyJsonToClipboard
+                Items="@RandomWebBitsBase.FiveAccessedBy()"/>
+        </div>
         <table>
             <caption>RandomWebBits.AccessedBy</caption>
             <RowGenerator Items="@RandomWebBitsBase.FiveAccessedBy()">
@@ -174,7 +194,11 @@
         </table>
     </div>
     <div>
-        <AppNavLink Link="@_links.Dequeue()"/>
+        <div>
+            <AppNavLink Link="@_links.Dequeue()"/>
+            <CopyJsonToClipboard
+                Items="@RandomWebBitsBase.FiveAnonymousUser()"/>
+        </div>
         <table>
             <caption>RandomWebBits.AnonymousUser</caption>
             <RowGenerator Items="@RandomWebBitsBase.FiveAnonymousUser()">
@@ -194,7 +218,11 @@
         </table>
     </div>
     <div>
-        <AppNavLink Link="@_links.Dequeue()"/>
+        <div>
+            <AppNavLink Link="@_links.Dequeue()"/>
+            <CopyJsonToClipboard
+                Items="@RandomWebBitsBase.FiveUserAgents()"/>
+        </div>
         <table>
             <caption>RandomWebBits.UserAgent</caption>
             <RowGenerator Items="@RandomWebBitsBase.FiveUserAgents()">
