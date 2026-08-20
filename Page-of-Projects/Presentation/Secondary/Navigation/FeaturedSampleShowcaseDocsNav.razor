@@ -1,0 +1,63 @@
+﻿@* --Copyright (c) 2026 Robert A. Howell *@
+
+@using ProjectsPage.Domain
+@inherits ProjectsPage.Components.Primary.SelectionDocsBase;
+
+@namespace ProjectsPage.Components.Secondary
+
+<div class="nav-external-links">
+    <hr/>
+    <h2>Sample Showcase Docs</h2>
+        <ul>
+            <li>
+                <AppNavLink ClassNames="app-nav-link external-link"
+                            Link="@(new AppAnchor
+                                  {
+                                          Href = "https://docs.rhdeveloping.com/content/database-dev.html",
+                                          Title = "Database Development - Docs",
+                                          TextContent = "Database Development",
+                                          Target = "_blank"
+                                  })"/>
+            </li>
+            <li>
+                <AppNavLink ClassNames="app-nav-link external-link"
+                            Link="@(new AppAnchor
+                                  {
+                                          Href = "https://docs.rhdeveloping.com/content/rest-dev.html",
+                                          Title = "REST Development",
+                                          TextContent = "REST Development",
+                                          Target = "_blank"
+                                  })"/>
+            </li>
+            <li>
+                <AppNavLink ClassNames="app-nav-link external-link"
+                            Link="@(new AppAnchor
+                                  {
+                                          Href = "https://docs.rhdeveloping.com/content/program-dev.html",
+                                          Title = "Program Development",
+                                          TextContent = "Program Development",
+                                          Target = "_blank"
+                                  })"/>
+            </li>
+            <li>
+                <AppNavLink ClassNames="app-nav-link external-link"
+                            Link="@(new AppAnchor
+                                  {
+                                          Href = "https://docs.rhdeveloping.com/content/azure-dev.html",
+                                          Title = "Azure Development",
+                                          TextContent = "Azure Development",
+                                          Target = "_blank"
+                                  })"/>
+            </li>
+            <li>
+                <AppNavLink ClassNames="app-nav-link external-link"
+                            Link="@(new AppAnchor
+                                  {
+                                          Href = "https://docs.rhdeveloping.com/content/collaborator-model.html",
+                                          Title = "Collaborator API Model",
+                                          TextContent = "Collaborator API Model",
+                                          Target = "_blank"
+                                  })"/>
+            </li>
+        </ul>
+</div>

@@ -2,9 +2,10 @@
 
 @namespace ProjectsPage.Components.Secondary
 
-<a href="@Link.Href"
-    data-enhance-nav="@Link.Data_Enchance_Nav"
-    rel="@Link.Rel"
-    title="@Link.Title"
-    target="@Link.Target"><span>@Link.TextContent</span>
-    </a>
+<a class="@ClassNames"
+   href="@Link.Href"
+   data-enhance-nav="@(Link.IsDataEnhanceNav ? "true" : "false")"
+   rel="@Link.Rel"
+   title="@Link.Title"
+   target="@Link.Target"><span>@Link.TextContent</span>
+</a>

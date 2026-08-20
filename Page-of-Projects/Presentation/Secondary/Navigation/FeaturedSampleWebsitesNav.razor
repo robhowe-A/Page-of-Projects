@@ -1,0 +1,26 @@
+﻿@* --Copyright (c) 2026 Robert A. Howell *@
+
+@using ProjectsPage.Domain
+@inherits ProjectsPage.Components.Primary.SelectionDocsBase;
+
+@namespace ProjectsPage.Components.Secondary
+
+<div class="nav-external-links">
+    <hr/>
+    <h2>Featured Sample Websites</h2>
+    <ul>
+    @foreach (var project in Projects)
+    {
+            <li>
+                <a class="app-nav-link external-link"
+                   href="@project.ExternalHref"
+                   title="@project.Title"
+                   target="_blank">@project.InnerText</a>
+            </li>
+    }
+    </ul>
+</div>
+
+@code {
+    [Parameter] public required List<FrameSelectionOption> Projects { get; set; }
+}

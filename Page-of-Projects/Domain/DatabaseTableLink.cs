@@ -2,10 +2,11 @@
 
 namespace ProjectsPage.Domain;
 
-public class DatabaseTableLink
+public class AppAnchor
 {
     public required string Href { get; set; }
-    public bool? Data_Enchance_Nav { get; set; } = false;
+    public bool? DataEnhanceNav { get; set; } = true;
+    public bool IsDataEnhanceNav => DataEnhanceNav ?? false;
     public required string Title { get; set; }
     public string? Rel { get; set; } = "opener";
     public string? Target { get; set; } = "_self";
