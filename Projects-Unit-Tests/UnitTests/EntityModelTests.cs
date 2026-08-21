@@ -10,6 +10,25 @@ namespace UnitTests;
 
 public class SortButtonTests : PageTest
 {
+    [Theory]
+    [InlineData("ro376-code-test")]                          // valid
+    [InlineData("-ro376-code-test-")]                          // invalid
+    [InlineData("ro376-code-test; DROP TABLE Users;")]        // injection attempt
+    [InlineData("<script>alert(1)</script>")]           // XSS payload
+    [InlineData("../../etc/passwd")]                    // path traversal attempt
+    [InlineData("")]                                    // empty
+    public void AccessRequest_RejectsInvalidGitHubUsernames(string username)
+    {
+        if (string.Equals("ro376-code-test", username))
+        {
+            Assert.True(GitHubVaultApi.Collaborator.CheckUsernameIsValid(username));
+        }
+        else
+        {
+            Assert.False(GitHubVaultApi.Collaborator.CheckUsernameIsValid(username));
+        }
+    }
+
     [Fact]
     public async Task SortButtonToggles_WhenClicked()
     {
