@@ -1,70 +1,17 @@
-﻿<!-- --Copyright (c) 2026 Robert A. Howell -->
-
-@page "/database"
-@using Microsoft.AspNetCore.Components.Web
-@using ProjectsPage.Components.Pages
+﻿@using ProjectsPage.Components.Pages
 @using ProjectsPage.Components.Secondary
 @using ProjectsPage.Domain
 @using ProjectsPage.Pages.Websites
 @using ProjectsPage.Presentation.Aside
-@rendermode RenderMode.InteractiveServer
 
-@code {
-    public static Queue<AppAnchor> PageLinks = CreateNewLinksStack();
+@namespace ProjectsPage.Presentation.Primary
 
-    private static Queue<AppAnchor> CreateNewLinksStack()
-    {
-        Queue<AppAnchor> databaseTableLinks = new();
-        databaseTableLinks.Enqueue(new AppAnchor
-                      {
-                              Href = "/heartbeat-all",
-                              Title = "Heartbeat All",
-                              TextContent = "Heartbeat All | roberthowell.dev"
-                      });
-        databaseTableLinks.Enqueue(new AppAnchor
-                      {
-                              Href = "/heartbeat-failures",
-                              Title = "Heartbeat Failures",
-                              TextContent = "Heartbeat Failures | roberthowell.dev"
-                      });
-        databaseTableLinks.Enqueue(new AppAnchor
-                      {
-                              Href = "/websites/spaceflight-news-app/database",
-                              Title = "Database | SpaceFlight News App",
-                              TextContent = "SpaceFlight News App"
-                      });
-        databaseTableLinks.Enqueue(new AppAnchor
-                      {
-                              Href = "/websites/randomwebbits/database",
-                              Title = "Database | Random Web Bits",
-                              TextContent = "Random Web Bits - Accessed By"
-                      });
-        databaseTableLinks.Enqueue(new AppAnchor
-                      {
-                              Href = "/websites/randomwebbits/database2",
-                              Title = "Database2 | Random Web Bits",
-                              TextContent = "Random Web Bits - Anonymous User"
-                      });
-        databaseTableLinks.Enqueue(new AppAnchor
-                      {
-                              Href = "/websites/randomwebbits/database3",
-                              Title = "Database3 | Random Web Bits",
-                              TextContent = "Random Web Bits - User Agent"
-                      });
-        return databaseTableLinks;
-    }
-
-    private Queue<AppAnchor> _links = CreateNewLinksStack();
-
-}
-
-<article id="Database-Page" class="database-card-grid">
+<section class="database-card-grid">
     <div>
         <div>
             <div>
                 <AppNavLink Link="@_links.Dequeue()"/>
             </div>
-            <div><span>Placeholder for future development</span></div>
             <div>
                 <CopyJsonToClipboard
                     Items="@HeartbeatsTableBase.FiveHeartbeats()"/>
@@ -96,12 +43,12 @@
             </RowGenerator>
         </table>
     </div>
+    
     <div>
         <div>
             <div>
                 <AppNavLink Link="@_links.Dequeue()"/>
             </div>
-            <div><span>Placeholder for future development</span></div>
             <div>
                 <CopyJsonToClipboard
                     Items="@HeartbeatsTableBase.FiveHeartbeatsFailures()"/>
@@ -138,7 +85,6 @@
             <div>
                 <AppNavLink Link="@_links.Peek()"/>
             </div>
-            <div><span>Placeholder for future development</span></div>
             <div>
                 <CopyJsonToClipboard
                     Items="@SNAPI_Db.FiveArticles()"/>
@@ -175,7 +121,6 @@
             <div>
                 <AppNavLink Link="@_links.Dequeue()"/>
             </div>
-            <div><span>Placeholder for future development</span></div>
             <div>
                 <CopyJsonToClipboard
                     Items="@SNAPI_Db.FiveApods()"/>
@@ -210,7 +155,6 @@
             <div>
                 <AppNavLink Link="@_links.Dequeue()"/>
             </div>
-            <div><span>Placeholder for future development</span></div>
             <div>
                 <CopyJsonToClipboard
                     Items="@RandomWebBitsBase.FiveAccessedBy()"/>
@@ -245,7 +189,6 @@
             <div>
                 <AppNavLink Link="@_links.Dequeue()"/>
             </div>
-            <div><span>Placeholder for future development</span></div>
             <div>
                 <CopyJsonToClipboard
                     Items="@RandomWebBitsBase.FiveAnonymousUser()"/>
@@ -278,7 +221,6 @@
             <div>
                 <AppNavLink Link="@_links.Dequeue()"/>
             </div>
-            <div><span>Placeholder for future development</span></div>
             <div>
                 <CopyJsonToClipboard
                     Items="@RandomWebBitsBase.FiveUserAgents()"/>
@@ -306,4 +248,4 @@
             </RowGenerator>
         </table>
     </div>
-</article>
+</section>
