@@ -1,4 +1,6 @@
-﻿@using ProjectsPage.Components.Pages
+﻿@* --Copyright (c) 2026 Robert A. Howell *@
+
+@using ProjectsPage.Components.Pages
 @using ProjectsPage.Components.Secondary
 @using ProjectsPage.Domain
 @using ProjectsPage.Pages.Websites
@@ -7,245 +9,32 @@
 @namespace ProjectsPage.Presentation.Primary
 
 <section class="database-card-grid">
-    <div>
+    @foreach(var gridItem in Items){
+        
         <div>
             <div>
-                <AppNavLink Link="@_links.Dequeue()"/>
+                <div>
+                    <AppNavLink Link="@_links.Dequeue()"/>
+                </div>
+                <div>
+                    <CopyJsonToClipboard
+                        Items="@gridItem.OverviewItems"/>
+                    <CsvExportHelper Items="@gridItem.OverviewItems"
+                                     FileName="@gridItem.OverviewItemsCsvFileName"
+                                     ButtonText="Download CSV"/>
+                </div>
             </div>
-            <div>
-                <CopyJsonToClipboard
-                    Items="@HeartbeatsTableBase.FiveHeartbeats()"/>
-                <CsvExportHelper T="HeartbeatData"
-                                 Items="@HeartbeatsTableBase.FiveHeartbeats()"
-                                 FileName="@($"heartbeat_{DateTime.UtcNow:yyyy-MM-dd}.csv")"
-                                 ButtonText="Download CSV"/>
-            </div>
+            <table>
+                <caption>@gridItem.CaptionText</caption>
+                <RowGenerator Items="@gridItem.OverviewItems">
+                    <HeaderTemplate>
+                        @gridItem.HeaderTemplateStr
+                    </HeaderTemplate>
+                    <RowTemplate Context="item">
+                        @gridItem.RowTemplateBuildStr.Invoke(item)
+                    </RowTemplate>
+                </RowGenerator>
+            </table>
         </div>
-        <table>
-            <caption>HeartBeats.All</caption>
-            <RowGenerator Items="@HeartbeatsTableBase.FiveHeartbeats()">
-                <HeaderTemplate>
-                    <tr>
-                        <td>Id</td>
-                        <td>TimeStamp</td>
-                        <td>Domain</td>
-                        <td>ResponseCode</td>
-                    </tr>
-                </HeaderTemplate>
-                <RowTemplate Context="item">
-                    <tr>
-                        <td>@item.Id</td>
-                        <td>@item.Timestamp</td>
-                        <td>@item.Domain</td>
-                        <td>@item.ResponseCode</td>
-                    </tr>
-                </RowTemplate>
-            </RowGenerator>
-        </table>
-    </div>
-    
-    <div>
-        <div>
-            <div>
-                <AppNavLink Link="@_links.Dequeue()"/>
-            </div>
-            <div>
-                <CopyJsonToClipboard
-                    Items="@HeartbeatsTableBase.FiveHeartbeatsFailures()"/>
-                <CsvExportHelper T="HeartbeatData"
-                                 Items="@HeartbeatsTableBase.FiveHeartbeatsFailures()"
-                                 FileName="@($"heartbeat-failures_{DateTime.UtcNow:yyyy-MM-dd}.csv")"
-                                 ButtonText="Download CSV"/>
-            </div>
-        </div>
-        <table>
-            <caption>HeartBeats.Failures</caption>
-            <RowGenerator Items="@HeartbeatsTableBase.FiveHeartbeatsFailures()">
-                <HeaderTemplate>
-                    <tr>
-                        <td>Id</td>
-                        <td>TimeStamp</td>
-                        <td>Domain</td>
-                        <td>ResponseCode</td>
-                    </tr>
-                </HeaderTemplate>
-                <RowTemplate Context="item">
-                    <tr>
-                        <td>@item.Id</td>
-                        <td>@item.Timestamp</td>
-                        <td>@item.Domain</td>
-                        <td>@item.ResponseCode</td>
-                    </tr>
-                </RowTemplate>
-            </RowGenerator>
-        </table>
-    </div>
-    <div>
-        <div>
-            <div>
-                <AppNavLink Link="@_links.Peek()"/>
-            </div>
-            <div>
-                <CopyJsonToClipboard
-                    Items="@SNAPI_Db.FiveArticles()"/>
-                <CsvExportHelper T="SpaceflightArticle"
-                                 Items="@SNAPI_Db.FiveArticles()"
-                                 FileName="@($"spaceflight-articles_{DateTime.UtcNow:yyyy-MM-dd}.csv")"
-                                 ButtonText="Download CSV"/>
-            </div>
-        </div>
-        <table>
-            <caption>SpaceFlightNewsApp.Article</caption>
-            <RowGenerator Items="@SNAPI_Db.FiveArticles()">
-                <HeaderTemplate>
-                    <tr>
-                        <td>ArticleNum</td>
-                        <td>Date</td>
-                        <td>Featured</td>
-                        <td>NewsSite</td>
-                    </tr>
-                </HeaderTemplate>
-                <RowTemplate Context="item">
-                    <tr>
-                        <td>@item.ArticleNum</td>
-                        <td>@item.Date</td>
-                        <td>@item.Featured</td>
-                        <td>@item.NewsSite</td>
-                    </tr>
-                </RowTemplate>
-            </RowGenerator>
-        </table>
-    </div>
-    <div>
-        <div>
-            <div>
-                <AppNavLink Link="@_links.Dequeue()"/>
-            </div>
-            <div>
-                <CopyJsonToClipboard
-                    Items="@SNAPI_Db.FiveApods()"/>
-                <CsvExportHelper T="SpaceflightApod"
-                                 Items="@SNAPI_Db.FiveApods()"
-                                 FileName="@($"spaceflight-apods_{DateTime.UtcNow:yyyy-MM-dd}.csv")"
-                                 ButtonText="Download CSV"/>
-            </div>
-        </div>
-        <table>
-            <caption>SpaceFlightNewsApp.Apod</caption>
-            <RowGenerator Items="@SNAPI_Db.FiveApods()">
-                <HeaderTemplate>
-                    <tr>
-                        <td>Date</td>
-                        <td>Media</td>
-                        <td>Title</td>
-                    </tr>
-                </HeaderTemplate>
-                <RowTemplate Context="item">
-                    <tr>
-                        <td>@item.Date</td>
-                        <td>@item.Media</td>
-                        <td>@item.ApodTitle</td>
-                    </tr>
-                </RowTemplate>
-            </RowGenerator>
-        </table>
-    </div>
-    <div>
-        <div>
-            <div>
-                <AppNavLink Link="@_links.Dequeue()"/>
-            </div>
-            <div>
-                <CopyJsonToClipboard
-                    Items="@RandomWebBitsBase.FiveAccessedBy()"/>
-                <CsvExportHelper T="RwbAccessedBy"
-                                 Items="@RandomWebBitsBase.FiveAccessedBy()"
-                                 FileName="@($"rwb-accessed-by_{DateTime.UtcNow:yyyy-MM-dd}.csv")"
-                                 ButtonText="Download CSV"/>
-            </div>
-        </div>
-        <table>
-            <caption>RandomWebBits.AccessedBy</caption>
-            <RowGenerator Items="@RandomWebBitsBase.FiveAccessedBy()">
-                <HeaderTemplate>
-                    <tr>
-                        <td>Anonymous User Id</td>
-                        <td>Uri</td>
-                        <td>Last Accessed</td>
-                    </tr>
-                </HeaderTemplate>
-                <RowTemplate Context="item">
-                    <tr>
-                        <td>@item.AnonymousUserId</td>
-                        <td>@item.Uri</td>
-                        <td>@item.LastAccessed</td>
-                    </tr>
-                </RowTemplate>
-            </RowGenerator>
-        </table>
-    </div>
-    <div>
-        <div>
-            <div>
-                <AppNavLink Link="@_links.Dequeue()"/>
-            </div>
-            <div>
-                <CopyJsonToClipboard
-                    Items="@RandomWebBitsBase.FiveAnonymousUser()"/>
-                <CsvExportHelper T="RwbAnonymousUser"
-                                 Items="@RandomWebBitsBase.FiveAnonymousUser()"
-                                 FileName="@($"rwb-anonymous-user_{DateTime.UtcNow:yyyy-MM-dd}.csv")"
-                                 ButtonText="Download CSV"/>
-            </div>
-        </div>
-        <table>
-            <caption>RandomWebBits.AnonymousUser</caption>
-            <RowGenerator Items="@RandomWebBitsBase.FiveAnonymousUser()">
-                <HeaderTemplate>
-                    <tr>
-                        <td>Digest</td>
-                        <td>Last Accessed</td>
-                    </tr>
-                </HeaderTemplate>
-                <RowTemplate Context="item">
-                    <tr>
-                        <td>@item.IpAddrHash</td>
-                        <td>@item.LastAccessed</td>
-                    </tr>
-                </RowTemplate>
-            </RowGenerator>
-        </table>
-    </div>
-    <div>
-        <div>
-            <div>
-                <AppNavLink Link="@_links.Dequeue()"/>
-            </div>
-            <div>
-                <CopyJsonToClipboard
-                    Items="@RandomWebBitsBase.FiveUserAgents()"/>
-                <CsvExportHelper T="RwbUserAgent"
-                                 Items="@RandomWebBitsBase.FiveUserAgents()"
-                                 FileName="@($"rwb-user-agents_{DateTime.UtcNow:yyyy-MM-dd}.csv")"
-                                 ButtonText="Download CSV"/>
-            </div>
-        </div>
-        <table>
-            <caption>RandomWebBits.UserAgent</caption>
-            <RowGenerator Items="@RandomWebBitsBase.FiveUserAgents()">
-                <HeaderTemplate>
-                    <tr>
-                        <td>Digest</td>
-                        <td>Last Accessed</td>
-                    </tr>
-                </HeaderTemplate>
-                <RowTemplate Context="item">
-                    <tr>
-                        <td>@item.AgentId</td>
-                        <td>@item.UserAgentFull</td>
-                    </tr>
-                </RowTemplate>
-            </RowGenerator>
-        </table>
-    </div>
+    }
 </section>

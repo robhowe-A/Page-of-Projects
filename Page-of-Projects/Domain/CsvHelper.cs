@@ -1,5 +1,6 @@
 ﻿// --Copyright (c) 2026 Robert A. Howell
 
+using System.Collections;
 using System.Globalization;
 using System.Text;
 using CsvHelper;
@@ -10,6 +11,9 @@ namespace ProjectsPage.Domain;
 public static class CsvExportHelper
 {
     public static byte[] ToCsvBytes<T>(IEnumerable<T> records, bool includeHeader = true)
+        => ToCsvBytes((IEnumerable)records, includeHeader);
+
+    public static byte[] ToCsvBytes(IEnumerable records, bool includeHeader = true)
     {
         using var memoryStream = new MemoryStream();
         using var writer = new StreamWriter(memoryStream, new UTF8Encoding(encoderShouldEmitUTF8Identifier: true), leaveOpen: true);
