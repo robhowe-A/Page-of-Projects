@@ -38,7 +38,8 @@ public partial class Database : ComponentBase
                       {
                               Href = "/websites/spaceflight-news-app/database",
                               Title = "Database | SpaceFlight News App",
-                              TextContent = "SpaceFlight News App"
+                              TextContent = "SpaceFlight News App",
+                              AddNavLink = false
                       });
         databaseTableLinks.Enqueue(new AppAnchor
                       {
