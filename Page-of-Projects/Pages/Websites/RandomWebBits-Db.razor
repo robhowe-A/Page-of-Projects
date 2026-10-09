@@ -14,7 +14,8 @@
     <DatabaseNav/>
     <div>
         <h2>Accessed By</h2>
-        <RwbAccessedByTable AllAccessedBy="@_rwbDbContext.accessed_by.Where(x => x.AnonymousUserId >= 1).ToList()"/>
+        <RwbAccessRecordTable AllAccessRecord="@_rwbDbContext.access_record.OrderBy(k=>k.AnonymousUserId).ThenBy(k=>k.LastAccessed).Where(x => x.AnonymousUserId >= 1).ToList()"/>
+
     </div>
 </article>
 @code {

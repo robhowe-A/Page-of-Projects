@@ -88,9 +88,9 @@ public partial class Database : ComponentBase
     }
 
 
-    private static MarkupString BuildAccessedByRow(object o)
+    private static MarkupString BuildAccessRecordRow(object o)
     {
-        var item = (RwbAccessedBy)o;
+        var item = (RwbAccessRecord)o;
         return (MarkupString)$"""
                               <tr>
                                   <td>{item.AnonymousUserId}</td>
@@ -244,11 +244,11 @@ public partial class Database : ComponentBase
                                },
                                new DatabaseOverview()
                                {
-                                       OverviewItems = RandomWebBitsBase.FiveAccessedBy(),
-                                       OverviewItemsType = RandomWebBitsBase.FiveAccessedBy().First().GetType(),
+                                       OverviewItems = RandomWebBitsBase.FiveAccessRecords(),
+                                       OverviewItemsType = RandomWebBitsBase.FiveAccessRecords().First().GetType(),
                                        OverviewItemsCsvFileName = $"rwb-accessed-by_{DateTime.UtcNow:yyyy-MM-dd}.csv",
                                        OverviewItemsCsvButtonText = "Download CSV",
-                                       CaptionText = "RandomWebBits.AccessedBy",
+                                       CaptionText = "RandomWebBits.AccessRecord",
                                        HeaderTemplateStr = (MarkupString)
                                                                           """
                                                                           <tr>
@@ -257,7 +257,7 @@ public partial class Database : ComponentBase
                                                                               <td>Last Accessed</td>
                                                                           </tr>
                                                                           """,
-                                       RowTemplateBuildStr = BuildAccessedByRow,
+                                       RowTemplateBuildStr = BuildAccessRecordRow,
                                },
                                new DatabaseOverview()
                                {

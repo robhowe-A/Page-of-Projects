@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ProjectsPage.Domain;
 
-[Table("accessed_by")]
+[Table("Access_Record")]
 [PrimaryKey(nameof(AnonymousUserId), nameof(UserAgentId))]
 [Index(nameof(UserAgentId))]
-public sealed class RwbAccessedBy
+public sealed class RwbAccessRecord
 {
     [Required]
     [Column("AnonymousUserId", TypeName = "int")] public int AnonymousUserId { get; set; }
