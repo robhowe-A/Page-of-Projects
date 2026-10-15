@@ -16,7 +16,7 @@
                 <div>
                     <AppNavLink Link="@_links.Dequeue()"/>
                 </div>
-                <div>
+                <div class="data-egress">
                     <CopyJsonToClipboard
                         Items="@gridItem.OverviewItems"/>
                     <CsvExportHelper Items="@gridItem.OverviewItems"

@@ -45,7 +45,7 @@ public partial class Database : ComponentBase
                       {
                               Href = "/websites/randomwebbits/database",
                               Title = "Database | Random Web Bits",
-                              TextContent = "Random Web Bits - Accessed By"
+                              TextContent = "Random Web Bits - Access Record"
                       });
         databaseTableLinks.Enqueue(new AppAnchor
                       {
@@ -87,7 +87,6 @@ public partial class Database : ComponentBase
                               </tr>
                               """;
     }
-
 
     private static MarkupString BuildAccessRecordRow(object o)
     {

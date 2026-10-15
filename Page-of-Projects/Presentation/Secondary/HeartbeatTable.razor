@@ -17,8 +17,8 @@ else
 }
 </div>
 
-<table>
-@if (IsFoldingView)
+<div class="data-viewbox"><table>
+    @if (IsFoldingView)
 {
     var dateCursor = DateTime.Now;
     var allItems = new SortedSet<HeartbeatData>(Heartbeats.ToImmutableList(), RecordComparison);
@@ -126,7 +126,7 @@ else
     } while (allItems.Count > 0);
     </tbody>
 }
-else {
+    else {
     <thead>
         <td>Id</td>
         <td>Timestamp</td>
@@ -151,4 +151,4 @@ else {
     }
     </tbody>
 }
-</table>
+</table></div>

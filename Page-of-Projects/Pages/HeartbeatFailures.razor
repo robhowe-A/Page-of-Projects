@@ -13,9 +13,9 @@
 <PageTitle>Heartbeats-Failures | roberthowell.dev</PageTitle>
 <article id="Heartbeat-Failures-Page" class="page-table">
     <DatabaseNav/>
-    <h3>Heartbeat Failures</h3>
-
-    <HeartbeatTable Heartbeats="@(
+    <div class="page-viewbox">
+        <h3>Heartbeat Failures</h3>
+        <HeartbeatTable Heartbeats="@(
                                 Heartbeats.ConvertAll(i => new HeartbeatData
                                                            {
                                                                    Id = i.Id,
@@ -28,4 +28,5 @@
                                                            }))"
                     GetLoopDataSet="@GetLoopDataSet"
                     RecordComparison="@HeartbeatComparer"/>
+    </div>
 </article>

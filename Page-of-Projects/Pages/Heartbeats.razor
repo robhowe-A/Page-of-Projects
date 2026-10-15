@@ -13,20 +13,21 @@
 <PageTitle>Heartbeats | roberthowell.dev</PageTitle>
 <article id="Heartbeats-Page" class="page-table">
     <DatabaseNav/>
-    <h3>Heartbeat Requests</h3>
+    <div class="page-viewbox">
+        <h3>Heartbeat Requests</h3>
+        <HeartbeatTable Heartbeats="@(
+                                    HeartbeatsAll.ConvertAll(i => new HeartbeatData
+                                                                  {
+                                                                          Id = i.Id,
+                                                                          Timestamp = i.RecordTimestamp,
+                                                                          Agent = i.Agent,
+                                                                          Project = i.ProjectName,
+                                                                          Domain = i.Domain,
+                                                                          RelativeUrl = i.UrlRel,
+                                                                          ResponseCode = i.ResponseStatus
+                                                                  }))"
 
-    <HeartbeatTable Heartbeats="@(
-                                HeartbeatsAll.ConvertAll(i => new HeartbeatData
-                                                              {
-                                                                      Id = i.Id,
-                                                                      Timestamp = i.RecordTimestamp,
-                                                                      Agent = i.Agent,
-                                                                      Project = i.ProjectName,
-                                                                      Domain = i.Domain,
-                                                                      RelativeUrl = i.UrlRel,
-                                                                      ResponseCode = i.ResponseStatus
-                                                              }))"
-                    
-                    GetLoopDataSet="@GetLoopDataSet"
-                    RecordComparison="@HeartbeatComparer"/>
+                        GetLoopDataSet="@GetLoopDataSet"
+                        RecordComparison="@HeartbeatComparer"/>
+    </div>
 </article>
