@@ -14,7 +14,7 @@
 <article id="Heartbeats-Page" class="page-table">
     <DatabaseNav/>
     <div class="page-viewbox">
-        <h3>Heartbeat Requests</h3>
+        
         <HeartbeatTable Heartbeats="@(
                                     HeartbeatsAll.ConvertAll(i => new HeartbeatData
                                                                   {
@@ -26,7 +26,7 @@
                                                                           RelativeUrl = i.UrlRel,
                                                                           ResponseCode = i.ResponseStatus
                                                                   }))"
-
+                        H3ElemText="Heartbeat Requests"
                         GetLoopDataSet="@GetLoopDataSet"
                         RecordComparison="@HeartbeatComparer"/>
     </div>

@@ -178,12 +178,12 @@ public partial class Database : ComponentBase
                                        CaptionText = "HeartBeats.All",
                                        HeaderTemplateStr = (MarkupString)
                                                 """
-                                                <tr>
-                                                    <td>Id</td>
-                                                    <td>TimeStamp</td>
-                                                    <td>Domain</td>
-                                                    <td>ResponseCode</td>
-                                                </tr>
+                                                <thead>
+                                                    <th>Id</th>
+                                                    <th>TimeStamp</th>
+                                                    <th>Domain</th>
+                                                    <th>ResponseCode</th>
+                                                </thead>
                                                 """,
                                        RowTemplateBuildStr = BuildHeartbeatsRow,
                                },
@@ -198,12 +198,12 @@ public partial class Database : ComponentBase
                                        CaptionText = "HeartBeats.Failures",
                                        HeaderTemplateStr = (MarkupString)
                                                """
-                                               <tr>
-                                                   <td>Id</td>
-                                                   <td>TimeStamp</td>
-                                                   <td>Domain</td>
-                                                   <td>ResponseCode</td>
-                                               </tr>
+                                               <thead>
+                                                   <th>Id</th>
+                                                   <th>TimeStamp</th>
+                                                   <th>Domain</th>
+                                                   <th>ResponseCode</th>
+                                               </thead>
                                                """,
                                        RowTemplateBuildStr = BuildHeartbeatsFailuresRow,
                                },
@@ -216,12 +216,12 @@ public partial class Database : ComponentBase
                                        CaptionText = "SpaceFlightNewsApp.Article",
                                        HeaderTemplateStr = (MarkupString)
                                                """
-                                               <tr>
-                                                   <td>ArticleNum</td>
-                                                   <td>Date</td>
-                                                   <td>Featured</td>
-                                                   <td>NewsSite</td>
-                                               </tr>
+                                               <thead>
+                                                   <th>ArticleNum</th>
+                                                   <th>Date</th>
+                                                   <th>Featured</th>
+                                                   <th>NewsSite</th>
+                                               </thead>
                                                """,
                                        RowTemplateBuildStr = BuildSpaceflightArticleRow,
                                },
@@ -234,11 +234,11 @@ public partial class Database : ComponentBase
                                        CaptionText = "SpaceFlightNewsApp.Apod",
                                        HeaderTemplateStr = (MarkupString)
                                                                           """
-                                                                          <tr>
-                                                                              <td>Date</td>
-                                                                              <td>Media</td>
-                                                                              <td>Title</td>
-                                                                          </tr>
+                                                                          <thead>
+                                                                              <th>Date</th>
+                                                                              <th>Media</th>
+                                                                              <th>Title</th>
+                                                                          </thead>
                                                                           """,
                                        RowTemplateBuildStr =  BuildSpaceflightApodRow,
                                },
@@ -251,11 +251,11 @@ public partial class Database : ComponentBase
                                        CaptionText = "RandomWebBits.AccessRecord",
                                        HeaderTemplateStr = (MarkupString)
                                                                           """
-                                                                          <tr>
-                                                                              <td>Anonymous User Id</td>
-                                                                              <td>Uri</td>
-                                                                              <td>Last Accessed</td>
-                                                                          </tr>
+                                                                          <thead>
+                                                                              <th>Anonymous User Id</th>
+                                                                              <th>Uri</th>
+                                                                              <th>Last Accessed</th>
+                                                                          </thead>
                                                                           """,
                                        RowTemplateBuildStr = BuildAccessRecordRow,
                                },
@@ -268,10 +268,10 @@ public partial class Database : ComponentBase
                                        CaptionText = "RandomWebBits.AnonymousUser",
                                        HeaderTemplateStr = (MarkupString)
                                                                           """
-                                                                          <tr>
-                                                                              <td>Digest</td>
-                                                                              <td>Last Accessed</td>
-                                                                          </tr>
+                                                                          <thead>
+                                                                              <th>Digest</th>
+                                                                              <th>Last Accessed</th>
+                                                                          </thead>
                                                                           """,
                                        RowTemplateBuildStr = BuildAnonymousUserRow,
                                },
@@ -284,8 +284,10 @@ public partial class Database : ComponentBase
                                        CaptionText = "RandomWebBits.UserAgent",
                                        HeaderTemplateStr = (MarkupString)
                                                                           """
-                                                                          <td>Id</td>
-                                                                          <td>Last Accessed</td>
+                                                                          <thead>
+                                                                            <th>Id</th>
+                                                                            <th>Last Accessed</th>
+                                                                          </thead>
                                                                           """,
                                        RowTemplateBuildStr = BuildUserAgentRow,
                                }

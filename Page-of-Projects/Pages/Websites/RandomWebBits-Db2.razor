@@ -13,8 +13,8 @@
 <article class="page-table">
     <DatabaseNav/>
     <div class="page-viewbox">
-        <h2>Anonymous User</h2>
-        <RwbAnonymousUserTable AllAnonymousUser="@_rwbDbContext.anonymous_user.Where(x => x.AnonymousUserId >= 1).ToList()"/>
+        <RwbAnonymousUserTable AllAnonymousUser="@_rwbDbContext.anonymous_user.Where(x => x.AnonymousUserId >= 1).ToList()"
+                               H3ElemText="Anonymous User"/>
     </div>
 </article>
 @code {

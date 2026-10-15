@@ -13,8 +13,8 @@
 <article class="page-table">
     <DatabaseNav/>
     <div class="page-viewbox">
-        <h2>Access Record</h2>
-        <RwbAccessRecordTable AllAccessRecord="@_rwbDbContext.access_record.OrderBy(k=>k.AnonymousUserId).ThenBy(k=>k.LastAccessed).Where(x => x.AnonymousUserId >= 1).ToList()"/>
+        <RwbAccessRecordTable AllAccessRecord="@_rwbDbContext.access_record.OrderBy(k=>k.AnonymousUserId).ThenBy(k=>k.LastAccessed).Where(x => x.AnonymousUserId >= 1).ToList()"
+                              H3ElemText="Access Record"/>
     </div>
 </article>
 @code {
