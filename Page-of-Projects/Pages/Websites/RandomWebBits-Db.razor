@@ -6,6 +6,7 @@
 @using ProjectsPage.Components.Secondary
 @using ProjectsPage.Domain
 @using ProjectsPage.Infrastructure
+@using ProjectsPage.Presentation.Primary
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
 @rendermode InteractiveServer
 
@@ -13,10 +14,18 @@
 <article class="page-table">
     <DatabaseNav/>
     <div class="page-viewbox">
-        <RwbAccessRecordTable AllAccessRecord="@_rwbDbContext.access_record.OrderBy(k=>k.AnonymousUserId).ThenBy(k=>k.LastAccessed).Where(x => x.AnonymousUserId >= 1).ToList()"
-                              H3ElemText="Access Record"/>
+        <AccessRecordFilter OnFilterFind="@OnFilterFindComplete"
+                            H3ElemText="Access Record"/>
+        <RwbAccessRecordTable AllAccessRecord="@(Rows == null ? _rwbDbContext.access_record.OrderBy(k => k.AnonymousUserId).ThenBy(k => k.LastAccessed).Where(x => x.AnonymousUserId >= 0).ToList() : Rows.ToList())"/>
     </div>
 </article>
 @code {
     private RwbDbContext _rwbDbContext = EntityModels.CreateRwbDbContext();
+    private RwbAccessRecord[]? Rows = null;
+
+    private async Task OnFilterFindComplete(List<RwbAccessRecord> rows)
+    {
+        Rows = rows.ToArray();
+    }
+
 }
