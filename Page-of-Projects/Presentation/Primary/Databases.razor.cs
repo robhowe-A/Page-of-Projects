@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Html;
 using ProjectsPage.Components.Pages;
 using ProjectsPage.Domain;
-using ProjectsPage.Pages.Websites;
+using ProjectsPage.Pages.Database;
 using ProjectsPage.Presentation.Aside;
 
 namespace ProjectsPage.Presentation.Primary;
 
-public partial class Database : ComponentBase
+public partial class Databases : ComponentBase
 {
     public static Queue<AppAnchor> PageLinks = CreateNewLinksStack();
 
@@ -18,44 +18,44 @@ public partial class Database : ComponentBase
         Queue<AppAnchor> databaseTableLinks = new();
         databaseTableLinks.Enqueue(new AppAnchor
                       {
-                              Href = "/heartbeat-all",
+                              Href = "/database/projects-hub/heartbeat-all",
                               Title = "Heartbeat All",
                               TextContent = "Heartbeat All | roberthowell.dev"
                       });
         databaseTableLinks.Enqueue(new AppAnchor
                       {
-                              Href = "/heartbeat-failures",
+                              Href = "/database/projects-hub/heartbeat-failures",
                               Title = "Heartbeat Failures",
                               TextContent = "Heartbeat Failures | roberthowell.dev"
                       });
         databaseTableLinks.Enqueue(new AppAnchor
                       {
-                              Href = "/websites/spaceflight-news-app/database",
+                              Href = "/database/spaceflight-news-app/sfan-db0",
                               Title = "Database | SpaceFlight News App",
                               TextContent = "SpaceFlight News App"
                       });
         databaseTableLinks.Enqueue(new AppAnchor
                       {
-                              Href = "/websites/spaceflight-news-app/database",
+                              Href = "/database/spaceflight-news-app/sfan-db0",
                               Title = "Database | SpaceFlight News App",
                               TextContent = "SpaceFlight News App",
                               AddNavLink = false
                       });
         databaseTableLinks.Enqueue(new AppAnchor
                       {
-                              Href = "/websites/randomwebbits/database",
+                              Href = "/database/randomwebbits/rwb-db0",
                               Title = "Database | Random Web Bits",
                               TextContent = "Random Web Bits - Access Record"
                       });
         databaseTableLinks.Enqueue(new AppAnchor
                       {
-                              Href = "/websites/randomwebbits/database2",
+                              Href = "/database/randomwebbits/rwb-db1",
                               Title = "Database2 | Random Web Bits",
                               TextContent = "Random Web Bits - Anonymous User"
                       });
         databaseTableLinks.Enqueue(new AppAnchor
                       {
-                              Href = "/websites/randomwebbits/database3",
+                              Href = "/database/randomwebbits/rwb-db2",
                               Title = "Database3 | Random Web Bits",
                               TextContent = "Random Web Bits - User Agent"
                       });

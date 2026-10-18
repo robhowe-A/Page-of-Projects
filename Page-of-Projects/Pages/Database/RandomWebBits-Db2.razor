@@ -1,6 +1,6 @@
 ﻿<!-- --Copyright (c) 2026 Robert A. Howell -->
 
-@page "/websites/randomwebbits/database3"
+@page "/database/randomwebbits/rwb-db1"
 
 @using Microsoft.AspNetCore.Components.Web
 @using ProjectsPage.Components.Secondary
@@ -8,14 +8,15 @@
 @using ProjectsPage.Infrastructure
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
 @rendermode InteractiveServer
-@inherits ProjectsPage.Presentation.Aside.RandomWebBitsBase;
 
-<PageTitle>Database3 | Random Web Bits</PageTitle>
+@namespace ProjectsPage.Pages.Database
+
+<PageTitle>Database2 | Random Web Bits</PageTitle>
 <article class="page-table">
     <DatabaseNav/>
     <div class="page-viewbox">
-        <RwbUserAgentTable AllUserAgent="@_rwbDbContext.user_agent.Where(x => x.AgentId >= 1).ToList()"
-                           H3ElemText="User Agent"/>
+        <RwbAnonymousUserTable AllAnonymousUser="@_rwbDbContext.anonymous_user.Where(x => x.AnonymousUserId >= 1).ToList()"
+                               H3ElemText="Anonymous User"/>
     </div>
 </article>
 @code {
