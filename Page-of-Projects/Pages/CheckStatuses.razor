@@ -2,6 +2,7 @@
 
 @page "/status"
 @using Microsoft.AspNetCore.Components.Web
+@using ProjectsPage.Components.Secondary
 @using ProjectsPage.Domain
 @rendermode RenderMode.InteractiveServer
 
@@ -51,7 +52,7 @@
     <div>
         <p>A background service checks the status of each site every 10 minutes.</p>
         <p>Successes count:
-            <a href="/heartbeat-all"
+            <a href="/database/projects-hub/heartbeat-all"
                data-enhance-nav="true"
                rel="opener"
                title="Heartbeat all"
@@ -59,7 +60,7 @@
             </a>
             <br/>
             Failures count:
-            <a href="/heartbeat-failures"
+            <a href="/database/projects-hub/heartbeat-failures"
                data-enhance-nav="true"
                rel="opener"
                title="Heartbeat failures"

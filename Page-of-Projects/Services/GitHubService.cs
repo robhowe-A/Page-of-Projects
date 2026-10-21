@@ -123,8 +123,6 @@ public class GitHubService : IGitHubService
 
     private GitHubCollaborator? CheckNullOrWhiteSpaceResponseAndSerialize(string responseString)
     {
-        GitHubCollaborator? responseModeled = null;
-
         if (string.IsNullOrWhiteSpace(responseString)) return null;
 
         return JsonSerializer.Deserialize<GitHubCollaborator>(
