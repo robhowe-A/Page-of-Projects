@@ -41,7 +41,8 @@ public class GitHubVaultApi
         request.Headers.Add("User-Agent", "ProjectsPageApp-AccessController|roberthowell.dev|Projects Hub|A portfolio development by Robert Howell");
         request.Version = new Version(2, 0);
         request.VersionPolicy = HttpVersionPolicy.RequestVersionOrHigher;
-        request.Content = new StringContent("""{"permission":"pull"}""", Encoding.UTF8);
+        //Removed for API change. Results in 422 error and now ONLY works for organization's requests. 10-21-2026
+        //request.Content = new StringContent("""{"permission":"pull"}""", Encoding.UTF8);
 
         return request;
     }

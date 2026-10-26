@@ -19,13 +19,13 @@ public partial class Databases : ComponentBase
         databaseTableLinks.Enqueue(new AppAnchor
                       {
                               Href = "/database/projects-hub/heartbeat-all",
-                              Title = "Heartbeat All",
+                              Title = "Database | Heartbeat All | Projects Hub",
                               TextContent = "Heartbeat All | roberthowell.dev"
                       });
         databaseTableLinks.Enqueue(new AppAnchor
                       {
                               Href = "/database/projects-hub/heartbeat-failures",
-                              Title = "Heartbeat Failures",
+                              Title = "Database | Heartbeat Failures | Projects Hub",
                               TextContent = "Heartbeat Failures | roberthowell.dev"
                       });
         databaseTableLinks.Enqueue(new AppAnchor
@@ -44,20 +44,22 @@ public partial class Databases : ComponentBase
         databaseTableLinks.Enqueue(new AppAnchor
                       {
                               Href = "/database/randomwebbits/rwb-db0",
-                              Title = "Database | Random Web Bits",
+                              Title = "Database | Access Record | Random Web Bits",
                               TextContent = "Random Web Bits - Access Record"
                       });
         databaseTableLinks.Enqueue(new AppAnchor
                       {
-                              Href = "/database/randomwebbits/rwb-db1",
-                              Title = "Database2 | Random Web Bits",
-                              TextContent = "Random Web Bits - Anonymous User"
+                              Href = "/database/randomwebbits/rwb-db0",
+                              Title = "Database | Anonymous User | Random Web Bits",
+                              TextContent = "Random Web Bits - Anonymous User",
+                              AddNavLink = false
                       });
         databaseTableLinks.Enqueue(new AppAnchor
                       {
-                              Href = "/database/randomwebbits/rwb-db2",
-                              Title = "Database3 | Random Web Bits",
-                              TextContent = "Random Web Bits - User Agent"
+                              Href = "/database/randomwebbits/rwb-db0",
+                              Title = "Database | User Agent | Random Web Bits",
+                              TextContent = "Random Web Bits - User Agent",
+                              AddNavLink = false
                       });
         return databaseTableLinks;
     }

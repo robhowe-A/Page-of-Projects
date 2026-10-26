@@ -20,9 +20,18 @@
                             H3ElemText="Access Record"/>
         <RwbAccessRecordTable AllAccessRecord="@(Rows == null ? _rwbDbContext.access_record.OrderBy(k => k.AnonymousUserId).ThenBy(k => k.LastAccessed).Where(x => x.AnonymousUserId >= 0).ToList() : Rows.ToList())"/>
     </div>
-</article>
+    <div class="page-viewbox">
+        <RwbAnonymousUserTable AllAnonymousUser="@_rwbDbContext.anonymous_user.Where(x => x.AnonymousUserId >= 1).ToList()"
+                               H3ElemText="Anonymous User"/>
+    </div>
+    <div class="page-viewbox">
+        <RwbUserAgentTable AllUserAgent="@_rwbDbContext.user_agent.Where(x => x.AgentId >= 1).ToList()"
+                           H3ElemText="User Agent"/>
+    </div>
+    </article>
 @code {
     private RwbDbContext _rwbDbContext = EntityModels.CreateRwbDbContext();
+    
     private RwbAccessRecord[]? Rows = null;
 
     private async Task OnFilterFindComplete(List<RwbAccessRecord> rows)

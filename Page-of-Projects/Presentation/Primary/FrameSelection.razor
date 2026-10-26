@@ -9,16 +9,19 @@
 @namespace ProjectsPage.Components.Primary
 
 <div class="nav @(_toggleGlobalNavCollapse ? "collapsed" : "")">
-    <button id="global-nav-collapse-btn" @onclick="@ToggleGlobalNavCollapse" @onclick:stopPropagation="true">
-        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 50 50">
-            <path d="M 0 7.5 L 0 12.5 L 50 12.5 L 50 7.5 L 0 7.5 z M 0 22.5 L 0 27.5 L 50 27.5 L 50 22.5 L 0 22.5 z M 0 37.5 L 0 42.5 L 50 42.5 L 50 37.5 L 0 37.5 z"></path>
-        </svg>
-    </button>
-    <div>
-        <button id="nav-collapse-btn" 
+    <div class="nav-collapse-btns">
+        <button id="global-nav-collapse-btn"
+                @onclick="@ToggleGlobalNavCollapse"
+                @onclick:stopPropagation="true"
+                title="Global Navigation">
+            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 50 50">
+                <path d="M 0 7.5 L 0 12.5 L 50 12.5 L 50 7.5 L 0 7.5 z M 0 22.5 L 0 27.5 L 50 27.5 L 50 22.5 L 0 22.5 z M 0 37.5 L 0 42.5 L 50 42.5 L 50 37.5 L 0 37.5 z"></path>
+            </svg>
+        </button>
+        <button id="nav-collapse-btn"
                 class="collapse-prevent @(_toggleNavCollapse ? "collapsed" : "")"
-                @onclick="@ToggleNavCollapse">
-            <span>Projects</span>
+                @onclick="@ToggleNavCollapse"
+                title="Projects">
             @if (_toggleNavCollapse)
             {
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-right"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg>
@@ -28,6 +31,8 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-left"><polyline points="11 17 6 12 11 7"></polyline><polyline points="18 17 13 12 18 7"></polyline></svg>
             }
         </button>
+    </div>
+    <div>
         <div id="nav-panels">
             <div id="nav-projects" class="nav-collapse @(_toggleNavCollapse ? "collapsed" : "")">
                 <HyperTextMarkdownSearch
@@ -144,8 +149,7 @@
             </div>
             <GlobalNav
                 FrameSelections="@(AllSelections.Where(x => x.Type == "featured").OrderByDescending(x => x.Title).ToList())"
-                ToggleNavCollapse="@_toggleGlobalNavCollapse"
-                />
+                ToggleNavCollapse="@_toggleGlobalNavCollapse"/>
         </div>
     </div>
     <ReferenceTray/>
