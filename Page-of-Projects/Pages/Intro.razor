@@ -35,17 +35,17 @@
             <NavCard Icon="🗄️"
                      Title="Behind the Scenes: Data"
                      Href="/database"
-                     Description="A friendly peek at how information is stored and organized to keep these projects running smoothly. Explained in plain terms, no database knowledge required." />
+                     Description="A friendly peek at how information is stored and organized to keep these projects running smoothly. Explained in plain terms, no database knowledge required."/>
 
             <NavCard Icon="✅"
                      Title="Live Status & Reliability"
                      Href="/status"
-                     Description="A simple health check showing which projects are up and running right now. It reflects the care I put into keeping things stable and dependable." />
+                     Description="A simple health check showing which projects are up and running right now. It reflects the care I put into keeping things stable and dependable."/>
 
             <NavCard Icon="🔐"
                      Title="Private Project Access"
                      Href="/sources/source"
-                     Description="Some work lives in private repositories. This section explains how to request access if you'd like a closer look at the source behind these projects." />
+                     Description="Some work lives in private repositories. This section explains how to request access if you'd like a closer look at the source behind these projects."/>
         </section>
 
         <section class="intro__note" aria-label="Helpful viewing tip">
@@ -66,7 +66,7 @@
         <section class="intro__projects" aria-label="Project cards">
             @foreach (var project in FrameSelectionData.ProjectsSelections)
             {
-                <ProjectCard Project="@project" DetailsUri="@($"/projects?pid={project.Title}")"/>
+                <ProjectCard Project="@project" DetailsUri="@($"/projects/summary?pid={project.Title}")"/>
             }
         </section>
 
@@ -76,7 +76,7 @@
                  alt="A welcoming hallway representing the start of the project tour"
                  width="560" height="560"
                  loading="lazy" decoding="async"
-                 sizes="(max-width: 640px) 100vw, 480px" />
+                 sizes="(max-width: 640px) 100vw, 480px"/>
             <figcaption class="intro__closing-caption">
                 Thanks for exploring &mdash; feel free to reach out anytime.
             </figcaption>

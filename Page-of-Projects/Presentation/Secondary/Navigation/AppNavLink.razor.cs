@@ -9,4 +9,5 @@ public partial class AppNavLink : ComponentBase
 {
     [Parameter] public required AppAnchor Link { get; set; }
     [Parameter] public string? ClassNames { get; set; }
+
 }

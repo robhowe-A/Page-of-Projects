@@ -12,4 +12,5 @@ public class AppAnchor
     public string? Target { get; set; } = "_self";
     public required string? TextContent { get; set; }
     public bool AddNavLink { get; set; } = true;
+    public bool IsActive { get; set; } = false;
 };
