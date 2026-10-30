@@ -58,16 +58,19 @@
             </p>
         </section>
 
-        <h2 class="intro__section-title">Browse the Projects</h2>
-        <p class="intro__section-note">
-            Each project can be previewed right here in the Projects Hub, or opened as a live site in a new tab.
-        </p>
-
-        <section class="intro__projects" aria-label="Project cards">
-            @foreach (var project in FrameSelectionData.ProjectsSelections)
-            {
-                <ProjectCard Project="@project" DetailsUri="@($"/projects/summary?pid={project.Title}")"/>
-            }
+        <section>
+            <div class="intro__projects__heading">
+                <h2 class="intro__section-title">Browse the Projects</h2>
+                <p class="intro__section-note">
+                    Each project can be previewed right here in the Projects Hub, or opened as a live site in a new tab.
+                </p>
+            </div>
+            <div class="intro__projects" aria-label="Project cards">
+                @foreach (var project in FrameSelectionData.ProjectsSelections)
+                {
+                    <ProjectCard Project="@project" DetailsUri="@($"/projects/summary?pid={project.Title}")"/>
+                }
+            </div>
         </section>
 
         <figure class="intro__closing">
