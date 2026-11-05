@@ -47,6 +47,7 @@ public partial class FrameSelection
                 throw new ApplicationException("WebsitesOptions is null");
     }
 
+    [Obsolete("Removed navigation component;")]
     public List<FrameSelectionOption> ConcatWebsiteAndDemoSelections()
     {
         var allSelections = WebsiteSelections.Concat(DemoSelections).ToList();
