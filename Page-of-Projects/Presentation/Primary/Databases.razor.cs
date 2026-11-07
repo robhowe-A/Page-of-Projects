@@ -1,13 +1,12 @@
 ﻿//--Copyright (c) 2026 Robert A. Howell
 
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Html;
 using ProjectsPage.Components.Pages;
 using ProjectsPage.Domain;
 using ProjectsPage.Pages.Database;
 using ProjectsPage.Presentation.Aside;
 
-namespace ProjectsPage.Presentation.Primary;
+namespace ProjectsPage.Components.Primary;
 
 public partial class Databases : ComponentBase
 {
@@ -18,45 +17,39 @@ public partial class Databases : ComponentBase
         Queue<AppAnchor> databaseTableLinks = new();
         databaseTableLinks.Enqueue(new AppAnchor
                       {
-                              Href = "/database/projects-hub/heartbeat-all",
+                              Href = "/database/projects-hub/heartbeats",
                               Title = "Database | Heartbeat All | Projects Hub",
                               TextContent = "Heartbeat All | roberthowell.dev"
                       });
         databaseTableLinks.Enqueue(new AppAnchor
                       {
-                              Href = "/database/projects-hub/heartbeat-failures",
-                              Title = "Database | Heartbeat Failures | Projects Hub",
-                              TextContent = "Heartbeat Failures | roberthowell.dev"
-                      });
-        databaseTableLinks.Enqueue(new AppAnchor
-                      {
-                              Href = "/database/spaceflight-news-app/sfan-db0",
+                              Href = "/database/spaceflight-news-app",
                               Title = "Database | SpaceFlight News App",
                               TextContent = "SpaceFlight News App"
                       });
         databaseTableLinks.Enqueue(new AppAnchor
                       {
-                              Href = "/database/spaceflight-news-app/sfan-db0",
+                              Href = "/database/spaceflight-news-app",
                               Title = "Database | SpaceFlight News App",
                               TextContent = "SpaceFlight News App",
                               AddNavLink = false
                       });
         databaseTableLinks.Enqueue(new AppAnchor
                       {
-                              Href = "/database/randomwebbits/rwb-db0",
+                              Href = "/database/randomwebbits",
                               Title = "Database | Access Record | Random Web Bits",
                               TextContent = "Random Web Bits - Access Record"
                       });
         databaseTableLinks.Enqueue(new AppAnchor
                       {
-                              Href = "/database/randomwebbits/rwb-db0",
+                              Href = "/database/randomwebbits",
                               Title = "Database | Anonymous User | Random Web Bits",
                               TextContent = "Random Web Bits - Anonymous User",
                               AddNavLink = false
                       });
         databaseTableLinks.Enqueue(new AppAnchor
                       {
-                              Href = "/database/randomwebbits/rwb-db0",
+                              Href = "/database/randomwebbits",
                               Title = "Database | User Agent | Random Web Bits",
                               TextContent = "Random Web Bits - User Agent",
                               AddNavLink = false
@@ -191,28 +184,8 @@ public partial class Databases : ComponentBase
                                },
                                new DatabaseOverview()
                                {
-                                       OverviewItems = HeartbeatsTableBase.FiveHeartbeatsFailures(),
-                                       OverviewItemsType = HeartbeatsTableBase.FiveHeartbeatsFailures().First().GetType(),
-                                       OverviewItemsCsvFileName =
-                                               $"heartbeat-failures_{DateTime.UtcNow:yyyy-MM-dd}.csv",
-                                       OverviewItemsCsvButtonText =
-                                               "Download CSV",
-                                       CaptionText = "HeartBeats.Failures",
-                                       HeaderTemplateStr = (MarkupString)
-                                               """
-                                               <thead>
-                                                   <th>Id</th>
-                                                   <th>TimeStamp</th>
-                                                   <th>Domain</th>
-                                                   <th>ResponseCode</th>
-                                               </thead>
-                                               """,
-                                       RowTemplateBuildStr = BuildHeartbeatsFailuresRow,
-                               },
-                               new DatabaseOverview()
-                               {
-                                       OverviewItems = SNAPI_Db.FiveArticles(),
-                                       OverviewItemsType = SNAPI_Db.FiveArticles().First().GetType(),
+                                       OverviewItems = SNAPI.FiveArticles(),
+                                       OverviewItemsType = SNAPI.FiveArticles().First().GetType(),
                                        OverviewItemsCsvFileName = $"spaceflight-articles_{DateTime.UtcNow:yyyy-MM-dd}.csv",
                                        OverviewItemsCsvButtonText = "Download CSV",
                                        CaptionText = "SpaceFlightNewsApp.Article",
@@ -229,8 +202,8 @@ public partial class Databases : ComponentBase
                                },
                                new DatabaseOverview()
                                {
-                                       OverviewItems = SNAPI_Db.FiveApods(),
-                                       OverviewItemsType = SNAPI_Db.FiveApods().First().GetType(),
+                                       OverviewItems = SNAPI.FiveApods(),
+                                       OverviewItemsType = SNAPI.FiveApods().First().GetType(),
                                        OverviewItemsCsvFileName = $"spaceflight-apods_{DateTime.UtcNow:yyyy-MM-dd}.csv",
                                        OverviewItemsCsvButtonText = "Download CSV",
                                        CaptionText = "SpaceFlightNewsApp.Apod",

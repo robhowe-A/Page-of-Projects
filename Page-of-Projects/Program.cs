@@ -50,6 +50,7 @@ builder.Services.AddProjectsContext(gitHubCollaboratorConString, conString);
 builder.Services.StartAgentHeartbeat();
 builder.Services.AddResponseCompression(options => options.EnableForHttps = true);
 builder.Services.AddControllers(options => { options.EnableEndpointRouting = true; });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

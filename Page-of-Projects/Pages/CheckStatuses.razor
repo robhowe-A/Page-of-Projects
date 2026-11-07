@@ -29,7 +29,7 @@
                 </div>
                 <table class="subdomain">
                     <tbody>
-                    @foreach (var subdomain in domain.Sites)
+                    @foreach (var subdomain in domain.Sites.Where(s => !s.Url.Contains("reporting.rhdeveloping.com")))
                     {
                         <tr class="row-height hide-site-test-btn">
                             <td class="status">@(_statuses.TryGetValue(subdomain.Url, out var status) ? status : "…")</td>
@@ -52,7 +52,7 @@
     <div>
         <p>A background service checks the status of each site every 10 minutes.</p>
         <p>Successes count:
-            <a href="/database/projects-hub/heartbeat-all"
+            <a href="/database/projects-hub/heartbeats"
                data-enhance-nav="true"
                rel="opener"
                title="Heartbeat all"
@@ -60,7 +60,7 @@
             </a>
             <br/>
             Failures count:
-            <a href="/database/projects-hub/heartbeat-failures"
+            <a href="/database/projects-hub/heartbeats"
                data-enhance-nav="true"
                rel="opener"
                title="Heartbeat failures"

@@ -1,33 +1,32 @@
 ﻿@* --Copyright (c) 2026 Robert A. Howell *@
 
-@page "/database/projects-hub/heartbeat-all"
+@page "/database/projects-hub/heartbeats"
 @using Microsoft.AspNetCore.Components.Web
+@using ProjectsPage.Components.Primary
 @using ProjectsPage.Components.Secondary
 @using ProjectsPage.Domain
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
-@inherits HeartbeatsTableBase
+@inherits ProjectsPage.Components.Pages.HeartbeatsTableBase
 @rendermode InteractiveServer
 
-@namespace ProjectsPage.Components.Pages
+@namespace ProjectsPage.Pages.Database
 
 <PageTitle>Heartbeats | roberthowell.dev</PageTitle>
 <article id="Heartbeats-Page" class="page-table">
     <DatabaseNav/>
     <div class="page-viewbox">
-        
-        <HeartbeatTable Heartbeats="@(
-                                    HeartbeatsAll.ConvertAll(i => new HeartbeatData
-                                                                  {
-                                                                          Id = i.Id,
-                                                                          Timestamp = i.RecordTimestamp,
-                                                                          Agent = i.Agent,
-                                                                          Project = i.ProjectName,
-                                                                          Domain = i.Domain,
-                                                                          RelativeUrl = i.UrlRel,
-                                                                          ResponseCode = i.ResponseStatus
-                                                                  }))"
-                        H3ElemText="Heartbeat Requests"
+        <HeartbeatFilter OnFilterFind="@OnHeartbeatDataRowsFilterFindComplete"
+                            H3ElemText="Heartbeat Requests"/>
+        <HeartbeatTable Heartbeats="@(HeartbeatRows == null ? HeartbeatsAll : HeartbeatRows.ToList())"
                         GetLoopDataSet="@GetLoopDataSet"
                         RecordComparison="@HeartbeatComparer"/>
     </div>
 </article>
+@code {
+    private HeartbeatData[]? HeartbeatRows = null;
+    private async Task OnHeartbeatDataRowsFilterFindComplete(List<HeartbeatData> rows)
+    {
+        HeartbeatRows = rows.ToArray();
+    }
+
+}
