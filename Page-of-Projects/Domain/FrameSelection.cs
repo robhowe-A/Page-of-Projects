@@ -28,7 +28,7 @@ public class FrameSelectionOption
     internal FrameSelectionOption(string href, string title, string innerText, string externalHref,
                                   string externalTitle, string imageUrl, string imageAltText,
                                   List<string>? referenceHrefs,
-                                  SelectionDetails selectionDetails, bool isSelected, string type, Networking networking)
+                                  SelectionDetails selectionDetails, bool isSelected, string type, Networking networking, Guid? guid)
     {
         Href = href ?? throw new ArgumentNullException(nameof(href));
         Title = title ?? throw new ArgumentNullException(nameof(title));
@@ -46,6 +46,7 @@ public class FrameSelectionOption
             DocHrefTitles = GetDocsHrefTitleAsync(ReferenceHrefs);
         Type = type ?? throw new ArgumentNullException(nameof(type));
         Networking = networking ?? throw new ArgumentNullException(nameof(networking));
+        Guid = guid;
     }
 
     public required string Href { get; init; }
@@ -57,9 +58,11 @@ public class FrameSelectionOption
     public required string ImageAltText { get; init; }
     public List<string>? ReferenceHrefs { get; init; }
     public required SelectionDetails SelectionDetails { get; init; }
-    public bool IsSelected { get; init; } //Not in JSON
     public required string Type { get; init; }
     public required Networking Networking { get; init; }
+    //Not in jdoc properties
+    public bool IsSelected { get; init; } 
+    public Guid? Guid { get; set; }
 
     //private async Task<Dictionary<string, string>> GetDocsHrefTitleAsync(List<string> docsHref)
     private Dictionary<string, string> GetDocsHrefTitleAsync(List<string> docsHref)
@@ -173,9 +176,10 @@ internal static class FrameSelectionData
         var websitesDocsArray = FsFetch.GetProjectsData(project1, project2);
 
         if (websitesDocsArray is null) throw new ArgumentNullException(nameof(websitesDocsArray));
-        var websitesData = JDocsDataStringLoop(websitesDocsArray);
+        //var websitesData = JDocsDataStringLoop(websitesDocsArray);
 
-        return DeserializeProjectJson(websitesData);
+        //return DeserializeProjectJson(websitesData);
+        return DeserializeProjectJson(websitesDocsArray);
     }
 
     private static List<FrameSelectionOption> DeserializeProjectJson(string jsonStr)
@@ -191,6 +195,30 @@ internal static class FrameSelectionData
         catch (Exception e) when (e is JsonException or NotSupportedException)
         {
             WriteLine($"Error: {e}", e);
+        }
+
+        return selections;
+    }
+
+    private static List<FrameSelectionOption> DeserializeProjectJson(ProjectPage[] projArr)
+    {
+        List<FrameSelectionOption> selections = [];
+
+        foreach (ProjectPage proj in projArr)
+        {
+            try
+            {
+                var projectDocument = JsonSerializer.Deserialize<FrameSelectionOption>(proj.Document,
+                                                                                        new JsonSerializerOptions
+                                                                                        { PropertyNameCaseInsensitive = true }) ??
+                        throw new ApplicationException("Json is null");
+                projectDocument.Guid = proj.Guid;
+                selections.Add(projectDocument);
+            }
+            catch (Exception e) when (e is JsonException or NotSupportedException)
+            {
+                WriteLine($"Error: {e}", e);
+            }
         }
 
         return selections;

@@ -78,7 +78,7 @@
             <div class="intro__projects" aria-label="Project cards">
                 @foreach (var project in FrameSelectionData.ProjectsSelections)
                 {
-                    <ProjectCard Project="@project" DetailsUri="@($"/projects/summary?pid={project.Title}")"/>
+                    <ProjectCard Project="@project" DetailsUri="@($"/projects/summary?pid={project.Guid}")"/>
                 }
             </div>
         </section>
