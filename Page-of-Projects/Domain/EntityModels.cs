@@ -8,21 +8,21 @@ internal static class EntityModels
 {
     public static ProjectsDbContext CreateProjectsDbContext()
     {
-        return new ProjectsDbContext().GetContext("ProjectsDb");
+        return ProjectsDbContext.GetContext("ProjectsDb");
     }
 
     public static ProjectsDbContext CreatUsageDbContext()
     {
-        return new ProjectsDbContext().GetContext("UsageDb");
+        return ProjectsDbContext.GetContext("UsageDb");
     }
 
     public static SpaceflightDbContext CreateArticlesDbContext()
     {
-        return new SpaceflightDbContext().GetContext("SpaceflightDb");
+        return SpaceflightDbContext.GetContext("SpaceflightDb");
     }
 
     public static RwbDbContext CreateRwbDbContext()
     {
-        return new RwbDbContext().GetContext("RwbDbContext");
+        return RwbDbContext.GetContext("RwbDbContext");
     }
 };

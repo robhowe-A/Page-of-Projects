@@ -3,10 +3,10 @@
 @page "/database/randomwebbits"
 
 @using Microsoft.AspNetCore.Components.Web
+@using Microsoft.EntityFrameworkCore
 @using ProjectsPage.Components.Primary
 @using ProjectsPage.Components.Secondary
 @using ProjectsPage.Domain
-@using ProjectsPage.Infrastructure
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
 @rendermode InteractiveServer
 
@@ -18,32 +18,50 @@
     <div class="page-viewbox">
         <AccessRecordFilter OnFilterFind="@OnAccessRecordFilterFindComplete"
                             H3ElemText="Access Record"/>
-        <RwbAccessRecordTable AllAccessRecord="@(ARRows == null ? _rwbDbContext.access_record.OrderBy(k => k.AnonymousUserId).ThenBy(k => k.LastAccessed).Where(x => x.AnonymousUserId >= 0).ToList() : ARRows.ToList())"/>
+        <RwbAccessRecordTable AllAccessRecord="@_arRows.ToList()"/>
     </div>
     <div class="page-viewbox">
-        <RwbAnonymousUserTable AllAnonymousUser="@_rwbDbContext.anonymous_user.Where(x => x.AnonymousUserId >= 1).ToList()"
+        <RwbAnonymousUserTable AllAnonymousUser="@_auRows.ToList()"
                                H3ElemText="Anonymous User"/>
     </div>
     <div class="page-viewbox">
         <UserAgentFilter OnFilterFind="@OnUserAgentFilterFindComplete"
-                            H3ElemText="User Agent"/>
-        <RwbUserAgentTable AllUserAgent="@(UARows == null ? _rwbDbContext.user_agent.Where(x => x.AgentId >= 1).ToList() : UARows.ToList())"/>
+                         H3ElemText="User Agent"/>
+        <RwbUserAgentTable AllUserAgent="@_uaRows.ToList()"/>
     </div>
     </article>
 @code {
-    private RwbDbContext _rwbDbContext = EntityModels.CreateRwbDbContext();
-    
-    private RwbAccessRecord[]? ARRows = null;
-    private RwbUserAgent[]? UARows = null;
 
-    private async Task OnAccessRecordFilterFindComplete(List<RwbAccessRecord> rows)
+    private RwbAccessRecord[] _arRows = [];
+    private RwbUserAgent[] _uaRows = [];
+    private RwbAnonymousUser[] _auRows = [];
+
+    private Task OnAccessRecordFilterFindComplete(List<RwbAccessRecord> rows)
     {
-        ARRows = rows.ToArray();
+        _arRows = rows.ToArray();
+        return Task.CompletedTask;
     }
 
-    private async Task OnUserAgentFilterFindComplete(List<RwbUserAgent> rows)
+    private Task OnUserAgentFilterFindComplete(List<RwbUserAgent> rows)
     {
-        UARows = rows.ToArray();
+        _uaRows = rows.ToArray();
+        return Task.CompletedTask;
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        await using var dbContext = EntityModels.CreateRwbDbContext();
+
+        _arRows = await dbContext.access_record.AsNoTracking()
+                                .OrderBy(k => k.AnonymousUserId)
+                                .ThenBy(k => k.LastAccessed)
+                                .Where(x => x.AnonymousUserId >= 0).ToArrayAsync();
+        _uaRows = await dbContext.user_agent.AsNoTracking()
+                                .Where(x => x.AgentId >= 1)
+                                .ToArrayAsync();
+        _auRows = await dbContext.anonymous_user.AsNoTracking()
+                                 .Where(x => x.AnonymousUserId >= 1)
+                                 .ToArrayAsync();
+
+    }
 }

@@ -1,9 +1,9 @@
 ﻿//--Copyright (c) 2026 Robert A. Howell
 
 using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore;
 using ProjectsPage.Components.Pages;
 using ProjectsPage.Domain;
-using ProjectsPage.Pages.Database;
 using ProjectsPage.Presentation.Aside;
 
 namespace ProjectsPage.Components.Primary;
@@ -156,9 +156,19 @@ public partial class Databases : ComponentBase
                                </tr>
                                """;
     }
-
+    private static List<SpaceflightArticle> _fiveArticles = [];
+    private static List<SpaceflightApod> _fiveApods = [];
     protected override void OnInitialized()
     {
+        using var context = EntityModels.CreateArticlesDbContext();
+
+        _fiveArticles = context.Article.AsNoTracking()
+                                    .OrderByDescending(a => a.Date)
+                                    .Take(5).ToList();
+
+        _fiveApods = context.APOD.AsNoTracking()
+                                 .OrderByDescending(a => a.Date)
+                                 .Take(5).ToList();
         Items.AddRange([
                                new DatabaseOverview()
                                {
@@ -174,45 +184,51 @@ public partial class Databases : ComponentBase
                                        HeaderTemplateStr = (MarkupString)
                                                 """
                                                 <thead>
-                                                    <th>Id</th>
-                                                    <th>TimeStamp</th>
-                                                    <th>Domain</th>
-                                                    <th>ResponseCode</th>
+                                                    <tr>
+                                                        <th>Id</th>
+                                                        <th>TimeStamp</th>
+                                                        <th>Domain</th>
+                                                        <th>ResponseCode</th>
+                                                    </tr>
                                                 </thead>
                                                 """,
                                        RowTemplateBuildStr = BuildHeartbeatsRow,
                                },
                                new DatabaseOverview()
                                {
-                                       OverviewItems = SNAPI.FiveArticles(),
-                                       OverviewItemsType = SNAPI.FiveArticles().First().GetType(),
+                                       OverviewItems = _fiveArticles,
+                                       OverviewItemsType = _fiveArticles.First().GetType(),
                                        OverviewItemsCsvFileName = $"spaceflight-articles_{DateTime.UtcNow:yyyy-MM-dd}.csv",
                                        OverviewItemsCsvButtonText = "Download CSV",
                                        CaptionText = "SpaceFlightNewsApp.Article",
                                        HeaderTemplateStr = (MarkupString)
                                                """
                                                <thead>
-                                                   <th>ArticleNum</th>
-                                                   <th>Date</th>
-                                                   <th>Featured</th>
-                                                   <th>NewsSite</th>
+                                                <tr>
+                                                    <th>ArticleNum</th>
+                                                    <th>Date</th>
+                                                    <th>Featured</th>
+                                                    <th>NewsSite</th>
+                                                </tr>
                                                </thead>
                                                """,
                                        RowTemplateBuildStr = BuildSpaceflightArticleRow,
                                },
                                new DatabaseOverview()
                                {
-                                       OverviewItems = SNAPI.FiveApods(),
-                                       OverviewItemsType = SNAPI.FiveApods().First().GetType(),
+                                       OverviewItems = _fiveApods,
+                                       OverviewItemsType = _fiveApods.First().GetType(),
                                        OverviewItemsCsvFileName = $"spaceflight-apods_{DateTime.UtcNow:yyyy-MM-dd}.csv",
                                        OverviewItemsCsvButtonText = "Download CSV",
                                        CaptionText = "SpaceFlightNewsApp.Apod",
                                        HeaderTemplateStr = (MarkupString)
                                                                           """
                                                                           <thead>
+                                                                            <tr>
                                                                               <th>Date</th>
                                                                               <th>Media</th>
                                                                               <th>Title</th>
+                                                                            </tr>
                                                                           </thead>
                                                                           """,
                                        RowTemplateBuildStr =  BuildSpaceflightApodRow,
@@ -227,9 +243,11 @@ public partial class Databases : ComponentBase
                                        HeaderTemplateStr = (MarkupString)
                                                                           """
                                                                           <thead>
+                                                                            <tr>
                                                                               <th>Anonymous User Id</th>
                                                                               <th>Uri</th>
                                                                               <th>Last Accessed</th>
+                                                                            </tr>
                                                                           </thead>
                                                                           """,
                                        RowTemplateBuildStr = BuildAccessRecordRow,
@@ -244,8 +262,10 @@ public partial class Databases : ComponentBase
                                        HeaderTemplateStr = (MarkupString)
                                                                           """
                                                                           <thead>
+                                                                            <tr>
                                                                               <th>Digest</th>
                                                                               <th>Last Accessed</th>
+                                                                            </tr>
                                                                           </thead>
                                                                           """,
                                        RowTemplateBuildStr = BuildAnonymousUserRow,
@@ -260,8 +280,10 @@ public partial class Databases : ComponentBase
                                        HeaderTemplateStr = (MarkupString)
                                                                           """
                                                                           <thead>
-                                                                            <th>Id</th>
-                                                                            <th>Last Accessed</th>
+                                                                            <tr>
+                                                                                <th>Id</th>
+                                                                                <th>Last Accessed</th>
+                                                                            </tr>
                                                                           </thead>
                                                                           """,
                                        RowTemplateBuildStr = BuildUserAgentRow,

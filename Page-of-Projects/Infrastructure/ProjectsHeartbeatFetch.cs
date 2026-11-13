@@ -1,6 +1,7 @@
 ﻿// --Copyright (c) 2026 Robert A. Howell
 
 using System.Net;
+using Microsoft.EntityFrameworkCore;
 using ProjectsPage.Domain;
 
 namespace ProjectsPage.Infrastructure;
@@ -12,7 +13,6 @@ internal sealed class ProjectsHeartbeatFetch
     private const string ProjectNamePrefix = "CLOUD|";
     private const string TestPrefix = "TEST:";
     
-    private readonly ProjectsDbContext _db = EntityModels.CreateProjectsDbContext();
 
     public int ProjectsHeartbeatSuccessCount()
     {
@@ -63,7 +63,9 @@ internal sealed class ProjectsHeartbeatFetch
 
     private List<Heartbeat> FetchProjectsHeartbeats()
     {
-        return _db.Heartbeat.Where(p => !p.UrlRel.Contains(TestRecordOnlyPrefix) && !p.UrlRel.Contains(TestPrefix)) 
+        using ProjectsDbContext projectsDbContext = EntityModels.CreateProjectsDbContext();
+
+        return projectsDbContext.Heartbeat.AsNoTracking().Where(p => !p.UrlRel.Contains(TestRecordOnlyPrefix) && !p.UrlRel.Contains(TestPrefix)) 
                   .OrderByDescending(p => p.RecordTimestamp)
                   .ThenByDescending(p => p.Id)
                   .Take(MaxHeartbeatRecords)
@@ -72,7 +74,9 @@ internal sealed class ProjectsHeartbeatFetch
 
     private List<Heartbeat> FetchProjectsHeartbeatFailures()
     {
-        return _db.Heartbeat.Where(p => p.ResponseStatus != nameof(HttpStatusCode.OK))
+        using ProjectsDbContext projectsDbContext = EntityModels.CreateProjectsDbContext();
+
+        return projectsDbContext.Heartbeat.AsNoTracking().Where(p => p.ResponseStatus != nameof(HttpStatusCode.OK))
                   .Where(p => !p.UrlRel.Contains(TestRecordOnlyPrefix) && !p.UrlRel.Contains(TestPrefix))
                   .OrderByDescending(p => p.RecordTimestamp)
                   .ThenByDescending(p => p.Id)
@@ -81,41 +85,55 @@ internal sealed class ProjectsHeartbeatFetch
 
     private int FetchProjectsHeartbeatCloudSuccessCount()
     {
-        return _db.Heartbeat.Count(p => !p.ProjectName.Contains(TestRecordOnlyPrefix) && p.ProjectName.Contains(ProjectNamePrefix)
+        using ProjectsDbContext projectsDbContext = EntityModels.CreateProjectsDbContext();
+
+        return projectsDbContext.Heartbeat.AsNoTracking().Count(p => !p.ProjectName.Contains(TestRecordOnlyPrefix) && p.ProjectName.Contains(ProjectNamePrefix)
                                        && p.ResponseStatus.Contains(nameof(HttpStatusCode.OK)));
     }
 
     private int FetchProjectsHeartbeatCloudTotalCount()
     {
-        return _db.Heartbeat.Count(p => !p.ProjectName.Contains(TestRecordOnlyPrefix) &&
+        using ProjectsDbContext projectsDbContext = EntityModels.CreateProjectsDbContext();
+
+        return projectsDbContext.Heartbeat.AsNoTracking().Count(p => !p.ProjectName.Contains(TestRecordOnlyPrefix) &&
                                            p.ProjectName.Contains(ProjectNamePrefix));
     }
 
     private int FetchProjectsHeartbeatOnPremSuccessCount()
     {
-        return _db.Heartbeat.Count(p => !p.ProjectName.Contains(TestRecordOnlyPrefix) && !p.ProjectName.Contains(ProjectNamePrefix)
+        using ProjectsDbContext projectsDbContext = EntityModels.CreateProjectsDbContext();
+
+        return projectsDbContext.Heartbeat.AsNoTracking().Count(p => !p.ProjectName.Contains(TestRecordOnlyPrefix) && !p.ProjectName.Contains(ProjectNamePrefix)
                                         && p.ResponseStatus.Contains(nameof(HttpStatusCode.OK)));
     }
 
     private int FetchProjectsHeartbeatOnPremTotalCount()
     {
-        return _db.Heartbeat.Count(p => !p.ProjectName.Contains(TestRecordOnlyPrefix) &&
+        using ProjectsDbContext projectsDbContext = EntityModels.CreateProjectsDbContext();
+
+        return projectsDbContext.Heartbeat.AsNoTracking().Count(p => !p.ProjectName.Contains(TestRecordOnlyPrefix) &&
                                            !p.ProjectName.Contains(ProjectNamePrefix));
     }
 
     private int FetchProjectsHeartbeatSuccessCount()
     {
-        return _db.Heartbeat.Count(p => !p.ProjectName.Contains(TestRecordOnlyPrefix) && p.ResponseStatus.Contains(nameof(HttpStatusCode.OK)));
+        using ProjectsDbContext projectsDbContext = EntityModels.CreateProjectsDbContext();
+
+        return projectsDbContext.Heartbeat.AsNoTracking().Count(p => !p.ProjectName.Contains(TestRecordOnlyPrefix) && p.ResponseStatus.Contains(nameof(HttpStatusCode.OK)));
     }
 
     private int FetchProjectsHeartbeatUnsuccessfulCount()
     {
-        return _db.Heartbeat.Count(p => !p.ProjectName.Contains(TestRecordOnlyPrefix) &&
+        using ProjectsDbContext projectsDbContext = EntityModels.CreateProjectsDbContext();
+
+        return projectsDbContext.Heartbeat.AsNoTracking().Count(p => !p.ProjectName.Contains(TestRecordOnlyPrefix) &&
                                            !p.ResponseStatus.Contains(nameof(HttpStatusCode.OK)));
     }
 
     private int FetchProjectsHeartbeatTotalCount()
     {
-        return _db.Heartbeat.Count(p => !p.ProjectName.Contains(TestRecordOnlyPrefix));
+        using ProjectsDbContext projectsDbContext = EntityModels.CreateProjectsDbContext();
+
+        return projectsDbContext.Heartbeat.AsNoTracking().Count(p => !p.ProjectName.Contains(TestRecordOnlyPrefix));
     }
 };

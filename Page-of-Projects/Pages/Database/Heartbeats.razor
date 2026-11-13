@@ -16,17 +16,17 @@
     <DatabaseNav/>
     <div class="page-viewbox">
         <HeartbeatFilter OnFilterFind="@OnHeartbeatDataRowsFilterFindComplete"
-                            H3ElemText="Heartbeat Requests"/>
-        <HeartbeatTable Heartbeats="@(HeartbeatRows == null ? HeartbeatsAll : HeartbeatRows.ToList())"
+                         H3ElemText="Heartbeat Requests"/>
+        <HeartbeatTable Heartbeats="@(_heartbeatRows is null ? HeartbeatsAll : _heartbeatRows.ToList())"
                         GetLoopDataSet="@GetLoopDataSet"
                         RecordComparison="@HeartbeatComparer"/>
     </div>
 </article>
 @code {
-    private HeartbeatData[]? HeartbeatRows = null;
-    private async Task OnHeartbeatDataRowsFilterFindComplete(List<HeartbeatData> rows)
+    private HeartbeatData[]? _heartbeatRows = [];
+    private Task OnHeartbeatDataRowsFilterFindComplete(List<HeartbeatData> rows)
     {
-        HeartbeatRows = rows.ToArray();
+        _heartbeatRows = rows.ToArray();
+        return Task.CompletedTask;
     }
-
 }
