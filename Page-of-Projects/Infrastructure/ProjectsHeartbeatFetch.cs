@@ -56,20 +56,20 @@ internal sealed class ProjectsHeartbeatFetch
         return FetchProjectsHeartbeatFailures();
     }
 
-    public List<Heartbeat> ProjectsHeartbeats()
+    public async Task<List<Heartbeat>> ProjectsHeartbeats()
     {
-        return FetchProjectsHeartbeats();
+        return await FetchProjectsHeartbeats();
     }
 
-    private List<Heartbeat> FetchProjectsHeartbeats()
+    private async Task<List<Heartbeat>> FetchProjectsHeartbeats()
     {
         using ProjectsDbContext projectsDbContext = EntityModels.CreateProjectsDbContext();
 
-        return projectsDbContext.Heartbeat.AsNoTracking().Where(p => !p.UrlRel.Contains(TestRecordOnlyPrefix) && !p.UrlRel.Contains(TestPrefix)) 
+        return await projectsDbContext.Heartbeat.AsNoTracking().Where(p => !p.UrlRel.Contains(TestRecordOnlyPrefix) && !p.UrlRel.Contains(TestPrefix)) 
                   .OrderByDescending(p => p.RecordTimestamp)
                   .ThenByDescending(p => p.Id)
                   .Take(MaxHeartbeatRecords)
-                  .ToList();
+                  .ToListAsync();
     }
 
     private List<Heartbeat> FetchProjectsHeartbeatFailures()

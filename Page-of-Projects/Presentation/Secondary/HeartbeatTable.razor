@@ -35,51 +35,58 @@ else
                 var (yearSelection, yearHeartbeats)
                         = GetLoopDataSet(dateMeasure, allItems, dateCursor, RecordComparison);
 
+                var year = dateCursor.Year;
                 var yearKey = $"{dateCursor.Year}";
 
-                <tr>
-                    <td><button @onclick="() => Toggle(yearKey)">@(IsExpanded(yearKey) ? "−" : "+")</button>
-                        @dateCursor.Year
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td></td>
-                    <td>-</td>
-                </tr>
+                if (yearHeartbeats.Count > 0)
+                {
+                    <tr>
+                        <td>
+                            <button @onclick="() => Toggle(yearKey)">@(IsExpanded(yearKey) ? "−" : "+")</button>
+                            @dateCursor.Year
+                        </td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                }
 
                 do
                 {
                     var (monthSelection, monthHeartbeats)
                             = GetLoopDataSet(dateMeasureMonth, yearHeartbeats, dateCursor, RecordComparison);
 
+                    var month = dateCursor.Month;
                     var monthKey = $"{dateCursor.Year}-{dateCursor.Month}";
 
-                    if (IsExpanded(yearKey))
+                    if (monthHeartbeats.Count > 0 & IsExpanded(yearKey))
                     {
                         <tr>
                             <td>
                                 <button @onclick="() => Toggle(monthKey)">@(IsExpanded(monthKey) ? "−" : "+")</button>
                                 @dateCursor.ToString("MMMM")
                             </td>
-                            <td></td>
-                            <td></td>
                             <td>-</td>
                             <td>-</td>
-                            <td></td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
                             <td>-</td>
                         </tr>
                     }
 
-                    while (monthHeartbeats.Count > 0)
+                    //while (monthHeartbeats.Count > 0)
+                    while (dateCursor.Month == month)
                     {
                         var (daySelection, dayHeartbeats)
                                 = GetLoopDataSet(dateMeasureDay, monthHeartbeats, dateCursor, RecordComparison);
 
                         var dayKey = $"{dateCursor.Year}-{dateCursor.Month}-{dateCursor.Day}";
 
-                        if (IsExpanded(yearKey) && IsExpanded(monthKey))
+                        if (dayHeartbeats.Count > 0 & IsExpanded(yearKey) && IsExpanded(monthKey))
                         {
                             if (IsExpanded(dayKey) == false)
                             {
@@ -88,11 +95,11 @@ else
                                         <button @onclick="() => Toggle(dayKey)">@(IsExpanded(dayKey) ? "−" : "+")</button>
                                         @string.Format("{0,12:d, ddd}", dateCursor)
                                     </td>
-                                    <td></td>
-                                    <td></td>
                                     <td>-</td>
                                     <td>-</td>
-                                    <td></td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
                                     <td>-</td>
                                 </tr>
                             }
@@ -103,11 +110,11 @@ else
                                         <button @onclick="() => Toggle(dayKey)">@(IsExpanded(dayKey) ? "−" : "+")</button>
                                         @string.Format("{0,12:d, ddd}", dateCursor)
                                     </td>
-                                    <td></td>
-                                    <td></td>
                                     <td>-</td>
                                     <td>-</td>
-                                    <td></td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
                                     <td>-</td>
                                 </tr>
                             }
@@ -125,7 +132,8 @@ else
                     ;
 
                     yearHeartbeats.RemoveWhere(monthSelection);
-                } while (yearHeartbeats.Count > 0);
+                //} while (yearHeartbeats.Count > 0);
+                } while (dateCursor.Year == year);
 
                 allItems.RemoveWhere(yearSelection);
             } while (allItems.Count > 0);

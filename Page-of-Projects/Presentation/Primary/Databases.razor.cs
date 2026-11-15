@@ -17,7 +17,7 @@ public partial class Databases : ComponentBase
         Queue<AppAnchor> databaseTableLinks = new();
         databaseTableLinks.Enqueue(new AppAnchor
                       {
-                              Href = "/database/projects-hub/heartbeats",
+                              Href = "/database/projects-hub",
                               Title = "Database | Heartbeat All | Projects Hub",
                               TextContent = "Heartbeat All | roberthowell.dev"
                       });
@@ -158,9 +158,12 @@ public partial class Databases : ComponentBase
     }
     private static List<SpaceflightArticle> _fiveArticles = [];
     private static List<SpaceflightApod> _fiveApods = [];
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         using var context = EntityModels.CreateArticlesDbContext();
+
+        var fiveHeartbeats = await HeartbeatsTableBase
+               .FiveHeartbeats();
 
         _fiveArticles = context.Article.AsNoTracking()
                                     .OrderByDescending(a => a.Date)
@@ -172,10 +175,8 @@ public partial class Databases : ComponentBase
         Items.AddRange([
                                new DatabaseOverview()
                                {
-                                       OverviewItems =
-                                               HeartbeatsTableBase
-                                                      .FiveHeartbeats(),
-                                       OverviewItemsType = HeartbeatsTableBase.FiveHeartbeats().First().GetType(),
+                                       OverviewItems = fiveHeartbeats,
+                                       OverviewItemsType = fiveHeartbeats.First().GetType(),
                                        OverviewItemsCsvFileName =
                                                $"heartbeat_{DateTime.UtcNow:yyyy-MM-dd}.csv",
                                        OverviewItemsCsvButtonText =

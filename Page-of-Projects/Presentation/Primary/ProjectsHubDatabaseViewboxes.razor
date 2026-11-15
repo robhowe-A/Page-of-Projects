@@ -1,0 +1,30 @@
+﻿<!-- --Copyright (c) 2026 Robert A. Howell -->
+
+@using ProjectsPage.Components.Secondary
+@inherits ProjectsPage.Components.Pages.HeartbeatsTableBase
+
+@rendermode @(new InteractiveServerRenderMode(prerender:false))
+
+@namespace ProjectsPage.Components.Primary
+
+<div>
+    <div class="page-viewbox @(!_isHeartbeatFilterSubmitting ? "" : "isLoading")">
+        <HeartbeatFilter OnFilterFind="@OnHeartbeatFilterFindComplete"
+                         OnSubmittingChanged="@OnHeartbeatFilterSubmittingChanged"
+                         H3ElemText="Heartbeat Requests"/>
+        @if (_isHeartbeatPendingData)
+        {
+            <p>Loading data...</p>
+        }
+        else if (_isHeartbeatFilterSubmitting)
+        {
+            <p>Retrieving data...</p>
+        }
+        else
+        {
+            <HeartbeatTable Heartbeats="@(_heartbeatRows is null ? HeartbeatsAll : _heartbeatRows.ToList())"
+                            GetLoopDataSet="@GetLoopDataSet"
+                            RecordComparison="@HeartbeatComparer"/>
+        }
+    </div>
+</div>

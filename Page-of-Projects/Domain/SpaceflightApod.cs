@@ -15,7 +15,7 @@ public class SpaceflightApod
     [Column("apodTitle")]
     public string? ApodTitle { get; set; }
 
-    [Column("date")]
+    [Column("date")] //STORED format match: yyyy-MM-dd
     public string? Date { get; set; }
 
     [Column("hdurl")]

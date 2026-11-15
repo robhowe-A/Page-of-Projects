@@ -54,12 +54,15 @@ public abstract class HeartbeatsTableBase : FoldingDataTable
                                                     });
     }
 
-    public static List<HeartbeatData> FiveHeartbeats()
+    public static async Task<List<HeartbeatData>> FiveHeartbeats()
     {
-            return new ProjectsHeartbeatFetch()
-                  .ProjectsHeartbeats()
-                  .OrderByDescending(d => d.RecordTimestamp)
-                  .Take(5).ToList().ConvertAll(i => new HeartbeatData
+            ProjectsHeartbeatFetch projectHearbeatFetch = new ();
+
+            var heartbeatsAwaiting = await projectHearbeatFetch
+                        .ProjectsHeartbeats();
+            return heartbeatsAwaiting
+                        .OrderByDescending(d => d.RecordTimestamp)
+                        .Take(5).ToList().ConvertAll(i => new HeartbeatData
                                                     {
                                                                     Id = i.Id,
                                                                     Timestamp = i.RecordTimestamp,

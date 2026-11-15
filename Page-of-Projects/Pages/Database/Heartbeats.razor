@@ -1,10 +1,10 @@
 ﻿@* --Copyright (c) 2026 Robert A. Howell *@
 
-@page "/database/projects-hub/heartbeats"
+@page "/database/projects-hub"
+
 @using Microsoft.AspNetCore.Components.Web
 @using ProjectsPage.Components.Primary
 @using ProjectsPage.Components.Secondary
-@using ProjectsPage.Domain
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
 @inherits ProjectsPage.Components.Pages.HeartbeatsTableBase
 @rendermode InteractiveServer
@@ -14,36 +14,5 @@
 <PageTitle>Heartbeats | roberthowell.dev</PageTitle>
 <article id="Heartbeats-Page" class="page-table">
     <DatabaseNav/>
-    <div class="page-viewbox @(!_isHeartbeatFilterSubmitting ? "" : "isLoading")">
-        <HeartbeatFilter OnFilterFind="@OnHeartbeatFilterFindComplete"
-                         OnSubmittingChanged="@OnHeartbeatFilterSubmittingChanged"
-                         H3ElemText="Heartbeat Requests"/>
-        @if (!_isHeartbeatFilterSubmitting)
-        {
-            <HeartbeatTable Heartbeats="@(_heartbeatRows is null ? HeartbeatsAll : _heartbeatRows.ToList())"
-                            GetLoopDataSet="@GetLoopDataSet"
-                            RecordComparison="@HeartbeatComparer"/>
-        }
-        else
-        {
-            <p>Retrieving data...</p>
-        }
-    </div>
+    <ProjectsHubDatabaseViewboxes/>
 </article>
-@code {
-    private HeartbeatData[]? _heartbeatRows = [];
-
-    private bool _isHeartbeatFilterSubmitting;
-
-    private Task OnHeartbeatFilterSubmittingChanged(bool isSubmitting)
-    {
-        _isHeartbeatFilterSubmitting = isSubmitting;
-        return Task.CompletedTask;
-    }
-
-    private Task OnHeartbeatFilterFindComplete(List<HeartbeatData> rows)
-    {
-        _heartbeatRows = rows.ToArray();
-        return Task.CompletedTask;
-    }
-}

@@ -1,0 +1,47 @@
+﻿@* --Copyright (c) 2026 Robert A. Howell *@
+
+@using ProjectsPage.Domain
+
+@namespace ProjectsPage.Components.Secondary
+
+<article class="project-card">
+    @if (!string.IsNullOrWhiteSpace(Project.ImageUrl))
+    {
+        <img class="project-card__image"
+             src="@Project.ImageUrl"
+             alt="@Project.ImageAltText"
+             loading="lazy" decoding="async" />
+    }
+    <div class="project-card__body">
+        <h3 class="project-card__title">@Project.InnerText</h3>
+        <p class="project-card__text">@Project.SelectionDetails.Details</p>
+
+        <div class="project-card__actions">
+            <a class="project-card__link project-card__link--thin"
+               href="@DetailsUri"
+               title="@Project.Title"
+               target="_self">
+                Details
+            </a>
+            <a class="project-card__link project-card__link--frame"
+               href="@Project.Href"
+               title="@Project.Title"
+               target="_self">
+                Preview in Projects Hub
+            </a>
+            <a class="project-card__link project-card__link--external external"
+               href="@Project.ExternalHref"
+               title="@Project.ExternalTitle"
+               target="_blank"
+               rel="noopener">
+                Open live site
+            </a>
+        </div>
+    </div>
+</article>
+
+@code {
+    [Parameter, EditorRequired] public required FrameSelectionOption Project { get; set; }
+
+    [Parameter] public required string DetailsUri { get; set; }
+}
