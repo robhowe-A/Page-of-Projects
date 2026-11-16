@@ -1,0 +1,17 @@
+﻿@* --Copyright (c) 2026 Robert A. Howell *@
+
+@page "/database/spaceflight-news-app"
+
+@using Microsoft.AspNetCore.Components.Web
+@using ProjectsPage.Components.Primary
+@using ProjectsPage.Components.Secondary
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+
+@namespace ProjectsPage.Pages.Database
+
+<PageTitle>Database | SpaceFlight News App</PageTitle>
+<article class="page-table">
+    <DatabaseNav/>
+    <SpaceflightDatabaseViewboxes/>
+</article>

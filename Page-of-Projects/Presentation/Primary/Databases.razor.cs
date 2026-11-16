@@ -158,137 +158,155 @@ public partial class Databases : ComponentBase
     }
     private static List<SpaceflightArticle> _fiveArticles = [];
     private static List<SpaceflightApod> _fiveApods = [];
-    protected override async Task OnInitializedAsync()
+
+    private bool? _isDatabasePendingData = true;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        using var context = EntityModels.CreateArticlesDbContext();
+        if(firstRender){
+            try
+            {
+                using var context = EntityModels.CreateArticlesDbContext();
 
-        var fiveHeartbeats = await HeartbeatsTableBase
-               .FiveHeartbeats();
+                var fiveHeartbeats = await HeartbeatsTableBase
+                       .FiveHeartbeats();
 
-        _fiveArticles = context.Article.AsNoTracking()
+                _fiveArticles = context.Article.AsNoTracking()
+                                       .OrderByDescending(a => a.Date)
+                                       .Take(5).ToList();
+
+                _fiveApods = context.APOD.AsNoTracking()
                                     .OrderByDescending(a => a.Date)
                                     .Take(5).ToList();
-
-        _fiveApods = context.APOD.AsNoTracking()
-                                 .OrderByDescending(a => a.Date)
-                                 .Take(5).ToList();
-        Items.AddRange([
-                               new DatabaseOverview()
-                               {
-                                       OverviewItems = fiveHeartbeats,
-                                       OverviewItemsType = fiveHeartbeats.First().GetType(),
-                                       OverviewItemsCsvFileName =
-                                               $"heartbeat_{DateTime.UtcNow:yyyy-MM-dd}.csv",
-                                       OverviewItemsCsvButtonText =
-                                               "Download CSV",
-                                       CaptionText = "HeartBeats.All",
-                                       HeaderTemplateStr = (MarkupString)
-                                                """
-                                                <thead>
-                                                    <tr>
-                                                        <th>Id</th>
-                                                        <th>TimeStamp</th>
-                                                        <th>Domain</th>
-                                                        <th>ResponseCode</th>
-                                                    </tr>
-                                                </thead>
-                                                """,
-                                       RowTemplateBuildStr = BuildHeartbeatsRow,
-                               },
-                               new DatabaseOverview()
-                               {
-                                       OverviewItems = _fiveArticles,
-                                       OverviewItemsType = _fiveArticles.First().GetType(),
-                                       OverviewItemsCsvFileName = $"spaceflight-articles_{DateTime.UtcNow:yyyy-MM-dd}.csv",
-                                       OverviewItemsCsvButtonText = "Download CSV",
-                                       CaptionText = "SpaceFlightNewsApp.Article",
-                                       HeaderTemplateStr = (MarkupString)
-                                               """
-                                               <thead>
-                                                <tr>
-                                                    <th>ArticleNum</th>
-                                                    <th>Date</th>
-                                                    <th>Featured</th>
-                                                    <th>NewsSite</th>
-                                                </tr>
-                                               </thead>
-                                               """,
-                                       RowTemplateBuildStr = BuildSpaceflightArticleRow,
-                               },
-                               new DatabaseOverview()
-                               {
-                                       OverviewItems = _fiveApods,
-                                       OverviewItemsType = _fiveApods.First().GetType(),
-                                       OverviewItemsCsvFileName = $"spaceflight-apods_{DateTime.UtcNow:yyyy-MM-dd}.csv",
-                                       OverviewItemsCsvButtonText = "Download CSV",
-                                       CaptionText = "SpaceFlightNewsApp.Apod",
-                                       HeaderTemplateStr = (MarkupString)
-                                                                          """
-                                                                          <thead>
-                                                                            <tr>
-                                                                              <th>Date</th>
-                                                                              <th>Media</th>
-                                                                              <th>Title</th>
-                                                                            </tr>
-                                                                          </thead>
-                                                                          """,
-                                       RowTemplateBuildStr =  BuildSpaceflightApodRow,
-                               },
-                               new DatabaseOverview()
-                               {
-                                       OverviewItems = RandomWebBitsBase.FiveAccessRecords(),
-                                       OverviewItemsType = RandomWebBitsBase.FiveAccessRecords().First().GetType(),
-                                       OverviewItemsCsvFileName = $"rwb-accessed-by_{DateTime.UtcNow:yyyy-MM-dd}.csv",
-                                       OverviewItemsCsvButtonText = "Download CSV",
-                                       CaptionText = "RandomWebBits.AccessRecord",
-                                       HeaderTemplateStr = (MarkupString)
-                                                                          """
-                                                                          <thead>
-                                                                            <tr>
-                                                                              <th>Anonymous User Id</th>
-                                                                              <th>Uri</th>
-                                                                              <th>Last Accessed</th>
-                                                                            </tr>
-                                                                          </thead>
-                                                                          """,
-                                       RowTemplateBuildStr = BuildAccessRecordRow,
-                               },
-                               new DatabaseOverview()
-                               {
-                                       OverviewItems = RandomWebBitsBase.FiveAnonymousUser(),
-                                       OverviewItemsType = RandomWebBitsBase.FiveAnonymousUser().First().GetType(),
-                                       OverviewItemsCsvFileName = $"rwb-anonymous-user_{DateTime.UtcNow:yyyy-MM-dd}.csv",
-                                       OverviewItemsCsvButtonText = "Download CSV",
-                                       CaptionText = "RandomWebBits.AnonymousUser",
-                                       HeaderTemplateStr = (MarkupString)
-                                                                          """
-                                                                          <thead>
-                                                                            <tr>
-                                                                              <th>Digest</th>
-                                                                              <th>Last Accessed</th>
-                                                                            </tr>
-                                                                          </thead>
-                                                                          """,
-                                       RowTemplateBuildStr = BuildAnonymousUserRow,
-                               },
-                               new DatabaseOverview()
-                               {
-                                       OverviewItems = RandomWebBitsBase.FiveUserAgents(),
-                                       OverviewItemsType = RandomWebBitsBase.FiveUserAgents().First().GetType(),
-                                       OverviewItemsCsvFileName = $"rwb-user-agents_{DateTime.UtcNow:yyyy-MM-dd}.csv",
-                                       OverviewItemsCsvButtonText = "Download CSV",
-                                       CaptionText = "RandomWebBits.UserAgent",
-                                       HeaderTemplateStr = (MarkupString)
-                                                                          """
-                                                                          <thead>
-                                                                            <tr>
-                                                                                <th>Id</th>
-                                                                                <th>Last Accessed</th>
-                                                                            </tr>
-                                                                          </thead>
-                                                                          """,
-                                       RowTemplateBuildStr = BuildUserAgentRow,
-                               }
-        ]);
+                Items.Clear();
+                Items.AddRange([
+                        new DatabaseOverview()
+                        {
+                                OverviewItems = fiveHeartbeats,
+                                OverviewItemsType = fiveHeartbeats.First().GetType(),
+                                OverviewItemsCsvFileName =
+                                        $"heartbeat_{DateTime.UtcNow:yyyy-MM-dd}.csv",
+                                OverviewItemsCsvButtonText =
+                                        "Download CSV",
+                                CaptionText = "HeartBeats.All",
+                                HeaderTemplateStr = (MarkupString)
+                                        """
+                                        <thead>
+                                            <tr>
+                                                <th>Id</th>
+                                                <th>TimeStamp</th>
+                                                <th>Domain</th>
+                                                <th>ResponseCode</th>
+                                            </tr>
+                                        </thead>
+                                        """,
+                                RowTemplateBuildStr = BuildHeartbeatsRow,
+                        },
+                        new DatabaseOverview()
+                        {
+                                OverviewItems = _fiveArticles,
+                                OverviewItemsType = _fiveArticles.First().GetType(),
+                                OverviewItemsCsvFileName = $"spaceflight-articles_{DateTime.UtcNow:yyyy-MM-dd}.csv",
+                                OverviewItemsCsvButtonText = "Download CSV",
+                                CaptionText = "SpaceFlightNewsApp.Article",
+                                HeaderTemplateStr = (MarkupString)
+                                        """
+                                        <thead>
+                                         <tr>
+                                             <th>ArticleNum</th>
+                                             <th>Date</th>
+                                             <th>Featured</th>
+                                             <th>NewsSite</th>
+                                         </tr>
+                                        </thead>
+                                        """,
+                                RowTemplateBuildStr = BuildSpaceflightArticleRow,
+                        },
+                        new DatabaseOverview()
+                        {
+                                OverviewItems = _fiveApods,
+                                OverviewItemsType = _fiveApods.First().GetType(),
+                                OverviewItemsCsvFileName = $"spaceflight-apods_{DateTime.UtcNow:yyyy-MM-dd}.csv",
+                                OverviewItemsCsvButtonText = "Download CSV",
+                                CaptionText = "SpaceFlightNewsApp.Apod",
+                                HeaderTemplateStr = (MarkupString)
+                                        """
+                                        <thead>
+                                          <tr>
+                                            <th>Date</th>
+                                            <th>Media</th>
+                                            <th>Title</th>
+                                          </tr>
+                                        </thead>
+                                        """,
+                                RowTemplateBuildStr = BuildSpaceflightApodRow,
+                        },
+                        new DatabaseOverview()
+                        {
+                                OverviewItems = RandomWebBitsBase.FiveAccessRecords(),
+                                OverviewItemsType = RandomWebBitsBase.FiveAccessRecords().First().GetType(),
+                                OverviewItemsCsvFileName = $"rwb-accessed-by_{DateTime.UtcNow:yyyy-MM-dd}.csv",
+                                OverviewItemsCsvButtonText = "Download CSV",
+                                CaptionText = "RandomWebBits.AccessRecord",
+                                HeaderTemplateStr = (MarkupString)
+                                        """
+                                        <thead>
+                                          <tr>
+                                            <th>Anonymous User Id</th>
+                                            <th>Uri</th>
+                                            <th>Last Accessed</th>
+                                          </tr>
+                                        </thead>
+                                        """,
+                                RowTemplateBuildStr = BuildAccessRecordRow,
+                        },
+                        new DatabaseOverview()
+                        {
+                                OverviewItems = RandomWebBitsBase.FiveAnonymousUser(),
+                                OverviewItemsType = RandomWebBitsBase.FiveAnonymousUser().First().GetType(),
+                                OverviewItemsCsvFileName = $"rwb-anonymous-user_{DateTime.UtcNow:yyyy-MM-dd}.csv",
+                                OverviewItemsCsvButtonText = "Download CSV",
+                                CaptionText = "RandomWebBits.AnonymousUser",
+                                HeaderTemplateStr = (MarkupString)
+                                        """
+                                        <thead>
+                                          <tr>
+                                            <th>Digest</th>
+                                            <th>Last Accessed</th>
+                                          </tr>
+                                        </thead>
+                                        """,
+                                RowTemplateBuildStr = BuildAnonymousUserRow,
+                        },
+                        new DatabaseOverview()
+                        {
+                                OverviewItems = RandomWebBitsBase.FiveUserAgents(),
+                                OverviewItemsType = RandomWebBitsBase.FiveUserAgents().First().GetType(),
+                                OverviewItemsCsvFileName = $"rwb-user-agents_{DateTime.UtcNow:yyyy-MM-dd}.csv",
+                                OverviewItemsCsvButtonText = "Download CSV",
+                                CaptionText = "RandomWebBits.UserAgent",
+                                HeaderTemplateStr = (MarkupString)
+                                        """
+                                        <thead>
+                                          <tr>
+                                              <th>Id</th>
+                                              <th>Last Accessed</th>
+                                          </tr>
+                                        </thead>
+                                        """,
+                                RowTemplateBuildStr = BuildUserAgentRow,
+                        }
+                ]);
+            }
+            catch (Exception exception)
+            {
+                throw new ApplicationException(exception.Message);
+            }
+            finally
+            {
+                _isDatabasePendingData = false;
+                await InvokeAsync(StateHasChanged);
+            }
+        }
     }
 }

@@ -38,31 +38,38 @@ public partial class SpaceflightDatabaseViewboxes : ComponentBase
         return Task.CompletedTask;
     }
 
-    private bool _isArticlePendingData = true;
-    private bool _isApodPendingData = true;
+    private bool? _isArticlePendingData = true;
+    private bool? _isApodPendingData = true;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await using var context = EntityModels.CreateArticlesDbContext();
+        if (firstRender)
+        {
+            _isArticlePendingData = true;
+            _isApodPendingData = true;
 
-        try
-        {
-            _articles = await context.Article.AsNoTracking()
-                                     .Where(x => x.ArticleNum >= 1)
-                                     .ToArrayAsync();
+            await using var context = EntityModels.CreateArticlesDbContext();
 
-            _apods = await context.APOD.AsNoTracking()
-                                  .Where(x => x.Id >= 1)
-                                  .ToArrayAsync();
-        }
-        catch (Exception exception)
-        {
-            throw new ApplicationException(exception.Message);
-        }
-        finally
-        {
-            _isArticlePendingData = false;
-            _isApodPendingData = false;
+            try
+            {
+                _articles = await context.Article.AsNoTracking()
+                                         .Where(x => x.ArticleNum >= 1)
+                                         .ToArrayAsync();
+
+                _apods = await context.APOD.AsNoTracking()
+                                      .Where(x => x.Id >= 1)
+                                      .ToArrayAsync();
+            }
+            catch (Exception exception)
+            {
+                throw new ApplicationException(exception.Message);
+            }
+            finally
+            {
+                _isArticlePendingData = false;
+                _isApodPendingData = false;
+                await InvokeAsync(StateHasChanged);
+            }
         }
     }
 }

@@ -2,29 +2,36 @@
 
 @using ProjectsPage.Components.Secondary
 @inherits ProjectsPage.Components.Pages.HeartbeatsTableBase
-
-@rendermode @(new InteractiveServerRenderMode(prerender:false))
+@rendermode InteractiveServer
 
 @namespace ProjectsPage.Components.Primary
 
 <div>
-    <div class="page-viewbox @(!_isHeartbeatFilterSubmitting ? "" : "isLoading")">
-        <HeartbeatFilter OnFilterFind="@OnHeartbeatFilterFindComplete"
-                         OnSubmittingChanged="@OnHeartbeatFilterSubmittingChanged"
-                         H3ElemText="Heartbeat Requests"/>
-        @if (_isHeartbeatPendingData)
-        {
-            <p>Loading data...</p>
-        }
-        else if (_isHeartbeatFilterSubmitting)
-        {
-            <p>Retrieving data...</p>
-        }
-        else
-        {
-            <HeartbeatTable Heartbeats="@(_heartbeatRows is null ? HeartbeatsAll : _heartbeatRows.ToList())"
-                            GetLoopDataSet="@GetLoopDataSet"
-                            RecordComparison="@HeartbeatComparer"/>
-        }
+    <div class="page-viewbox">
+        <div>
+            <HeartbeatFilter OnFilterFind="@OnHeartbeatFilterFindComplete"
+                             OnSubmittingChanged="@OnHeartbeatFilterSubmittingChanged"
+                             H3ElemText="Heartbeat Requests"/>
+        </div>
+
+        <div class="page-viewbox-content
+        @(_isHeartbeatPendingData.HasValue && !_isHeartbeatPendingData.Value & !_isHeartbeatFilterSubmitting ? "dataReady" : "")
+        @(_isHeartbeatPendingData.HasValue && _isHeartbeatPendingData.Value ? "isLoading" : "")
+        @(_isHeartbeatFilterSubmitting ? "isSubmitting" : "")">
+            @if (_isHeartbeatPendingData.HasValue && _isHeartbeatPendingData.Value)
+            {
+                <p>Loading data...</p>
+            }
+            @if (_isHeartbeatFilterSubmitting)
+            {
+                <p>Retrieving data...</p>
+            }
+            else
+            {
+                <HeartbeatTable Heartbeats="@(_heartbeatRows is null ? _heartbeatsAll : _heartbeatRows.ToList())"
+                                GetLoopDataSet="@GetLoopDataSet"
+                                RecordComparison="@HeartbeatComparer"/>
+            }
+        </div>
     </div>
 </div>

@@ -6,68 +6,45 @@
 @namespace ProjectsPage.Components.Secondary
 @inherits FoldingDataTable
 
-<div>
-@if (IsFoldingView)
-{
-    <button @onclick="ToggleViewSummary">Table View</button>
-}
-else
-{
-    <button @onclick="ToggleViewSummary">Daily View</button>
-}
-</div>
+<div class="table-viewbox-content">
+    <div>
+    @if (IsFoldingView)
+    {
+        <button @onclick="ToggleViewSummary">Table View</button>
+    }
+    else
+    {
+        <button @onclick="ToggleViewSummary">Daily View</button>
+    }
+    </div>
 
-<div class="table-viewbox">
-    <h2>@H3ElemText</h2>
-    <div class="data-viewbox @(IsFoldingView ? "folding" : "")">
-        <table>
-        @if (IsFoldingView)
-        {
-            var dateCursor = DateTime.Now;
-            var allItems = new SortedSet<HeartbeatData>(Heartbeats.ToImmutableList(), RecordComparison);
-            const string dateMeasure = "YEAR";
-            const string dateMeasureMonth = "MONTH";
-            const string dateMeasureDay = "DAY";
-
-            <tbody>
-            @do
+    <div class="table-viewbox">
+        <h2>@H3ElemText</h2>
+        <div class="data-viewbox @(IsFoldingView ? "folding" : "")">
+            <table>
+            @if (IsFoldingView)
             {
-                var (yearSelection, yearHeartbeats)
-                        = GetLoopDataSet(dateMeasure, allItems, dateCursor, RecordComparison);
+                var dateCursor = DateTime.Now;
+                var allItems = new SortedSet<HeartbeatData>(Heartbeats.ToImmutableList(), RecordComparison);
+                const string dateMeasure = "YEAR";
+                const string dateMeasureMonth = "MONTH";
+                const string dateMeasureDay = "DAY";
 
-                var year = dateCursor.Year;
-                var yearKey = $"{dateCursor.Year}";
-
-                if (yearHeartbeats.Count > 0)
+                <tbody>
+                @do
                 {
-                    <tr>
-                        <td>
-                            <button @onclick="() => Toggle(yearKey)">@(IsExpanded(yearKey) ? "−" : "+")</button>
-                            @dateCursor.Year
-                        </td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                    </tr>
-                }
+                    var (yearSelection, yearHeartbeats)
+                            = GetLoopDataSet(dateMeasure, allItems, dateCursor, RecordComparison);
 
-                do
-                {
-                    var (monthSelection, monthHeartbeats)
-                            = GetLoopDataSet(dateMeasureMonth, yearHeartbeats, dateCursor, RecordComparison);
+                    var year = dateCursor.Year;
+                    var yearKey = $"{dateCursor.Year}";
 
-                    var month = dateCursor.Month;
-                    var monthKey = $"{dateCursor.Year}-{dateCursor.Month}";
-
-                    if (monthHeartbeats.Count > 0 & IsExpanded(yearKey))
+                    if (yearHeartbeats.Count > 0)
                     {
                         <tr>
                             <td>
-                                <button @onclick="() => Toggle(monthKey)">@(IsExpanded(monthKey) ? "−" : "+")</button>
-                                @dateCursor.ToString("MMMM")
+                                <button @onclick="() => Toggle(yearKey)">@(IsExpanded(yearKey) ? "−" : "+")</button>
+                                @dateCursor.Year
                             </td>
                             <td>-</td>
                             <td>-</td>
@@ -78,95 +55,120 @@ else
                         </tr>
                     }
 
-                    //while (monthHeartbeats.Count > 0)
-                    while (dateCursor.Month == month)
+                    do
                     {
-                        var (daySelection, dayHeartbeats)
-                                = GetLoopDataSet(dateMeasureDay, monthHeartbeats, dateCursor, RecordComparison);
+                        var (monthSelection, monthHeartbeats)
+                                = GetLoopDataSet(dateMeasureMonth, yearHeartbeats, dateCursor, RecordComparison);
 
-                        var dayKey = $"{dateCursor.Year}-{dateCursor.Month}-{dateCursor.Day}";
+                        var month = dateCursor.Month;
+                        var monthKey = $"{dateCursor.Year}-{dateCursor.Month}";
 
-                        if (dayHeartbeats.Count > 0 & IsExpanded(yearKey) && IsExpanded(monthKey))
+                        if (monthHeartbeats.Count > 0 & IsExpanded(yearKey))
                         {
-                            if (IsExpanded(dayKey) == false)
-                            {
-                                <tr>
-                                    <td>
-                                        <button @onclick="() => Toggle(dayKey)">@(IsExpanded(dayKey) ? "−" : "+")</button>
-                                        @string.Format("{0,12:d, ddd}", dateCursor)
-                                    </td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                </tr>
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td>
-                                        <button @onclick="() => Toggle(dayKey)">@(IsExpanded(dayKey) ? "−" : "+")</button>
-                                        @string.Format("{0,12:d, ddd}", dateCursor)
-                                    </td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                </tr>
-                            }
+                            <tr>
+                                <td>
+                                    <button @onclick="() => Toggle(monthKey)">@(IsExpanded(monthKey) ? "−" : "+")</button>
+                                    @dateCursor.ToString("MMMM")
+                                </td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
                         }
 
-                        if (IsExpanded(yearKey) && IsExpanded(monthKey) && IsExpanded(dayKey))
+                        //while (monthHeartbeats.Count > 0)
+                        while (dateCursor.Month == month)
                         {
-                            <RowGenerator Items="@dayHeartbeats"/>
+                            var (daySelection, dayHeartbeats)
+                                    = GetLoopDataSet(dateMeasureDay, monthHeartbeats, dateCursor, RecordComparison);
+
+                            var dayKey = $"{dateCursor.Year}-{dateCursor.Month}-{dateCursor.Day}";
+
+                            if (dayHeartbeats.Count > 0 & IsExpanded(yearKey) && IsExpanded(monthKey))
+                            {
+                                if (IsExpanded(dayKey) == false)
+                                {
+                                    <tr>
+                                        <td>
+                                            <button @onclick="() => Toggle(dayKey)">@(IsExpanded(dayKey) ? "−" : "+")</button>
+                                            @string.Format("{0,12:d, ddd}", dateCursor)
+                                        </td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td>
+                                            <button @onclick="() => Toggle(dayKey)">@(IsExpanded(dayKey) ? "−" : "+")</button>
+                                            @string.Format("{0,12:d, ddd}", dateCursor)
+                                        </td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                    </tr>
+                                }
+                            }
+
+                            if (IsExpanded(yearKey) && IsExpanded(monthKey) && IsExpanded(dayKey))
+                            {
+                                <RowGenerator Items="@dayHeartbeats"/>
+                            }
+
+                            monthHeartbeats.RemoveWhere(daySelection);
+                            dateCursor = dateCursor.AddDays(-1);
                         }
 
-                        monthHeartbeats.RemoveWhere(daySelection);
-                        dateCursor = dateCursor.AddDays(-1);
-                    }
+                        ;
 
-                    ;
+                        yearHeartbeats.RemoveWhere(monthSelection);
+                    //} while (yearHeartbeats.Count > 0);
+                    } while (dateCursor.Year == year);
 
-                    yearHeartbeats.RemoveWhere(monthSelection);
-                //} while (yearHeartbeats.Count > 0);
-                } while (dateCursor.Year == year);
-
-                allItems.RemoveWhere(yearSelection);
-            } while (allItems.Count > 0);
-            </tbody>
-        }
-        else
-        {
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Timestamp</th>
-                    <th>Agent</th>
-                    <th>Project</th>
-                    <th>Domain</th>
-                    <th>Relative Url</th>
-                    <th>Response Code</th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach (var beat in Heartbeats)
-            {
-                <tr class="row-pattern">
-                    <td><span>@beat.Id</span></td>
-                    <td><span>@beat.Timestamp</span></td>
-                    <td><span>@beat.Agent</span></td>
-                    <td><span>@beat.Project</span></td>
-                    <td><span>@beat.Domain</span></td>
-                    <td><span>@beat.RelativeUrl</span></td>
-                    <td><span>@beat.ResponseCode</span></td>
-                </tr>
+                    allItems.RemoveWhere(yearSelection);
+                } while (allItems.Count > 0);
+                </tbody>
             }
-            </tbody>
-        }
-    </table>
+            else
+            {
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Timestamp</th>
+                        <th>Agent</th>
+                        <th>Project</th>
+                        <th>Domain</th>
+                        <th>Relative Url</th>
+                        <th>Response Code</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var beat in Heartbeats)
+                {
+                    <tr class="row-pattern">
+                        <td><span>@beat.Id</span></td>
+                        <td><span>@beat.Timestamp</span></td>
+                        <td><span>@beat.Agent</span></td>
+                        <td><span>@beat.Project</span></td>
+                        <td><span>@beat.Domain</span></td>
+                        <td><span>@beat.RelativeUrl</span></td>
+                        <td><span>@beat.ResponseCode</span></td>
+                    </tr>
+                }
+                </tbody>
+            }
+        </table>
+        </div>
     </div>
 </div>

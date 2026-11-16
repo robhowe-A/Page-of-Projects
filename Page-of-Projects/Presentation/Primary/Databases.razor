@@ -6,31 +6,43 @@
 @namespace ProjectsPage.Components.Primary
 
 <section class="database-card-grid">
-    @foreach(var gridItem in Items){
-        <div>
+    @if (_isDatabasePendingData.HasValue && _isDatabasePendingData.Value)
+    {
+        <div><p>Loading...</p></div>
+        <div><p>Loading...</p></div>
+        <div><p>Loading...</p></div>
+        <div><p>Loading...</p></div>
+        <div><p>Loading...</p></div>
+        <div><p>Loading...</p></div>
+    }
+    else{
+        @foreach (var gridItem in Items)
+        {
             <div>
                 <div>
-                    <AppNavLink Link="@_links.Dequeue()"/>
+                    <div>
+                        <AppNavLink Link="@_links.Dequeue()"/>
+                    </div>
+                    <div class="data-egress">
+                        <CopyJsonToClipboard
+                            Items="@gridItem.OverviewItems"/>
+                        <CsvExportHelper Items="@gridItem.OverviewItems"
+                                         FileName="@gridItem.OverviewItemsCsvFileName"
+                                         ButtonText="Download CSV"/>
+                    </div>
                 </div>
-                <div class="data-egress">
-                    <CopyJsonToClipboard
-                        Items="@gridItem.OverviewItems"/>
-                    <CsvExportHelper Items="@gridItem.OverviewItems"
-                                     FileName="@gridItem.OverviewItemsCsvFileName"
-                                     ButtonText="Download CSV"/>
-                </div>
+                <table>
+                    <caption>@gridItem.CaptionText</caption>
+                    <RowGenerator Items="@gridItem.OverviewItems">
+                        <HeaderTemplate>
+                            @gridItem.HeaderTemplateStr
+                        </HeaderTemplate>
+                        <RowTemplate Context="item">
+                            @gridItem.RowTemplateBuildStr.Invoke(item)
+                        </RowTemplate>
+                    </RowGenerator>
+                </table>
             </div>
-            <table>
-                <caption>@gridItem.CaptionText</caption>
-                <RowGenerator Items="@gridItem.OverviewItems">
-                    <HeaderTemplate>
-                        @gridItem.HeaderTemplateStr
-                    </HeaderTemplate>
-                    <RowTemplate Context="item">
-                        @gridItem.RowTemplateBuildStr.Invoke(item)
-                    </RowTemplate>
-                </RowGenerator>
-            </table>
-        </div>
+        }
     }
 </section>

@@ -13,34 +13,39 @@ public partial class ProjectsHubDatabaseViewboxes : HeartbeatsTableBase
     private bool _isHeartbeatFilterSubmitting;
     private readonly ProjectsHeartbeatFetch _projectsHeartbeatFetch = new();
 
-    private List<HeartbeatData> HeartbeatsAll = [];
+    private List<HeartbeatData> _heartbeatsAll = [];
 
-    private bool _isHeartbeatPendingData = true;
+    private bool? _isHeartbeatPendingData = true; //state=1,pending data
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var heartbeats = await _projectsHeartbeatFetch.ProjectsHeartbeats();
+        if (firstRender)
+        {
+            _isHeartbeatPendingData = true;
+            var heartbeats = await _projectsHeartbeatFetch.ProjectsHeartbeats();
 
-        try
-        {
-            HeartbeatsAll = heartbeats.ConvertAll(i => new HeartbeatData
-                                                       {
-                                                               Id = i.Id,
-                                                               Timestamp = i.RecordTimestamp,
-                                                               Agent = i.Agent,
-                                                               Project = i.ProjectName,
-                                                               Domain = i.Domain,
-                                                               RelativeUrl = i.UrlRel,
-                                                               ResponseCode = i.ResponseStatus
-                                                       });
-        }
-        catch (Exception exception)
-        {
-            throw new ApplicationException(exception.Message);
-        }
-        finally
-        {
-            _isHeartbeatPendingData = false;
+            try
+            {
+                _heartbeatsAll = heartbeats.ConvertAll(i => new HeartbeatData
+                                                           {
+                                                                   Id = i.Id,
+                                                                   Timestamp = i.RecordTimestamp,
+                                                                   Agent = i.Agent,
+                                                                   Project = i.ProjectName,
+                                                                   Domain = i.Domain,
+                                                                   RelativeUrl = i.UrlRel,
+                                                                   ResponseCode = i.ResponseStatus
+                                                           });
+            }
+            catch (Exception exception)
+            {
+                throw new ApplicationException(exception.Message);
+            }
+            finally
+            {
+                _isHeartbeatPendingData = false;
+                await InvokeAsync(StateHasChanged);
+            }
         }
     }
 

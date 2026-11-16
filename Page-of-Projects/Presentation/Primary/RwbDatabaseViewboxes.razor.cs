@@ -39,41 +39,49 @@ public partial class RwbDatabaseViewboxes : ComponentBase
         return Task.CompletedTask;
     }
 
-    private bool _isArPendingData = true;
-    private bool _isAuPendingData = true;
-    private bool _isUaPendingData = true;
+    private bool? _isArPendingData = true;
+    private bool? _isAuPendingData = true;
+    private bool? _isUaPendingData = true;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await using var dbContext = EntityModels.CreateRwbDbContext();
-
-        try
+        if (firstRender)
         {
-            _arRows = await dbContext.access_record.AsNoTracking()
-                                     .OrderBy(k => k.AnonymousUserId)
-                                     .ThenBy(k => k.LastAccessed)
-                                     .Where(x => x.AnonymousUserId >= 0)
-                                     .Take(500)
-                                     .ToArrayAsync();
+            _isArPendingData = true;
+            _isAuPendingData = true;
+            _isUaPendingData = true;
 
-            _auRows = await dbContext.anonymous_user.AsNoTracking()
-                                     .Where(x => x.AnonymousUserId >= 1)
-                                     .Take(500)
-                                     .ToArrayAsync();
+            await using var dbContext = EntityModels.CreateRwbDbContext();
 
-            _uaRows = await dbContext.user_agent.AsNoTracking()
-                                     .Where(x => x.AgentId >= 1)
-                                     .ToArrayAsync();
-        }
-        catch (Exception exception)
-        {
-            throw new ApplicationException(exception.Message);
-        }
-        finally
-        {
-            _isArPendingData = false;
-            _isAuPendingData = false;
-            _isUaPendingData = false;
+            try
+            {
+                _arRows = await dbContext.access_record.AsNoTracking()
+                                         .OrderBy(k => k.AnonymousUserId)
+                                         .ThenBy(k => k.LastAccessed)
+                                         .Where(x => x.AnonymousUserId >= 0)
+                                         .Take(500)
+                                         .ToArrayAsync();
+
+                _auRows = await dbContext.anonymous_user.AsNoTracking()
+                                         .Where(x => x.AnonymousUserId >= 1)
+                                         .Take(500)
+                                         .ToArrayAsync();
+
+                _uaRows = await dbContext.user_agent.AsNoTracking()
+                                         .Where(x => x.AgentId >= 1)
+                                         .ToArrayAsync();
+            }
+            catch (Exception exception)
+            {
+                throw new ApplicationException(exception.Message);
+            }
+            finally
+            {
+                _isArPendingData = false;
+                _isAuPendingData = false;
+                _isUaPendingData = false;
+                await InvokeAsync(StateHasChanged);
+            }
         }
     }
 }
