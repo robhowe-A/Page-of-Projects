@@ -8,14 +8,17 @@
 
 <div class="table-viewbox-content">
     <div>
-    @if (IsFoldingView)
-    {
-        <button @onclick="ToggleViewSummary">Table View</button>
-    }
-    else
-    {
-        <button @onclick="ToggleViewSummary">Daily View</button>
-    }
+        @if (Heartbeats.Count() <= 200)
+        {
+            @if (IsFoldingView)
+            {
+                <button @onclick="ToggleViewSummary">Table View</button>
+            }
+            else
+            {
+                <button @onclick="ToggleViewSummary">Daily View</button>
+            }
+        }
     </div>
 
     <div class="table-viewbox">
