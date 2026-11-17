@@ -126,7 +126,32 @@
 
                             if (IsExpanded(yearKey) && IsExpanded(monthKey) && IsExpanded(dayKey))
                             {
-                                <RowGenerator Items="@dayHeartbeats"/>
+                                <RowGenerator Items="@Heartbeats">
+                                    <HeaderTemplate>
+                                        <thead>
+                                            <tr>
+                                                <th>Id</th>
+                                                <th>Timestamp</th>
+                                                <th>Agent</th>
+                                                <th>Project</th>
+                                                <th>Domain</th>
+                                                <th>Relative Url</th>
+                                                <th>Response Code</th>
+                                            </tr>
+                                        </thead>
+                                    </HeaderTemplate>
+                                    <RowTemplate Context="item">
+                                        <tr class="row-pattern">
+                                            <td><span>@item.Id</span></td>
+                                            <td><span>@item.Timestamp</span></td>
+                                            <td><span>@item.Agent</span></td>
+                                            <td><span>@item.Project</span></td>
+                                            <td><span>@item.Domain</span></td>
+                                            <td><span>@item.RelativeUrl</span></td>
+                                            <td><span>@item.ResponseCode</span></td>
+                                        </tr>
+                                    </RowTemplate>
+                                </RowGenerator>
                             }
 
                             monthHeartbeats.RemoveWhere(daySelection);
@@ -159,21 +184,18 @@
                             </tr>
                         </thead>
                     </HeaderTemplate>
+                    <RowTemplate Context="item">
+                        <tr class="row-pattern">
+                            <td><span>@item.Id</span></td>
+                            <td><span>@item.Timestamp</span></td>
+                            <td><span>@item.Agent</span></td>
+                            <td><span>@item.Project</span></td>
+                            <td><span>@item.Domain</span></td>
+                            <td><span>@item.RelativeUrl</span></td>
+                            <td><span>@item.ResponseCode</span></td>
+                        </tr>
+                    </RowTemplate>
                 </RowGenerator>
-                <tbody>
-                @foreach (var beat in Heartbeats)
-                {
-                    <tr class="row-pattern">
-                        <td><span>@beat.Id</span></td>
-                        <td><span>@beat.Timestamp</span></td>
-                        <td><span>@beat.Agent</span></td>
-                        <td><span>@beat.Project</span></td>
-                        <td><span>@beat.Domain</span></td>
-                        <td><span>@beat.RelativeUrl</span></td>
-                        <td><span>@beat.ResponseCode</span></td>
-                    </tr>
-                }
-                </tbody>
             }
         </table>
         </div>
