@@ -28,7 +28,7 @@
             }
             else
             {
-                <HeartbeatTable Heartbeats="@(_heartbeatRows is null ? _heartbeatsAll : _heartbeatRows.ToList())"
+                <HeartbeatTable Heartbeats="@(_heartbeatRows is null ? _heartbeats1000 : _heartbeatRows.ToList())"
                                 GetLoopDataSet="@GetLoopDataSet"
                                 RecordComparison="@HeartbeatComparer"/>
             }

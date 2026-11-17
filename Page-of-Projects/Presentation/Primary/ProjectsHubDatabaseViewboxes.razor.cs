@@ -14,6 +14,7 @@ public partial class ProjectsHubDatabaseViewboxes : HeartbeatsTableBase
     private readonly ProjectsHeartbeatFetch _projectsHeartbeatFetch = new();
 
     private List<HeartbeatData> _heartbeatsAll = [];
+    private List<HeartbeatData> _heartbeats1000 = [];
 
     private bool? _isHeartbeatPendingData = true; //state=1,pending data
 
@@ -36,6 +37,7 @@ public partial class ProjectsHubDatabaseViewboxes : HeartbeatsTableBase
                                                                    RelativeUrl = i.UrlRel,
                                                                    ResponseCode = i.ResponseStatus
                                                            });
+                _heartbeats1000 = _heartbeatsAll.Take(1000).ToList();
             }
             catch (Exception exception)
             {
