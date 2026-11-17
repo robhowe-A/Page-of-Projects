@@ -145,17 +145,21 @@
             }
             else
             {
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Timestamp</th>
-                        <th>Agent</th>
-                        <th>Project</th>
-                        <th>Domain</th>
-                        <th>Relative Url</th>
-                        <th>Response Code</th>
-                    </tr>
-                </thead>
+                <RowGenerator Items="@Heartbeats">
+                    <HeaderTemplate>
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Timestamp</th>
+                                <th>Agent</th>
+                                <th>Project</th>
+                                <th>Domain</th>
+                                <th>Relative Url</th>
+                                <th>Response Code</th>
+                            </tr>
+                        </thead>
+                    </HeaderTemplate>
+                </RowGenerator>
                 <tbody>
                 @foreach (var beat in Heartbeats)
                 {
