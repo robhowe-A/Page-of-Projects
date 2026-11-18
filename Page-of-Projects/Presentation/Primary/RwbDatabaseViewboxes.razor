@@ -10,7 +10,9 @@
         <div>
             <AccessRecordFilter OnFilterFind="@OnAccessRecordFilterFindComplete"
                                 OnSubmittingChanged="@OnAccessRecordFilterSubmittingChanged"
+                                QueryLimit="1000"
                                 H3ElemText="Access Record"/>
+            <p class="page-viewbox-error">@LimitWarning</p>
         </div>
         <div class="page-viewbox-content
         @(_isArPendingData.HasValue && !_isArPendingData.Value & !_isAccessRecordFilterSubmitting ? "dataReady" : "")
@@ -51,7 +53,9 @@
         <div>
             <UserAgentFilter OnFilterFind="@OnUserAgentFilterFindComplete"
                              OnSubmittingChanged="@OnUserAgentFilterSubmittingChanged"
+                             QueryLimit="1000"
                              H3ElemText="User Agent"/>
+            <p class="page-viewbox-error">@UserAgentLimitWarning</p>
         </div>
         <div class="page-viewbox-content
         @(_isUaPendingData.HasValue && !_isUaPendingData.Value & !_isUserAgentFilterSubmitting ? "dataReady" : "")

@@ -15,6 +15,10 @@ public partial class RwbDatabaseViewboxes : ComponentBase
     private bool _isAccessRecordFilterSubmitting;
     private bool _isUserAgentFilterSubmitting;
 
+    private string LimitWarning { get; set; } = string.Empty;
+    private string UserAgentLimitWarning { get; set; } = string.Empty;
+    private uint QueryLimit { get; set; } = 1000;
+
     private Task OnAccessRecordFilterSubmittingChanged(bool isSubmitting)
     {
         _isAccessRecordFilterSubmitting = isSubmitting;
@@ -27,15 +31,17 @@ public partial class RwbDatabaseViewboxes : ComponentBase
         return Task.CompletedTask;
     }
 
-    private Task OnAccessRecordFilterFindComplete(List<RwbAccessRecord> rows)
+    private Task OnAccessRecordFilterFindComplete((List<RwbAccessRecord> rows, bool isLimitReached) userQuery)
     {
-        _arRows = rows.ToArray();
+        _arRows = userQuery.rows.Take(Convert.ToInt16(QueryLimit)).ToArray(); // Limit placement
+        LimitWarning = userQuery.isLimitReached ? $"Results view is limited to {QueryLimit} rows." : string.Empty;
         return Task.CompletedTask;
     }
 
-    private Task OnUserAgentFilterFindComplete(List<RwbUserAgent> rows)
+    private Task OnUserAgentFilterFindComplete((List<RwbUserAgent> rows, bool isLimitReached) userQuery)
     {
-        _uaRows = rows.ToArray();
+        _uaRows = userQuery.rows.Take(Convert.ToInt16(QueryLimit)).ToArray(); // Limit placement
+        UserAgentLimitWarning = userQuery.isLimitReached ? $"Results view is limited to {QueryLimit} rows." : string.Empty;
         return Task.CompletedTask;
     }
 

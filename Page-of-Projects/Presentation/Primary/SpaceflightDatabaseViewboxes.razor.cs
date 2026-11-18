@@ -26,15 +26,21 @@ public partial class SpaceflightDatabaseViewboxes : ComponentBase
         return Task.CompletedTask;
     }
 
-    private Task OnArticleFilterFindComplete(List<SpaceflightArticle> rows)
+    private string LimitWarning { get; set; } = string.Empty;
+    private string ApodLimitWarning { get; set; } = string.Empty;
+    private uint QueryLimit { get; set; } = 1000;
+
+    private Task OnArticleFilterFindComplete((List<SpaceflightArticle> rows, bool isLimitReached) userQuery)
     {
-        _articles = rows.ToArray();
+        _articles = userQuery.rows.Take(Convert.ToInt16(QueryLimit)).ToArray(); // Limit placement
+        LimitWarning = userQuery.isLimitReached ? $"Results view is limited to {QueryLimit} rows." : string.Empty;
         return Task.CompletedTask;
     }
 
-    private Task OnApodFilterFindComplete(List<SpaceflightApod> rows)
+    private Task OnApodFilterFindComplete((List<SpaceflightApod> rows, bool isLimitReached) userQuery)
     {
-        _apods = rows.ToArray();
+        _apods = userQuery.rows.Take(Convert.ToInt16(QueryLimit)).ToArray(); // Limit placement
+        ApodLimitWarning = userQuery.isLimitReached ? $"Results view is limited to {QueryLimit} rows." : string.Empty;
         return Task.CompletedTask;
     }
 

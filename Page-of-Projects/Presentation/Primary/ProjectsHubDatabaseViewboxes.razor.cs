@@ -15,6 +15,8 @@ public partial class ProjectsHubDatabaseViewboxes : HeartbeatsTableBase
 
     private List<HeartbeatData> _heartbeatsAll = [];
     private List<HeartbeatData> _heartbeats1000 = [];
+    private string LimitWarning { get; set; } = string.Empty;
+    private uint QueryLimit { get; set; } = 1000;
 
     private bool? _isHeartbeatPendingData = true; //state=1,pending data
 
@@ -57,9 +59,10 @@ public partial class ProjectsHubDatabaseViewboxes : HeartbeatsTableBase
         return Task.CompletedTask;
     }
 
-    private Task OnHeartbeatFilterFindComplete(List<HeartbeatData> rows)
+    private Task OnHeartbeatFilterFindComplete((List<HeartbeatData> rows, bool isLimitReached) userQuery)
     {
-        _heartbeatRows = rows.ToArray();
+        _heartbeatRows = userQuery.rows.Take(Convert.ToInt16(QueryLimit)).ToArray(); // Limit placement
+        LimitWarning = userQuery.isLimitReached ? $"Results view is limited to {QueryLimit} rows." : string.Empty;
         return Task.CompletedTask;
     }
 }
