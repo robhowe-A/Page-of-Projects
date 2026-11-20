@@ -28,7 +28,7 @@
             }
             else
             {
-                <RwbAccessRecordTable AllAccessRecord="@_arRows.ToList()"/>
+                <RwbAccessRecordTable AccessRecords="@_arRows.ToList()"/>
             }
         </div>
     </div>
@@ -43,7 +43,7 @@
             }
             else
             {
-                <RwbAnonymousUserTable AllAnonymousUser="@_auRows.ToList()"
+                <RwbAnonymousUserTable AnonymousUsers="@_auRows.ToList()"
                                        H3ElemText="Anonymous User"/>
             }
         </div>
@@ -71,7 +71,7 @@
             }
             else
             {
-                <RwbUserAgentTable AllUserAgent="@_uaRows.ToList()"/>
+                <RwbUserAgentTable UserAgents="@_uaRows.ToList()"/>
             }
         </div>
     </div>
