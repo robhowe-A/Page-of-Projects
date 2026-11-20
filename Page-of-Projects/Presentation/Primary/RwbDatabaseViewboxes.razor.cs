@@ -18,6 +18,7 @@ public partial class RwbDatabaseViewboxes : ComponentBase
     private string LimitWarning { get; set; } = string.Empty;
     private string UserAgentLimitWarning { get; set; } = string.Empty;
     private uint QueryLimit { get; set; } = 1000;
+    private uint UserAgentQueryLimit { get; set; } = 2000;
 
     private Task OnAccessRecordFilterSubmittingChanged(bool isSubmitting)
     {
@@ -65,16 +66,20 @@ public partial class RwbDatabaseViewboxes : ComponentBase
                                          .OrderBy(k => k.AnonymousUserId)
                                          .ThenBy(k => k.LastAccessed)
                                          .Where(x => x.AnonymousUserId >= 0)
-                                         .Take(500)
+                                         .OrderByDescending(i => i.LastAccessed)
+                                         .Take(Convert.ToInt16(QueryLimit))
                                          .ToArrayAsync();
 
                 _auRows = await dbContext.anonymous_user.AsNoTracking()
                                          .Where(x => x.AnonymousUserId >= 1)
-                                         .Take(500)
+                                         .OrderByDescending(i => i.AnonymousUserId)
+                                         .Take(Convert.ToInt16(QueryLimit))
                                          .ToArrayAsync();
 
                 _uaRows = await dbContext.user_agent.AsNoTracking()
                                          .Where(x => x.AgentId >= 1)
+                                         .OrderBy(i => i.AgentId)
+                                         .Take(Convert.ToInt16(UserAgentQueryLimit))
                                          .ToArrayAsync();
             }
             catch (Exception exception)

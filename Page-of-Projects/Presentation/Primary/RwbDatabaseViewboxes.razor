@@ -10,7 +10,7 @@
         <div>
             <AccessRecordFilter OnFilterFind="@OnAccessRecordFilterFindComplete"
                                 OnSubmittingChanged="@OnAccessRecordFilterSubmittingChanged"
-                                QueryLimit="1000"
+                                QueryLimit="@QueryLimit"
                                 H3ElemText="Access Record"/>
             <p class="page-viewbox-error">@LimitWarning</p>
         </div>
@@ -53,7 +53,7 @@
         <div>
             <UserAgentFilter OnFilterFind="@OnUserAgentFilterFindComplete"
                              OnSubmittingChanged="@OnUserAgentFilterSubmittingChanged"
-                             QueryLimit="1000"
+                             QueryLimit="@UserAgentQueryLimit"
                              H3ElemText="User Agent"/>
             <p class="page-viewbox-error">@UserAgentLimitWarning</p>
         </div>

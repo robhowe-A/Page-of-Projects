@@ -126,17 +126,17 @@
 
                             if (IsExpanded(yearKey) && IsExpanded(monthKey) && IsExpanded(dayKey))
                             {
-                                <RowGenerator Items="@Heartbeats">
+                                <RowGenerator Items="@SortVisibleHeartbeats(dayHeartbeats)">
                                     <HeaderTemplate>
                                         <thead>
                                             <tr>
-                                                <th>Id</th>
-                                                <th>Timestamp</th>
-                                                <th>Agent</th>
-                                                <th>Project</th>
-                                                <th>Domain</th>
-                                                <th>Relative Url</th>
-                                                <th>Response Code</th>
+                                                <th @onclick="@(() => SortHeartbeatTableById(x => x.Id))">Id</th>
+                                                <th @onclick="@(() => SortHeartbeatTableByTimestamp(x => x.Timestamp))">Timestamp</th>
+                                                <th @onclick="@(() => SortHeartbeatTableByAgent(x => x.Agent))">Agent</th>
+                                                <th @onclick="@(() => SortHeartbeatTableByProject(x => x.Project))">Project</th>
+                                                <th @onclick="@(() => SortHeartbeatTableByDomain(x => x.RelativeUrl))">Domain</th>
+                                                <th @onclick="@(() => SortHeartbeatTableByRelativeUrl(x => x.RelativeUrl))">Relative Url</th>
+                                                <th @onclick="@(() => SortHeartbeatTableByResponseCode(x => x.ResponseCode))">Response Code</th>
                                             </tr>
                                         </thead>
                                     </HeaderTemplate>
@@ -173,13 +173,13 @@
                     <HeaderTemplate>
                         <thead>
                             <tr>
-                                <th>Id</th>
-                                <th>Timestamp</th>
-                                <th>Agent</th>
-                                <th>Project</th>
-                                <th>Domain</th>
-                                <th>Relative Url</th>
-                                <th>Response Code</th>
+                                <th @onclick="@(() => SortHeartbeatTableById(x => x.Id))">Id</th>
+                                <th @onclick="@(() => SortHeartbeatTableByTimestamp(x => x.Timestamp))">Timestamp</th>
+                                <th @onclick="@(() => SortHeartbeatTableByAgent(x => x.Agent))">Agent</th>
+                                <th @onclick="@(() => SortHeartbeatTableByProject(x => x.Project))">Project</th>
+                                <th @onclick="@(() => SortHeartbeatTableByDomain(x => x.RelativeUrl))">Domain</th>
+                                <th @onclick="@(() => SortHeartbeatTableByRelativeUrl(x => x.RelativeUrl))">Relative Url</th>
+                                <th @onclick="@(() => SortHeartbeatTableByResponseCode(x => x.ResponseCode))">Response Code</th>
                             </tr>
                         </thead>
                     </HeaderTemplate>
@@ -200,3 +200,166 @@
         </div>
     </div>
 </div>
+
+@code {
+
+    private enum HeartbeatsSortedBy
+    {
+        None,
+        IdAsc,
+        IdDsc,
+        TimestampAsc,
+        TimestampDsc,
+        AgentAsc,
+        AgentDsc,
+        ProjectAsc,
+        ProjectDsc,
+        DomainAsc,
+        DomainDsc,
+        RelativeUrlAsc,
+        RelativeUrlDsc,
+        ResponseCodeAsc,
+        ResponseCodeDsc
+    }
+    private HeartbeatsSortedBy HeartbeatDataSortedBy { get; set; } = HeartbeatsSortedBy.IdDsc;
+
+    private static IOrderedEnumerable<HeartbeatData> SortHeartbeatsAscending<TResult>(
+            IEnumerable<HeartbeatData> heartbeats,
+            Func<HeartbeatData, TResult> keySelector)
+    {
+        return heartbeats.OrderBy(keySelector);
+    }
+
+    private static IOrderedEnumerable<HeartbeatData> SortHeartbeatsDescending<TResult>(
+    IEnumerable<HeartbeatData> heartbeats,
+    Func<HeartbeatData, TResult> keySelector)
+    {
+        return heartbeats.OrderByDescending(keySelector);
+    }
+
+    private IEnumerable<HeartbeatData> SortVisibleHeartbeats(IEnumerable<HeartbeatData> heartbeats)
+    {
+         return HeartbeatDataSortedBy switch {
+                       HeartbeatsSortedBy.IdAsc => SortHeartbeatsAscending(heartbeats, x => x.Id),
+                       HeartbeatsSortedBy.IdDsc => SortHeartbeatsDescending(heartbeats, x => x.Id),
+
+                       HeartbeatsSortedBy.TimestampAsc => SortHeartbeatsAscending(heartbeats, x => x.Timestamp),
+                       HeartbeatsSortedBy.TimestampDsc => SortHeartbeatsDescending(heartbeats, x => x.Timestamp),
+
+                       HeartbeatsSortedBy.AgentAsc => SortHeartbeatsAscending(heartbeats, x => x.Agent),
+                       HeartbeatsSortedBy.AgentDsc => SortHeartbeatsDescending(heartbeats, x => x.Agent),
+
+                       HeartbeatsSortedBy.ProjectAsc => SortHeartbeatsAscending(heartbeats, x => x.Project),
+                       HeartbeatsSortedBy.ProjectDsc => SortHeartbeatsDescending(heartbeats, x => x.Project),
+
+                       HeartbeatsSortedBy.DomainAsc => SortHeartbeatsAscending(heartbeats, x => x.Domain),
+                       HeartbeatsSortedBy.DomainDsc => SortHeartbeatsDescending(heartbeats, x => x.Domain),
+
+                       HeartbeatsSortedBy.RelativeUrlAsc => SortHeartbeatsAscending(heartbeats, x => x.RelativeUrl),
+                       HeartbeatsSortedBy.RelativeUrlDsc => SortHeartbeatsDescending(heartbeats, x => x.RelativeUrl),
+
+                       HeartbeatsSortedBy.ResponseCodeAsc => SortHeartbeatsAscending(heartbeats, x => x.ResponseCode),
+                       HeartbeatsSortedBy.ResponseCodeDsc => SortHeartbeatsDescending(heartbeats, x => x.ResponseCode),
+
+                       _ => heartbeats
+               };
+    }
+
+    private void SortHeartbeatTableById(Func<HeartbeatData, long> sortedBy)
+    {
+        if (HeartbeatDataSortedBy.CompareTo(HeartbeatsSortedBy.IdAsc) != 0)
+        {
+            Heartbeats = SortHeartbeatsAscending(Heartbeats, sortedBy);
+            HeartbeatDataSortedBy = HeartbeatsSortedBy.IdAsc;
+        }
+        else
+        {
+            Heartbeats = SortHeartbeatsDescending(Heartbeats, sortedBy);
+            HeartbeatDataSortedBy = HeartbeatsSortedBy.IdDsc;
+        }
+    }
+
+    private void SortHeartbeatTableByTimestamp(Func<HeartbeatData, DateTime> sortedBy)
+    {
+        if (HeartbeatDataSortedBy.CompareTo(HeartbeatsSortedBy.TimestampAsc) != 0)
+        {
+            Heartbeats = SortHeartbeatsAscending(Heartbeats, sortedBy);
+            HeartbeatDataSortedBy = HeartbeatsSortedBy.TimestampAsc;
+        }
+        else
+        {
+            Heartbeats = SortHeartbeatsDescending(Heartbeats, sortedBy);
+            HeartbeatDataSortedBy = HeartbeatsSortedBy.TimestampDsc;
+        }
+    }
+
+    private void SortHeartbeatTableByAgent(Func<HeartbeatData, string> sortedBy)
+    {
+        if (HeartbeatDataSortedBy.CompareTo(HeartbeatsSortedBy.AgentAsc) != 0)
+        {
+            Heartbeats = SortHeartbeatsAscending(Heartbeats, sortedBy);
+            HeartbeatDataSortedBy = HeartbeatsSortedBy.AgentAsc;
+        }
+        else
+        {
+            Heartbeats = SortHeartbeatsDescending(Heartbeats, sortedBy);
+            HeartbeatDataSortedBy = HeartbeatsSortedBy.AgentDsc;
+        }
+    }
+
+    private void SortHeartbeatTableByProject(Func<HeartbeatData, string> sortedBy)
+    {
+        if (HeartbeatDataSortedBy.CompareTo(HeartbeatsSortedBy.ProjectAsc) != 0)
+        {
+            Heartbeats = SortHeartbeatsAscending(Heartbeats, sortedBy);
+            HeartbeatDataSortedBy = HeartbeatsSortedBy.ProjectAsc;
+        }
+        else
+        {
+            Heartbeats = SortHeartbeatsDescending(Heartbeats, sortedBy);
+            HeartbeatDataSortedBy = HeartbeatsSortedBy.ProjectDsc;
+        }
+    }
+
+    private void SortHeartbeatTableByDomain(Func<HeartbeatData, string> sortedBy)
+    {
+        if (HeartbeatDataSortedBy.CompareTo(HeartbeatsSortedBy.DomainAsc) != 0)
+        {
+            Heartbeats = SortHeartbeatsAscending(Heartbeats, sortedBy);
+            HeartbeatDataSortedBy = HeartbeatsSortedBy.DomainAsc;
+        }
+        else
+        {
+            Heartbeats = SortHeartbeatsDescending(Heartbeats, sortedBy);
+            HeartbeatDataSortedBy = HeartbeatsSortedBy.DomainDsc;
+        }
+    }
+
+    private void SortHeartbeatTableByRelativeUrl(Func<HeartbeatData, string> sortedBy)
+    {
+        if (HeartbeatDataSortedBy.CompareTo(HeartbeatsSortedBy.RelativeUrlAsc) != 0)
+        {
+            Heartbeats = SortHeartbeatsAscending(Heartbeats, sortedBy);
+            HeartbeatDataSortedBy = HeartbeatsSortedBy.RelativeUrlAsc;
+        }
+        else
+        {
+            Heartbeats = SortHeartbeatsDescending(Heartbeats, sortedBy);
+            HeartbeatDataSortedBy = HeartbeatsSortedBy.RelativeUrlDsc;
+        }
+    }
+
+    private void SortHeartbeatTableByResponseCode(Func<HeartbeatData, string> sortedBy)
+    {
+        if (HeartbeatDataSortedBy.CompareTo(HeartbeatsSortedBy.ResponseCodeAsc) != 0)
+        {
+            Heartbeats = SortHeartbeatsAscending(Heartbeats, sortedBy);
+            HeartbeatDataSortedBy = HeartbeatsSortedBy.ResponseCodeAsc;
+        }
+        else
+        {
+            Heartbeats = SortHeartbeatsDescending(Heartbeats, sortedBy);
+            HeartbeatDataSortedBy = HeartbeatsSortedBy.ResponseCodeDsc;
+        }
+    }
+}

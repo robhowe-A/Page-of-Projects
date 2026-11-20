@@ -11,7 +11,7 @@
         <div>
             <HeartbeatFilter OnFilterFind="@OnHeartbeatFilterFindComplete"
                              OnSubmittingChanged="@OnHeartbeatFilterSubmittingChanged"
-                             QueryLimit="1000"
+                             QueryLimit="@QueryLimit"
                              H3ElemText="Heartbeat Requests"/>
             <p class="page-viewbox-error">@LimitWarning</p>
         </div>

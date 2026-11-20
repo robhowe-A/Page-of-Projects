@@ -30,7 +30,7 @@ public partial class ProjectsHubDatabaseViewboxes : HeartbeatsTableBase
             try
             {
                 _heartbeatsAll = heartbeats.ConvertAll(i => new HeartbeatData
-                                                           {
+                                                           {  //DTO
                                                                    Id = i.Id,
                                                                    Timestamp = i.RecordTimestamp,
                                                                    Agent = i.Agent,
@@ -39,7 +39,10 @@ public partial class ProjectsHubDatabaseViewboxes : HeartbeatsTableBase
                                                                    RelativeUrl = i.UrlRel,
                                                                    ResponseCode = i.ResponseStatus
                                                            });
-                _heartbeats1000 = _heartbeatsAll.Take(1000).ToList();
+                _heartbeats1000 = _heartbeatsAll
+                                    .OrderByDescending(i => i.Id)
+                                    .Take(Convert.ToInt16(QueryLimit))
+                                    .ToList();
             }
             catch (Exception exception)
             {

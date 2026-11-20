@@ -10,7 +10,7 @@
         <div>
             <SpaceflightArticleFilter OnFilterFind="@OnArticleFilterFindComplete"
                                       OnSubmittingChanged="@OnArticleFilterSubmittingChanged"
-                                      QueryLimit="1000"
+                                      QueryLimit="@QueryLimit"
                                       H3ElemText="Articles Data"/>
             <p class="page-viewbox-error">@LimitWarning</p>
         </div>
@@ -37,7 +37,7 @@
         <div>
             <SnapiApodFilter OnFilterFind="@OnApodFilterFindComplete"
                              OnSubmittingChanged="@OnApodFilterSubmittingChanged"
-                             QueryLimit="1000"
+                             QueryLimit="@QueryLimit"
                              H3ElemText="APOD Data"/>
             <p class="page-viewbox-error">@ApodLimitWarning</p>
         </div>

@@ -60,10 +60,14 @@ public partial class SpaceflightDatabaseViewboxes : ComponentBase
             {
                 _articles = await context.Article.AsNoTracking()
                                          .Where(x => x.ArticleNum >= 1)
+                                         .OrderByDescending(i => i.ArticleNum)
+                                         .Take(Convert.ToInt16(QueryLimit))
                                          .ToArrayAsync();
 
                 _apods = await context.APOD.AsNoTracking()
                                       .Where(x => x.Id >= 1)
+                                      .OrderByDescending(i => i.Id)
+                                      .Take(Convert.ToInt16(QueryLimit))
                                       .ToArrayAsync();
             }
             catch (Exception exception)
